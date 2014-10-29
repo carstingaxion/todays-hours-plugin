@@ -13,3 +13,9 @@ include 'TodaysHoursWidget.php';
 
 $settings = new TodaysHoursSettings();
 $widget = new TodaysHoursWidget($settings);
+
+/* add_action('admin_enqueue_scripts', 'load_my_scripts');
+
+function load_my_scripts() {
+   wp_enqueue_script('todayshourssettings', plugins_url('todaysHoursSettings.js', __FILE__), array('jquery'));
+} */
