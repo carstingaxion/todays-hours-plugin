@@ -7,8 +7,48 @@ jQuery(document).ready(function() {
 
    var submitButton = document.getElementById('submit');
    submitButton.addEventListener('click', handleFormChanges, false);
+   
+   var seasonObjects = JSON.parse(document.getElementById('seasons').value);
+   var numSeasons = seasonObjects.length;
+   for (var i = 0; i < numSeasons; i++) {
+      var aDeleteButton = document.getElementsByName('seasonDelete_' + i)[0];
+      aDeleteButton.addEventListener('click', deleteSeason, false);
+   }
+   
+   var holidayObjects = JSON.parse(document.getElementById('holidays').value);
+   var numHolidays = holidayObjects.length;
+   for (var i = 0; i < numHolidays; i++) {
+      var aDeleteButton = document.getElementsByName('holidayDelete_' + i)[0];
+      aDeleteButton.addEventListener('click', deleteHoliday, false);
+   }
   
 });
+
+function deleteSeason(event) {
+   /* remove data from JSON string */
+   var buttonName = event.target.name;
+   var seasonNumber = buttonName.substr(buttonName.length - 1);
+   var seasonObjects = JSON.parse(document.getElementById('seasons').value); 
+   seasonObjects.splice(seasonNumber,1);
+   document.getElementById('seasons').value = JSON.stringify(seasonObjects);
+
+   /* remove deleted season's form fields */
+   var seasonParentDiv = document.getElementById('season' + seasonNumber);
+   seasonParentDiv.parentNode.removeChild(seasonParentDiv);
+}
+
+function deleteHoliday(event) {
+   /* remove data from JSON string */
+   var buttonName = event.target.name;
+   var holidayNumber = buttonName.substr(buttonName.length - 1);
+   var holidayObjects = JSON.parse(document.getElementById('holidays').value); 
+   holidayObjects.splice(holidayNumber,1);
+   document.getElementById('holidays').value = JSON.stringify(holidayObjects);
+
+   /* remove deleted season's form fields */
+   var holidayParentDiv = document.getElementById('holiday' + holidayNumber);
+   holidayParentDiv.parentNode.removeChild(holidayParentDiv);
+}
 
 
 function handleFormChanges() {
@@ -21,8 +61,8 @@ function handleFormChanges() {
       updatedSeasonObjects.push( createNewSeasonObject(i) );  
    }
    /* if user has input a new season in blank fields */
-   if (document.getElementsByName('seasonName_' + i)[0].value != '') {
-      updatedSeasonObjects.push( createNewSeasonObject(i) ); 
+   if (document.getElementsByName('seasonName_new')[0].value != '') {
+      updatedSeasonObjects.push( createNewSeasonObject('new') ); 
    }
    
    /* Put updates back into hidden field to be POSTed */
