@@ -2,6 +2,7 @@
 
 class TodaysHoursWidget extends WP_Widget {
 
+
    function __construct() {
       parent::__construct('todays_hours_widget',
                           'Todays Hours Widget',
@@ -28,11 +29,18 @@ class TodaysHoursWidget extends WP_Widget {
 	public function update( $new_instance, $old_instance ) {}
 
    private function getTheHours() {
-      // $theHours = '8:00am-Midnight';
+
+      $settings = get_option('todayshours_settings');
+      $seasons = json_decode($settings['seasons']);
+      $seasonsCount = count($seasons);
       
+      for ($i = 0; $i < $seasonsCount; $i++) {
+         $theHours .= $seasons[$i]->name;
+      }
       
       return $theHours;
    }
+
    
 }
 

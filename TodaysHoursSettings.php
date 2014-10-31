@@ -44,6 +44,9 @@ class TodaysHoursSettings {
       
    }
    
+   public function getSettings() {
+      return $this->settings;
+   }
    
    public function register_todays_hours_settings() {
       
@@ -115,6 +118,9 @@ class TodaysHoursSettings {
       }
   
       /* Fields to add another Season */
+      $html .= "<a href='#addNewSeason' id='showNewSeason'>Add new Season</a>";
+
+      $html .= "<div id='addNewSeason'>";
       $html .= "<h3>Fill out the following fields to add another Season</h3>";
       $html .= "<table>";
       $html .= "<tr><td>Name: <input type='text' name='seasonName_new' value=''></input></td>";
@@ -135,10 +141,12 @@ class TodaysHoursSettings {
       $html .= "<tr><td>Saturday</td><td>Open: <input type='text' onfocus='blur()' class='timepicker' name='seasonSaOpen_new' value='' maxlength='8' size='8'></input></td>";
       $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' name='seasonSaClose_new' value='' maxlength='8' size='8'></input></td></tr>";
       $html .= "</table>";
+      $html .= "</div>";
   
       /* Current JSON encoded settings */
       $html .= "<input type='hidden' name='todayshours_settings[seasons]' id='seasons' value='" . $this->settings['seasons'] . "'></input>";
       $html .= "</div>";
+      
       
       echo $html;
    }
@@ -211,7 +219,7 @@ class TodaysHoursSettings {
             <?php wp_enqueue_script('jquerytimepicker', plugins_url('jquery.ui.timepicker.js', __FILE__), array('jquery'), '0.3.3', true); ?>
             <?php wp_enqueue_script('jquery-ui-datepicker');?>
             
-            <style type='text/css'>.ui-datepicker {background: #fdfdfd; border: 1px solid #999; padding:5px;} .ui-timepicker {background:#fdfdfd; border: 1px solid #999; padding:5px;}</style>
+            <style type='text/css'>.ui-datepicker {background: #fdfdfd; border: 1px solid #999; padding:5px;} .ui-timepicker {background:#fdfdfd; border: 1px solid #999; padding:5px;} #addNewSeason{display:none;}</style>
          
          </form>
          

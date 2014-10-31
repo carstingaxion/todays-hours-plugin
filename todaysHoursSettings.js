@@ -9,10 +9,12 @@ jQuery(document).ready(function() {
    var submitButton = document.getElementById('submit');
    submitButton.addEventListener('click', handleFormChanges, false);
 
+
    /* Add jquery ui to date and time fields */
    jQuery(".datepicker").datepicker({changeMonth:true,changeYear:true});
    jQuery(".timepicker").timepicker({showPeriod:true,showDeselectButton:true,deselectButtonText:'Clear Field',defaultTime:''});
 });
+
 
 
 /* On submit button click */

@@ -11,11 +11,6 @@ Author URI: https://github.com/dbaker3
 include 'TodaysHoursSettings.php';
 include 'TodaysHoursWidget.php';
 
-$settings = new TodaysHoursSettings();
-$widget = new TodaysHoursWidget($settings);
+$settingsObject = new TodaysHoursSettings();
+$widgetObject = new TodaysHoursWidget();
 
-/* add_action('admin_enqueue_scripts', 'load_my_scripts');
-
-function load_my_scripts() {
-   wp_enqueue_script('todayshourssettings', plugins_url('todaysHoursSettings.js', __FILE__), array('jquery'));
-} */
