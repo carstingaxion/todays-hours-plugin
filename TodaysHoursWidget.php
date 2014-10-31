@@ -28,7 +28,8 @@ class TodaysHoursWidget extends WP_Widget {
 	public function update( $new_instance, $old_instance ) {}
 
    private function getTheHours() {
-      $theHours = '8:00am-Midnight';
+      // $theHours = '8:00am-Midnight';
+      
       
       return $theHours;
    }

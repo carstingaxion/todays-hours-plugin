@@ -5,63 +5,29 @@
 */
 
 jQuery(document).ready(function() {
-   /* Add event listeners for delete buttons and submit button
-   */
+   /* Add event listener for submit button */
    var submitButton = document.getElementById('submit');
    submitButton.addEventListener('click', handleFormChanges, false);
-   
-   var seasonObjects = JSON.parse(document.getElementById('seasons').value);
-   var numSeasons = seasonObjects.length;
-   for (var i = 0; i < numSeasons; i++) {
-      var aDeleteButton = document.getElementsByName('seasonDelete_' + i)[0];
-      aDeleteButton.addEventListener('click', deleteSeason, false);
-   }
-   
-   var holidayObjects = JSON.parse(document.getElementById('holidays').value);
-   var numHolidays = holidayObjects.length;
-   for (var i = 0; i < numHolidays; i++) {
-      var aDeleteButton = document.getElementsByName('holidayDelete_' + i)[0];
-      aDeleteButton.addEventListener('click', deleteHoliday, false);
-   }
-  
+
+   /* Add jquery ui to date and time fields */
+   jQuery(".datepicker").datepicker({changeMonth:true,changeYear:true});
+   jQuery(".timepicker").timepicker({showPeriod:true,showDeselectButton:true,deselectButtonText:'Clear Field',defaultTime:''});
 });
-
-function deleteSeason(event) {
-   /* remove data from JSON string */
-   var buttonName = event.target.name;
-   var seasonNumber = buttonName.substr(buttonName.length - 1);
-   var seasonObjects = JSON.parse(document.getElementById('seasons').value); 
-   seasonObjects.splice(seasonNumber,1);
-   document.getElementById('seasons').value = JSON.stringify(seasonObjects);
-
-   /* remove deleted season's form fields */
-   var seasonParentDiv = document.getElementById('season' + seasonNumber);
-   seasonParentDiv.parentNode.removeChild(seasonParentDiv);
-}
-
-function deleteHoliday(event) {
-   /* remove data from JSON string */
-   var buttonName = event.target.name;
-   var holidayNumber = buttonName.substr(buttonName.length - 1);
-   var holidayObjects = JSON.parse(document.getElementById('holidays').value); 
-   holidayObjects.splice(holidayNumber,1);
-   document.getElementById('holidays').value = JSON.stringify(holidayObjects);
-
-   /* remove deleted season's form fields */
-   var holidayParentDiv = document.getElementById('holiday' + holidayNumber);
-   holidayParentDiv.parentNode.removeChild(holidayParentDiv);
-}
 
 
 /* On submit button click */
 function handleFormChanges() {
+
+   /*  S E A S O N S  */
    var seasonObjects = JSON.parse(document.getElementById('seasons').value);
    var numSeasons = seasonObjects.length;
    var updatedSeasonObjects = [];
 
-   /* update any changes made to existing season textboxes */
+   /* update any changes made to existing seasons - ignore if checked for deletion */
    for (var i = 0; i < numSeasons; i++) {
-      updatedSeasonObjects.push( createNewSeasonObject(i) );  
+      if (document.getElementsByName('seasonDelete_' + i)[0].checked == false) {
+         updatedSeasonObjects.push( createNewSeasonObject(i) );  
+      }
    }
    
    /* insert any new data user inputs into blank fields */
@@ -69,23 +35,29 @@ function handleFormChanges() {
       updatedSeasonObjects.push( createNewSeasonObject('new') ); 
    }
    
-   /* Put updates back into hidden field to be POSTed */
+   /* Put updates back into hidden field */
    document.getElementById('seasons').value = JSON.stringify(updatedSeasonObjects);
-   
+
+  
+   /*  H O L I D A Y S  */
    var holidayObjects = JSON.parse(document.getElementById('holidays').value);
    var numHolidays = holidayObjects.length;
    var updatedHolidayObjects = [];
    
+   /* update any changes made to existing holidays - ignore those marked for deletion */
    for (var i = 0; i < numHolidays; i++) {
-      updatedHolidayObjects.push( createNewHolidayObject(i) );
+      if (document.getElementsByName('holidayDelete_' + 1)[0].checked == false) {
+         updatedHolidayObjects.push( createNewHolidayObject(i) );
+      }
    }
-   
+
    if (document.getElementsByName('holidayName_' + i)[0].value != '') {
       updatedHolidayObjects.push( createNewHolidayObject(i) );
    }
    
    /* Store JSON string to be POSTed by PHP */
    document.getElementById('holidays').value = JSON.stringify(updatedHolidayObjects);
+   
    
    /* Control now goes to options.php as defined in the form action attribute */
    
