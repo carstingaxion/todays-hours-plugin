@@ -1,10 +1,12 @@
 /* 
    Today's Hours Plugin - admin page settings script
+   David Baker, Milligan College 2014
 
 */
 
 jQuery(document).ready(function() {
-
+   /* Add event listeners for delete buttons and submit button
+   */
    var submitButton = document.getElementById('submit');
    submitButton.addEventListener('click', handleFormChanges, false);
    
@@ -51,16 +53,18 @@ function deleteHoliday(event) {
 }
 
 
+/* On submit button click */
 function handleFormChanges() {
    var seasonObjects = JSON.parse(document.getElementById('seasons').value);
    var numSeasons = seasonObjects.length;
    var updatedSeasonObjects = [];
 
-   /* get any changes made to existing season textboxes */
+   /* update any changes made to existing season textboxes */
    for (var i = 0; i < numSeasons; i++) {
       updatedSeasonObjects.push( createNewSeasonObject(i) );  
    }
-   /* if user has input a new season in blank fields */
+   
+   /* insert any new data user inputs into blank fields */
    if (document.getElementsByName('seasonName_new')[0].value != '') {
       updatedSeasonObjects.push( createNewSeasonObject('new') ); 
    }
@@ -80,7 +84,10 @@ function handleFormChanges() {
       updatedHolidayObjects.push( createNewHolidayObject(i) );
    }
    
+   /* Store JSON string to be POSTed by PHP */
    document.getElementById('holidays').value = JSON.stringify(updatedHolidayObjects);
+   
+   /* Control now goes to options.php as defined in the form action attribute */
    
 } /* END handleFormChanges function */
 

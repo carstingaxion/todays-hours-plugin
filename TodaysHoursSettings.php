@@ -56,7 +56,7 @@ class TodaysHoursSettings {
       
       add_settings_field(
          'seasons',
-         'Seasons',
+         'Seasons/Semesters',
          array($this, 'todays_hours_seasons_callback'),
          $this->option_page,
          'todays_hours_main_section'
@@ -64,7 +64,7 @@ class TodaysHoursSettings {
       
       add_settings_field(
          'holidays',
-         'Holidays',
+         'Holidays/Exceptions',
          array($this, 'todays_hours_holidays_callback'),
          $this->option_page,
          'todays_hours_main_section'
@@ -79,6 +79,8 @@ class TodaysHoursSettings {
    
    public function todays_hours_seasons_callback($args) {
       $seasons_array = json_decode($this->settings['seasons']);
+      
+      $html .= "<div><p>Each day in the year must belong to a Season. If you schedule does not change from season to season, you should use only one season. An institution such as a college or university would define a season for each semester that business hours were different. For example, our library is only open on weekdays, from 8am-5pm, during the summer. During the Fall and Spring semesters however, we have weekend hours and stay open until midnight on most nights. A different season would be created for each of these.<p><p>Times are in 24-hour format. Blank open times are regarded as closed for the day.</p></div>";
 
       $html .= "<div style='border-bottom:1px solid #bbb; padding:25px;'>";
       $html .= "<style type='text/css'> tr td {padding:5px !important;}</style>";
@@ -144,6 +146,8 @@ class TodaysHoursSettings {
 
    public function todays_hours_holidays_callback($args) {
       $holidays_array = json_decode($this->settings['holidays']);
+
+      $html .= "<div><p>Holidays are used when there is a deviation or exception to the rules defined in the Seasons. For example, your office is closed on the Thanksgiving holiday. The hours apply to each day within the date range chosen.</p><p>Times are in 24-hour format. Blank open times are regarded as closed for the day.</p></div>";
       
       $html .= "<div style='border-bottom:1px solid #bbb; padding:25px;'>";
       
