@@ -1,0 +1,37 @@
+.ui-datepicker {
+   background: #fdfdfd;
+   border: 1px solid #999; 
+   padding:5px;
+} 
+
+.ui-timepicker {
+   background:#fdfdfd; 
+   border: 1px solid #999; 
+   padding:5px;
+} 
+
+#showNewSeason {
+   margin:2em;
+}
+
+#showNewHoliday {
+   margin:2em;
+}
+
+.hidden {
+   display: none;
+}
+
+.thForm {
+   padding:25px;
+}
+
+tr td {
+   padding:5px !important;
+}
+
+h3 {
+   margin-top:2em;
+   border-top:1px solid #ddd;
+   padding-top:1em;
+}

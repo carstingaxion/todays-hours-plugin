@@ -8,13 +8,33 @@ jQuery(document).ready(function() {
    /* Add event listener for submit button */
    var submitButton = document.getElementById('submit');
    submitButton.addEventListener('click', handleFormChanges, false);
-
+   
+   jQuery('#showNewSeason').click(function() {
+      jQuery('#addNewSeason').toggleClass('hidden');
+      jQuery('#showNewSeason').toggleClass('hidden');
+   });
+   
+   jQuery('#showNewHoliday').click(function() {
+      jQuery('#addNewHoliday').toggleClass('hidden');
+      jQuery('#showNewHoliday').toggleClass('hidden');
+   });
+   
 
    /* Add jquery ui to date and time fields */
-   jQuery(".datepicker").datepicker({changeMonth:true,changeYear:true});
-   jQuery(".timepicker").timepicker({showPeriod:true,showDeselectButton:true,deselectButtonText:'Clear Field',defaultTime:''});
+   jQuery('.datepicker').datepicker({
+         changeMonth:true,
+         changeYear:true
+      });
+   jQuery('.timepicker').timepicker({
+         showPeriod:true,
+         showDeselectButton:true,
+         deselectButtonText:'Clear Field',
+         defaultTime:'',
+         periodSeparator:'',
+         showLeadingZero:false,
+         amPmText: ['am', 'pm']
+      });
 });
-
 
 
 /* On submit button click */
@@ -48,7 +68,7 @@ function handleFormChanges() {
    
    /* update any changes made to existing holidays - ignore those marked for deletion */
    for (var i = 0; i < numHolidays; i++) {
-      if (document.getElementsByName('holidayDelete_' + 1)[0].checked == false) {
+      if (document.getElementsByName('holidayDelete_' + i)[0].checked == false) {
          updatedHolidayObjects.push( createNewHolidayObject(i) );
       }
    }
