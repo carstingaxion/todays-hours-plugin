@@ -8,8 +8,8 @@ Author: David Baker - Milligan College
 Author URI: https://github.com/dbaker3
 */
 
-include 'TodaysHoursSettings.php';
-include 'TodaysHoursWidget.php';
+include 'inc/TodaysHoursSettings.php';
+include 'inc/TodaysHoursWidget.php';
 
 $settingsObject = new TodaysHoursSettings();
 $widgetObject = new TodaysHoursWidget();

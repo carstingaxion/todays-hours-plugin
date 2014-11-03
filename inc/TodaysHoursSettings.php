@@ -29,7 +29,7 @@ class TodaysHoursSettings {
          /* Sample data */
          $s1 = new Season;
          $s1->name = "Normal Schedule";
-         $s1->begin_date = "1/1/2015";
+         $s1->begin_date = "1/1/2014";
          $s1->end_date = "12/31/2025";
          $s1->mo_open = "8:00am";
          $s1->mo_close = "11:00pm";
@@ -292,9 +292,9 @@ class TodaysHoursSettings {
             <?php do_settings_sections($this->option_page);?>
             <?php submit_button(); ?> 
 
-            <?php wp_enqueue_style('todayshoursettingsstyle', plugins_url('todaysHoursSettings.css', __FILE__)); ?>
-            <?php wp_enqueue_script('todayshourssettings', plugins_url('todaysHoursSettings.js', __FILE__), array('jquery'), '1.0', true); ?>
-            <?php wp_enqueue_script('jquerytimepicker', plugins_url('jquery.ui.timepicker.js', __FILE__), array('jquery'), '0.3.3', true); ?>
+            <?php wp_enqueue_style('todayshoursettingsstyle', plugins_url('../css/todaysHoursSettings.css', __FILE__)); ?>
+            <?php wp_enqueue_script('todayshourssettings', plugins_url('../js/todaysHoursSettings.js', __FILE__), array('jquery'), '1.0', true); ?>
+            <?php wp_enqueue_script('jquerytimepicker', plugins_url('../timepicker/jquery.ui.timepicker.js', __FILE__), array('jquery'), '0.3.3', true); ?>
             <?php wp_enqueue_script('jquery-ui-datepicker');?>
             
             
