@@ -47,13 +47,13 @@ function handleFormChanges() {
 
    /* update any changes made to existing seasons - ignore if checked for deletion */
    for (var i = 0; i < numSeasons; i++) {
-      if (document.getElementsByName('seasonDelete_' + i)[0].checked == false) {
+      if (document.getElementById('seasonDelete_' + i).checked == false) {
          updatedSeasonObjects.push( createNewSeasonObject(i) );  
       }
    }
    
    /* insert any new data user inputs into blank fields */
-   if (document.getElementsByName('seasonName_new')[0].value != '') {
+   if (document.getElementById('seasonName_new').value != '') {
       updatedSeasonObjects.push( createNewSeasonObject('new') ); 
    }
    
@@ -68,12 +68,12 @@ function handleFormChanges() {
    
    /* update any changes made to existing holidays - ignore those marked for deletion */
    for (var i = 0; i < numHolidays; i++) {
-      if (document.getElementsByName('holidayDelete_' + i)[0].checked == false) {
+      if (document.getElementById('holidayDelete_' + i).checked == false) {
          updatedHolidayObjects.push( createNewHolidayObject(i) );
       }
    }
 
-   if (document.getElementsByName('holidayName_' + i)[0].value != '') {
+   if (document.getElementById('holidayName_' + i).value != '') {
       updatedHolidayObjects.push( createNewHolidayObject(i) );
    }
    
@@ -88,23 +88,23 @@ function handleFormChanges() {
 
 function createNewSeasonObject(j) {
    newSeasonObject = {
-      name       : document.getElementsByName('seasonName_' + j)[0].value,
-      begin_date : document.getElementsByName('seasonBegin_' + j)[0].value,
-      end_date   : document.getElementsByName('seasonEnd_' + j)[0].value,
-      su_open    : document.getElementsByName('seasonSuOpen_' + j)[0].value,
-      su_close   : document.getElementsByName('seasonSuClose_' + j)[0].value,
-      mo_open    : document.getElementsByName('seasonMoOpen_' + j)[0].value,
-      mo_close   : document.getElementsByName('seasonMoClose_' + j)[0].value,
-      tu_open    : document.getElementsByName('seasonTuOpen_' + j)[0].value,
-      tu_close   : document.getElementsByName('seasonTuClose_' + j)[0].value,
-      we_open    : document.getElementsByName('seasonWeOpen_' + j)[0].value,
-      we_close   : document.getElementsByName('seasonWeClose_' + j)[0].value,
-      th_open    : document.getElementsByName('seasonThOpen_' + j)[0].value,
-      th_close   : document.getElementsByName('seasonThClose_' + j)[0].value,
-      fr_open    : document.getElementsByName('seasonFrOpen_' + j)[0].value,
-      fr_close   : document.getElementsByName('seasonFrClose_' + j)[0].value,
-      sa_open    : document.getElementsByName('seasonSaOpen_' + j)[0].value,
-      sa_close   : document.getElementsByName('seasonSaClose_' + j)[0].value
+      name       : document.getElementById('seasonName_' + j).value,
+      begin_date : document.getElementById('seasonBegin_' + j).value,
+      end_date   : document.getElementById('seasonEnd_' + j).value,
+      su_open    : document.getElementById('seasonSuOpen_' + j).value,
+      su_close   : document.getElementById('seasonSuClose_' + j).value,
+      mo_open    : document.getElementById('seasonMoOpen_' + j).value,
+      mo_close   : document.getElementById('seasonMoClose_' + j).value,
+      tu_open    : document.getElementById('seasonTuOpen_' + j).value,
+      tu_close   : document.getElementById('seasonTuClose_' + j).value,
+      we_open    : document.getElementById('seasonWeOpen_' + j).value,
+      we_close   : document.getElementById('seasonWeClose_' + j).value,
+      th_open    : document.getElementById('seasonThOpen_' + j).value,
+      th_close   : document.getElementById('seasonThClose_' + j).value,
+      fr_open    : document.getElementById('seasonFrOpen_' + j).value,
+      fr_close   : document.getElementById('seasonFrClose_' + j).value,
+      sa_open    : document.getElementById('seasonSaOpen_' + j).value,
+      sa_close   : document.getElementById('seasonSaClose_' + j).value
    };
    
    return newSeasonObject;
@@ -112,11 +112,11 @@ function createNewSeasonObject(j) {
 
 function createNewHolidayObject(j) {
    newHolidayObject = {
-      name      : document.getElementsByName('holidayName_' + j)[0].value,
-      begin_date: document.getElementsByName('holidayBegin_' + j)[0].value,
-      end_date  : document.getElementsByName('holidayEnd_' + j)[0].value,
-      open_time : document.getElementsByName('holidayOpen_' + j)[0].value,
-      close_time: document.getElementsByName('holidayClose_' + j)[0].value
+      name      : document.getElementById('holidayName_' + j).value,
+      begin_date: document.getElementById('holidayBegin_' + j).value,
+      end_date  : document.getElementById('holidayEnd_' + j).value,
+      open_time : document.getElementById('holidayOpen_' + j).value,
+      close_time: document.getElementById('holidayClose_' + j).value
    };
 
    return newHolidayObject;

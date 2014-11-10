@@ -1,4 +1,8 @@
 <?php
+/*
+   Today's Hours Plugin - Settings
+   David Baker, Milligan College 2014
+*/
 
 class TodaysHoursSettings {
 
@@ -20,7 +24,8 @@ class TodaysHoursSettings {
             'holidays'  => '',
             'showdate' => true,
             'showreason' => true,
-            'friendly12' => true
+            'friendly12' => true,
+            'widgettext' => 'Today\'s Hours'
          );
          
          $seasons_array = array();
@@ -109,6 +114,14 @@ class TodaysHoursSettings {
       );
       
       add_settings_field(
+         'widgettext',
+         'Widget Text',
+         array($this, 'todays_hours_widgettext_callback'),
+         $this->option_page,
+         'todays_hours_main_section'
+      );
+      
+      add_settings_field(
          'seasons',
          'Seasons/Semesters',
          array($this, 'todays_hours_seasons_callback'),
@@ -123,8 +136,27 @@ class TodaysHoursSettings {
          $this->option_page,
          'todays_hours_schedule_section'
       );
+    
+      register_setting($this->option_page, $this->option_name, array($this, 'todays_hours_sanitize_callback'));
+   }
+   
+   
+   public function todays_hours_sanitize_callback($input) {
+
+      $input['widgettext'] = htmlentities(sanitize_text_field($input['widgettext']));
+
+      $seasons_array = json_decode($input['seasons']);
       
-      register_setting($this->option_page, $this->option_name);
+      foreach ($seasons_array as $s) {
+         if (!strtotime($s->begin_date)) {
+            echo "not a valid value for begin_date";
+            exit;
+         }
+      }
+
+
+      
+      return $input;
    }
    
    
@@ -133,19 +165,25 @@ class TodaysHoursSettings {
    
    
    public function todays_hours_showdate_callback($args) {
-      $html .= "<input type='checkbox' name='todayshours_settings[showdate]' id='showdate' " . ($this->settings['showdate'] ? 'checked' : '') . " ><label for='showdate'>Show today's date before the hours</label></input>";
+      $html = "<input type='checkbox' name='todayshours_settings[showdate]' id='showdate' " . ($this->settings['showdate'] ? 'checked' : '') . " ><label for='showdate'>Show today's date before the hours</label>";
       echo $html;
    }
    
    
    public function todays_hours_showreason_callback($args) {
-      $html .= "<input type='checkbox' name='todayshours_settings[showreason]' id='showreason' " . ($this->settings['showreason'] ? 'checked' : '') . " ><label for='showreason'>Show reason that day is closed (uses Holiday 'Name' field)</label</input>";
+      $html = "<input type='checkbox' name='todayshours_settings[showreason]' id='showreason' " . ($this->settings['showreason'] ? 'checked' : '') . " ><label for='showreason'>Show reason that day is closed (uses Holiday 'Name' field)</label>";
       echo $html;
    }
    
    
    public function todays_hours_friendly12_callback($args) {
-      $html .= "<input type='checkbox' name='todayshours_settings[friendly12]' id='friendly12' " . ($this->settings['friendly12'] ? 'checked' : '') . " ><label for='friendly12'>Use 'Midnight' and 'Noon' in place of 12:00am and 12:00pm</label></input>";
+      $html = "<input type='checkbox' name='todayshours_settings[friendly12]' id='friendly12' " . ($this->settings['friendly12'] ? 'checked' : '') . " ><label for='friendly12'>Use 'Midnight' and 'Noon' in place of 12:00am and 12:00pm</label>";
+      echo $html;
+   }
+   
+   
+   public function todays_hours_widgettext_callback($args) {
+      $html = '<input type="text" name="todayshours_settings[widgettext]" id="widgettext" value="' . $this->settings['widgettext'] . '" > <label for="widgettext">Heading text for the widget</label>';
       echo $html;
    }
    
@@ -153,7 +191,7 @@ class TodaysHoursSettings {
    public function todays_hours_seasons_callback($args) {
       $seasons_array = json_decode($this->settings['seasons']);
       
-      $html .= "<div><p>A Season is a period of days. They could be used to define a year, a semester, or any block of time.</p>";
+      $html = "<div><p>A Season is a period of days. They could be used to define a year, a semester, or any block of time.</p>";
       $html .= "<p>In order for the widget to display a day's hours, the day must fall within the date range of a Season.</p>";
       $html .= "<p>If you schedule does not change from season to season, you should use only one season. An institution such as a college or university would probably define a season for each semester that business hours were different. For example, our library is only open on weekdays during the summer. However, during the Fall and Spring semesters have weekend hours and stay open until midnight on most nights. Therefore, we define a season for the Summer, Fall Semester, and Spring Semester.<p>";
       $html .= "<p><strong>Blank open times are regarded as closed for the day.</strong></p></div>";
@@ -165,24 +203,24 @@ class TodaysHoursSettings {
          $html .= "<div id='season" . $season_counter . "'>";
          $html .= "<h3>Season " . ($season_counter + 1) . "</h3>";
          $html .= "<table>";
-         $html .= "<tr><td><input type='checkbox' name='seasonDelete_" . $season_counter . "' value=''>Delete this Season</input></td></tr>";
-         $html .= "<tr><td>Name: <input type='text' name='seasonName_" . $season_counter . "' value='" . $s->name . "' ></input></td>";
-         $html .= "<td>Begin Date: <input type='text' onfocus='blur()' class='datepicker' name='seasonBegin_" . $season_counter . "' value='" . $s->begin_date . "' maxlength='10' size='10'></input></td>";
-         $html .= "<td>End Date: <input type='text' onfocus='blur()' class='datepicker' name='seasonEnd_" . $season_counter . "' value='" . $s->end_date . "' maxlength='10' size='10'></input></td></tr></table>";
-         $html .= "<table><tr><td>Sunday </td><td>Open: <input type='text' onfocus='blur()' class='timepicker' name='seasonSuOpen_" . $season_counter . "' value='" . $s->su_open . "' maxlength='8' size='8'></input></td>";
-         $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' name='seasonSuClose_" . $season_counter . "' value='" . $s->su_close . "' maxlength='8' size='8'></input></td></tr>";
-         $html .= "<tr><td>Monday </td><td>Open: <input type='text' onfocus='blur()' class='timepicker' name='seasonMoOpen_" . $season_counter . "' value='" . $s->mo_open . "' maxlength='8' size='8'></input></td>";
-         $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' name='seasonMoClose_" . $season_counter . "' value='" . $s->mo_close . "' maxlength='8' size='8'></input></td></tr>";
-         $html .= "<tr><td>Tuesday </td><td>Open: <input type='text' onfocus='blur()' class='timepicker' name='seasonTuOpen_" . $season_counter . "' value='" . $s->tu_open . "' maxlength='8' size='8'></input></td>";
-         $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' name='seasonTuClose_" . $season_counter . "' value='" . $s->tu_close . "' maxlength='8' size='8'></input></td></tr>";
-         $html .= "<tr><td>Wednesday </td><td>Open: <input type='text' onfocus='blur()' class='timepicker' name='seasonWeOpen_" . $season_counter . "' value='" . $s->we_open . "' maxlength='8' size='8'></input></td>";
-         $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' name='seasonWeClose_" . $season_counter . "' value='" . $s->we_close . "' maxlength='8' size='8'></input></td></tr>";
-         $html .= "<tr><td>Thursday </td><td>Open: <input type='text' onfocus='blur()' class='timepicker' name='seasonThOpen_" . $season_counter . "' value='" . $s->th_open . "' maxlength='8' size='8'></input></td>";
-         $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' name='seasonThClose_" . $season_counter . "' value='" . $s->th_close . "' maxlength='8' size='8'></input></td></tr>";
-         $html .= "<tr><td>Friday </td><td>Open: <input type='text' onfocus='blur()' class='timepicker' name='seasonFrOpen_" . $season_counter . "' value='" . $s->fr_open . "' maxlength='8' size='8'></input></td>";
-         $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' name='seasonFrClose_" . $season_counter . "' value='" . $s->fr_close . "' maxlength='8' size='8'></input></td></tr>";
-         $html .= "<tr><td>Saturday </td><td>Open: <input type='text' onfocus='blur()' class='timepicker' name='seasonSaOpen_" . $season_counter . "' value='" . $s->sa_open . "' maxlength='8' size='8'></input></td>";
-         $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' name='seasonSaClose_" . $season_counter . "' value='" . $s->sa_close . "' maxlength='8' size='8'></input></td></tr>";
+         $html .= "<tr><td><input type='checkbox' id='seasonDelete_" . $season_counter . "' value=''><label>Delete this Season</label></td></tr>";
+         $html .= "<tr><td>Name: <input type='text' id='seasonName_" . $season_counter . "' value='" . $s->name . "' ></td>";
+         $html .= "<td>Begin Date: <input type='text' onfocus='blur()' class='datepicker' id='seasonBegin_" . $season_counter . "' value='" . $s->begin_date . "' maxlength='10' size='10'></td>";
+         $html .= "<td>End Date: <input type='text' onfocus='blur()' class='datepicker' id='seasonEnd_" . $season_counter . "' value='" . $s->end_date . "' maxlength='10' size='10'></td></tr></table>";
+         $html .= "<table><tr><td>Sunday </td><td>Open: <input type='text' onfocus='blur()' class='timepicker' id='seasonSuOpen_" . $season_counter . "' value='" . $s->su_open . "' maxlength='8' size='8'></td>";
+         $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' id='seasonSuClose_" . $season_counter . "' value='" . $s->su_close . "' maxlength='8' size='8'></td></tr>";
+         $html .= "<tr><td>Monday </td><td>Open: <input type='text' onfocus='blur()' class='timepicker' id='seasonMoOpen_" . $season_counter . "' value='" . $s->mo_open . "' maxlength='8' size='8'></td>";
+         $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' id='seasonMoClose_" . $season_counter . "' value='" . $s->mo_close . "' maxlength='8' size='8'></td></tr>";
+         $html .= "<tr><td>Tuesday </td><td>Open: <input type='text' onfocus='blur()' class='timepicker' id='seasonTuOpen_" . $season_counter . "' value='" . $s->tu_open . "' maxlength='8' size='8'></td>";
+         $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' id='seasonTuClose_" . $season_counter . "' value='" . $s->tu_close . "' maxlength='8' size='8'></td></tr>";
+         $html .= "<tr><td>Wednesday </td><td>Open: <input type='text' onfocus='blur()' class='timepicker' id='seasonWeOpen_" . $season_counter . "' value='" . $s->we_open . "' maxlength='8' size='8'></td>";
+         $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' id='seasonWeClose_" . $season_counter . "' value='" . $s->we_close . "' maxlength='8' size='8'></td></tr>";
+         $html .= "<tr><td>Thursday </td><td>Open: <input type='text' onfocus='blur()' class='timepicker' id='seasonThOpen_" . $season_counter . "' value='" . $s->th_open . "' maxlength='8' size='8'></td>";
+         $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' id='seasonThClose_" . $season_counter . "' value='" . $s->th_close . "' maxlength='8' size='8'></td></tr>";
+         $html .= "<tr><td>Friday </td><td>Open: <input type='text' onfocus='blur()' class='timepicker' id='seasonFrOpen_" . $season_counter . "' value='" . $s->fr_open . "' maxlength='8' size='8'></td>";
+         $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' id='seasonFrClose_" . $season_counter . "' value='" . $s->fr_close . "' maxlength='8' size='8'></td></tr>";
+         $html .= "<tr><td>Saturday </td><td>Open: <input type='text' onfocus='blur()' class='timepicker' id='seasonSaOpen_" . $season_counter . "' value='" . $s->sa_open . "' maxlength='8' size='8'></td>";
+         $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' id='seasonSaClose_" . $season_counter . "' value='" . $s->sa_close . "' maxlength='8' size='8'></td></tr>";
          $html .= "</table>";
          $html .= "</div>";
          
@@ -195,28 +233,28 @@ class TodaysHoursSettings {
       $html .= "<div id='addNewSeason' class='hidden'>";
       $html .= "<h3>Fill out the following fields to add a Season</h3>";
       $html .= "<table>";
-      $html .= "<tr><td>Name: <input type='text' name='seasonName_new' value=''></input></td>";
-      $html .= "<td>Begin Date: <input type='text' onfocus='blur()' class='datepicker' name='seasonBegin_new' value='' maxlength='10' size='10'></input></td>";
-      $html .= "<td>End Date: <input type='text' onfocus='blur()'  class='datepicker' name='seasonEnd_new' value='' maxlength='10' size='10'></input></td></tr></table>";
-      $html .= "<table><tr><td>Sunday </td><td>Open: <input type='text' onfocus='blur()' class='timepicker' name='seasonSuOpen_new' value='' maxlength='8' size='8'></input></td>";
-      $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' name='seasonSuClose_new' value='' maxlength='8' size='8'></input></td></tr>";
-      $html .= "<tr><td>Monday</td><td>Open:<input type='text' onfocus='blur()' class='timepicker' name='seasonMoOpen_new' value='' maxlength='8' size='8'></input></td>";
-      $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' name='seasonMoClose_new' value='' maxlength='8' size='8'></input></td></tr>";
-      $html .= "<tr><td>Tuesday</td><td>Open: <input type='text' onfocus='blur()' class='timepicker' name='seasonTuOpen_new' value='' maxlength='8' size='8'></input></td>";
-      $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' name='seasonTuClose_new' value='' maxlength='8' size='8'></input></td></tr>";
-      $html .= "<tr><td>Wednesday</td><td>Open: <input type='text' onfocus='blur()' class='timepicker' name='seasonWeOpen_new' value='' maxlength='8' size='8'></input></td>";
-      $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' name='seasonWeClose_new' value='' maxlength='8' size='8'></input></td></tr>";
-      $html .= "<tr><td>Thursday</td><td>Open: <input type='text' onfocus='blur()' class='timepicker' name='seasonThOpen_new' value='' maxlength='8' size='8'></input></td>";
-      $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' name='seasonThClose_new' value='' maxlength='8' size='8'></input></td></tr>";
-      $html .= "<tr><td>Friday</td><td>Open: <input type='text' onfocus='blur()' class='timepicker' name='seasonFrOpen_new' value='' maxlength='8' size='8'></input></td>";
-      $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' name='seasonFrClose_new' value='' maxlength='8' size='8'></input></td></tr>";
-      $html .= "<tr><td>Saturday</td><td>Open: <input type='text' onfocus='blur()' class='timepicker' name='seasonSaOpen_new' value='' maxlength='8' size='8'></input></td>";
-      $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' name='seasonSaClose_new' value='' maxlength='8' size='8'></input></td></tr>";
+      $html .= "<tr><td>Name: <input type='text' id='seasonName_new' value=''></td>";
+      $html .= "<td>Begin Date: <input type='text' onfocus='blur()' class='datepicker' id='seasonBegin_new' value='' maxlength='10' size='10'></td>";
+      $html .= "<td>End Date: <input type='text' onfocus='blur()'  class='datepicker' id='seasonEnd_new' value='' maxlength='10' size='10'></td></tr></table>";
+      $html .= "<table><tr><td>Sunday </td><td>Open: <input type='text' onfocus='blur()' class='timepicker' id='seasonSuOpen_new' value='' maxlength='8' size='8'></td>";
+      $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' id='seasonSuClose_new' value='' maxlength='8' size='8'></td></tr>";
+      $html .= "<tr><td>Monday</td><td>Open:<input type='text' onfocus='blur()' class='timepicker' id='seasonMoOpen_new' value='' maxlength='8' size='8'></td>";
+      $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' id='seasonMoClose_new' value='' maxlength='8' size='8'></td></tr>";
+      $html .= "<tr><td>Tuesday</td><td>Open: <input type='text' onfocus='blur()' class='timepicker' id='seasonTuOpen_new' value='' maxlength='8' size='8'></td>";
+      $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' id='seasonTuClose_new' value='' maxlength='8' size='8'></td></tr>";
+      $html .= "<tr><td>Wednesday</td><td>Open: <input type='text' onfocus='blur()' class='timepicker' id='seasonWeOpen_new' value='' maxlength='8' size='8'></td>";
+      $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' id='seasonWeClose_new' value='' maxlength='8' size='8'></td></tr>";
+      $html .= "<tr><td>Thursday</td><td>Open: <input type='text' onfocus='blur()' class='timepicker' id='seasonThOpen_new' value='' maxlength='8' size='8'></td>";
+      $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' id='seasonThClose_new' value='' maxlength='8' size='8'></td></tr>";
+      $html .= "<tr><td>Friday</td><td>Open: <input type='text' onfocus='blur()' class='timepicker' id='seasonFrOpen_new' value='' maxlength='8' size='8'></td>";
+      $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' id='seasonFrClose_new' value='' maxlength='8' size='8'></td></tr>";
+      $html .= "<tr><td>Saturday</td><td>Open: <input type='text' onfocus='blur()' class='timepicker' id='seasonSaOpen_new' value='' maxlength='8' size='8'></td>";
+      $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' id='seasonSaClose_new' value='' maxlength='8' size='8'></td></tr>";
       $html .= "</table>";
       $html .= "</div>";
   
       /* Current JSON encoded settings */
-      $html .= "<input type='hidden' name='todayshours_settings[seasons]' id='seasons' value='" . $this->settings['seasons'] . "'></input>";
+      $html .= "<input type='hidden' name='todayshours_settings[seasons]' id='seasons' value='" . $this->settings['seasons'] . "'>";
       $html .= "</div>";
       
       
@@ -227,7 +265,7 @@ class TodaysHoursSettings {
    public function todays_hours_holidays_callback($args) {
       $holidays_array = json_decode($this->settings['holidays']);
 
-      $html .= "<div><p>Holidays are used when there is a deviation or exception to the rules defined in the Seasons. For example, your office is closed on the Thanksgiving holiday. The hours apply to each day within the date range chosen.</p>";
+      $html = "<div><p>Holidays are used when there is a deviation or exception to the rules defined in the Seasons. For example, your office is closed on the Thanksgiving holiday. The hours apply to each day within the date range chosen.</p>";
       $html .= "<p><strong>Blank open times are regarded as closed for the day.</strong></p></div>";
       
       $html .= "<div class='thForm'>";
@@ -237,12 +275,12 @@ class TodaysHoursSettings {
          $html .= "<div id='holiday" . $holiday_counter . "'>";
          $html .= "<h3>Holiday " . ($holiday_counter + 1) . "</h3>";
          $html .= "<table>";
-         $html .= "<tr><td><input type='checkbox' name='holidayDelete_" . $holiday_counter . "' value=''>Delete this Holiday</input></td></tr>";
-         $html .= "<tr><td>Name: <input type='text' name='holidayName_" . $holiday_counter . "' value='" . $h->name ."' ></input></td>";
-         $html .= "<td>Begin Date: <input type='text' onfocus='blur()' class='datepicker' name='holidayBegin_" . $holiday_counter . "' value='" . $h->begin_date . "' maxlength='10' size='10'></input></td>";
-         $html .= "<td>End Date: <input type='text' onfocus='blur()' class='datepicker' name='holidayEnd_" . $holiday_counter . "' value='" . $h->end_date . "' maxlength='10' size='10'></input></td></tr></table>";
-         $html .= "<table><tr><td>Open: <input type='text' onfocus='blur()' class='timepicker' name='holidayOpen_" . $holiday_counter . "' value='" . $h->open_time . "' maxlength='8' size='8'></input></td>";
-         $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' name='holidayClose_" . $holiday_counter . "' value='" . $h->close_time . "' maxlength='8' size='8'></input></td></tr>";        
+         $html .= "<tr><td><input type='checkbox' id='holidayDelete_" . $holiday_counter . "' value=''><label>Delete this Holiday</label></td></tr>";
+         $html .= "<tr><td>Name: <input type='text' id='holidayName_" . $holiday_counter . "' value='" . $h->name ."' ></td>";
+         $html .= "<td>Begin Date: <input type='text' onfocus='blur()' class='datepicker' id='holidayBegin_" . $holiday_counter . "' value='" . $h->begin_date . "' maxlength='10' size='10'></td>";
+         $html .= "<td>End Date: <input type='text' onfocus='blur()' class='datepicker' id='holidayEnd_" . $holiday_counter . "' value='" . $h->end_date . "' maxlength='10' size='10'></td></tr></table>";
+         $html .= "<table><tr><td>Open: <input type='text' onfocus='blur()' class='timepicker' id='holidayOpen_" . $holiday_counter . "' value='" . $h->open_time . "' maxlength='8' size='8'></td>";
+         $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' id='holidayClose_" . $holiday_counter . "' value='" . $h->close_time . "' maxlength='8' size='8'></td></tr>";        
          $html .= "</table>";
          $html .= "</div>";
          
@@ -255,16 +293,16 @@ class TodaysHoursSettings {
       $html .= "<div id='addNewHoliday' class='hidden'>";
       $html .= "<h3>Fill out the following fields to add a Holiday</h3>";
       $html .= "<table>";
-      $html .= "<tr><td>Name: <input type='text' name='holidayName_" . $holiday_counter . "' value=''></input></td>";
-      $html .= "<td>Begin Date: <input type='text' onfocus='blur()' class='datepicker' name='holidayBegin_" . $holiday_counter . "' value='' maxlength='10' size='10'></input></td>";
-      $html .= "<td>End Date: <input type='text' onfocus='blur()' class='datepicker' name='holidayEnd_" . $holiday_counter . "' value='' maxlength='10' size='10'></input></td></tr></table>";
-      $html .= "<table><tr><td>Open: <input type='text' onfocus='blur()' class='timepicker' name='holidayOpen_" . $holiday_counter . "' value='' maxlength='8' size='8'></input></td>";
-      $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' name='holidayClose_" . $holiday_counter . "' value='' maxlength='8' size='8'></input></td></tr>";        
+      $html .= "<tr><td>Name: <input type='text' id='holidayName_" . $holiday_counter . "' value=''></td>";
+      $html .= "<td>Begin Date: <input type='text' onfocus='blur()' class='datepicker' id='holidayBegin_" . $holiday_counter . "' value='' maxlength='10' size='10'></td>";
+      $html .= "<td>End Date: <input type='text' onfocus='blur()' class='datepicker' id='holidayEnd_" . $holiday_counter . "' value='' maxlength='10' size='10'></td></tr></table>";
+      $html .= "<table><tr><td>Open: <input type='text' onfocus='blur()' class='timepicker' id='holidayOpen_" . $holiday_counter . "' value='' maxlength='8' size='8'></td>";
+      $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' id='holidayClose_" . $holiday_counter . "' value='' maxlength='8' size='8'></td></tr>";        
       $html .= "</table>";
       $html .= "</div>";
       
       /* Current JSON encoded settings */
-      $html .= "<input type='hidden' name='todayshours_settings[holidays]' id='holidays' value='" . $this->settings['holidays'] . "'></input>";
+      $html .= "<input type='hidden' name='todayshours_settings[holidays]' id='holidays' value='" . $this->settings['holidays'] . "'>";
       $html .= "</div>";   
 
       echo $html;
