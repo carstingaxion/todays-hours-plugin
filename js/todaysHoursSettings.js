@@ -1,7 +1,6 @@
 /* 
    Today's Hours Plugin - admin page settings script
    David Baker, Milligan College 2014
-
 */
 
 jQuery(document).ready(function() {
