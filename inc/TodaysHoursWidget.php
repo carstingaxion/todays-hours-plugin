@@ -1,7 +1,4 @@
 <?php
-ini_set('display_errors', 'On');
-error_reporting(E_ALL);
-
 /*
    Today's Hours Plugin - Widget
    David Baker, Milligan College 2014
@@ -36,7 +33,7 @@ class TodaysHoursWidget extends WP_Widget {
                                 'description' => 'Displays Todays Business Hours')
       );
       
-      $this->todays_date = new DateTime( date('Y-m-d',time()) ); /* sets time to 00:00:00 */
+      $this->todays_date = new DateTime( date('Y-m-d',time()), new DateTimeZone(get_option('timezone_string')) ); /* sets time to 00:00:00 */
       $this->load_and_set_settings();
       $this->set_current_season();
       $this->set_current_holiday();
@@ -64,7 +61,7 @@ class TodaysHoursWidget extends WP_Widget {
       $this->the_seasons = json_decode($this->the_settings['seasons']);
       $this->the_holidays = json_decode($this->the_settings['holidays']);     
 
-      $this->widget_heading = get_option('todayshours_settings')['widgettext'];
+      $this->widget_heading = $this->the_settings['widgettext'];
       $this->show_todays_date = $this->the_settings['showdate'];
       $this->show_reason_closed = $this->the_settings['showreason'];
       $this->use_friendly_twelves = $this->the_settings['friendly12'];
@@ -170,7 +167,8 @@ class TodaysHoursWidget extends WP_Widget {
       
       /* option - show today's date */
       if ($this->show_todays_date) {
-         $the_text = date('l F j, Y') . '<br>' . $the_text;
+         //$the_text = date('l F j, Y') . '<br>' . $the_text;
+         $the_text = $this->todays_date->format('l F j, Y') . '<br>' . $the_text;
       }
       
       $this->widget_text = $the_text;

@@ -144,17 +144,24 @@ class TodaysHoursSettings {
    public function todays_hours_sanitize_callback($input) {
 
       $input['widgettext'] = htmlentities(sanitize_text_field($input['widgettext']));
-
+      
       $seasons_array = json_decode($input['seasons']);
+      $holidays_array = json_decode($input['holidays']);
       
       foreach ($seasons_array as $s) {
-         if (!strtotime($s->begin_date)) {
-            echo "not a valid value for begin_date";
-            exit;
-         }
+         $s->name = htmlentities(sanitize_text_field($s->name));
       }
+      
+      foreach ($holidays_array as $h) {
+         $h->name = htmlentities(sanitize_text_field($h->name));
+      }
+      
+      $input['seasons'] = json_encode($seasons_array);
+      $input['holidays'] = json_encode($holidays_array);
 
-
+      //print_r($input);
+      
+      //exit;
       
       return $input;
    }
@@ -204,7 +211,7 @@ class TodaysHoursSettings {
          $html .= "<h3>Season " . ($season_counter + 1) . "</h3>";
          $html .= "<table>";
          $html .= "<tr><td><input type='checkbox' id='seasonDelete_" . $season_counter . "' value=''><label>Delete this Season</label></td></tr>";
-         $html .= "<tr><td>Name: <input type='text' id='seasonName_" . $season_counter . "' value='" . $s->name . "' ></td>";
+         $html .= '<tr><td>Name: <input type="text" id="seasonName_' . $season_counter . '" value="' . $s->name . '" ></td>';
          $html .= "<td>Begin Date: <input type='text' onfocus='blur()' class='datepicker' id='seasonBegin_" . $season_counter . "' value='" . $s->begin_date . "' maxlength='10' size='10'></td>";
          $html .= "<td>End Date: <input type='text' onfocus='blur()' class='datepicker' id='seasonEnd_" . $season_counter . "' value='" . $s->end_date . "' maxlength='10' size='10'></td></tr></table>";
          $html .= "<table><tr><td>Sunday </td><td>Open: <input type='text' onfocus='blur()' class='timepicker' id='seasonSuOpen_" . $season_counter . "' value='" . $s->su_open . "' maxlength='8' size='8'></td>";
@@ -276,7 +283,7 @@ class TodaysHoursSettings {
          $html .= "<h3>Holiday " . ($holiday_counter + 1) . "</h3>";
          $html .= "<table>";
          $html .= "<tr><td><input type='checkbox' id='holidayDelete_" . $holiday_counter . "' value=''><label>Delete this Holiday</label></td></tr>";
-         $html .= "<tr><td>Name: <input type='text' id='holidayName_" . $holiday_counter . "' value='" . $h->name ."' ></td>";
+         $html .= '<tr><td>Name: <input type="text" id="holidayName_' . $holiday_counter . '" value="' . $h->name .'" ></td>';
          $html .= "<td>Begin Date: <input type='text' onfocus='blur()' class='datepicker' id='holidayBegin_" . $holiday_counter . "' value='" . $h->begin_date . "' maxlength='10' size='10'></td>";
          $html .= "<td>End Date: <input type='text' onfocus='blur()' class='datepicker' id='holidayEnd_" . $holiday_counter . "' value='" . $h->end_date . "' maxlength='10' size='10'></td></tr></table>";
          $html .= "<table><tr><td>Open: <input type='text' onfocus='blur()' class='timepicker' id='holidayOpen_" . $holiday_counter . "' value='" . $h->open_time . "' maxlength='8' size='8'></td>";
@@ -293,11 +300,11 @@ class TodaysHoursSettings {
       $html .= "<div id='addNewHoliday' class='hidden'>";
       $html .= "<h3>Fill out the following fields to add a Holiday</h3>";
       $html .= "<table>";
-      $html .= "<tr><td>Name: <input type='text' id='holidayName_" . $holiday_counter . "' value=''></td>";
-      $html .= "<td>Begin Date: <input type='text' onfocus='blur()' class='datepicker' id='holidayBegin_" . $holiday_counter . "' value='' maxlength='10' size='10'></td>";
-      $html .= "<td>End Date: <input type='text' onfocus='blur()' class='datepicker' id='holidayEnd_" . $holiday_counter . "' value='' maxlength='10' size='10'></td></tr></table>";
-      $html .= "<table><tr><td>Open: <input type='text' onfocus='blur()' class='timepicker' id='holidayOpen_" . $holiday_counter . "' value='' maxlength='8' size='8'></td>";
-      $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' id='holidayClose_" . $holiday_counter . "' value='' maxlength='8' size='8'></td></tr>";        
+      $html .= "<tr><td>Name: <input type='text' id='holidayName_new' value=''></td>";
+      $html .= "<td>Begin Date: <input type='text' onfocus='blur()' class='datepicker' id='holidayBegin_new' value='' maxlength='10' size='10'></td>";
+      $html .= "<td>End Date: <input type='text' onfocus='blur()' class='datepicker' id='holidayEnd_new' value='' maxlength='10' size='10'></td></tr></table>";
+      $html .= "<table><tr><td>Open: <input type='text' onfocus='blur()' class='timepicker' id='holidayOpen_new' value='' maxlength='8' size='8'></td>";
+      $html .= "<td>Close: <input type='text' onfocus='blur()' class='timepicker' id='holidayClose_new' value='' maxlength='8' size='8'></td></tr>";        
       $html .= "</table>";
       $html .= "</div>";
       
@@ -334,7 +341,6 @@ class TodaysHoursSettings {
             <?php wp_enqueue_script('todayshourssettings', plugins_url('../js/todaysHoursSettings.js', __FILE__), array('jquery'), '1.0', true); ?>
             <?php wp_enqueue_script('jquerytimepicker', plugins_url('../timepicker/jquery.ui.timepicker.js', __FILE__), array('jquery'), '0.3.3', true); ?>
             <?php wp_enqueue_script('jquery-ui-datepicker');?>
-            
             
          
          </form>

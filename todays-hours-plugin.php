@@ -8,6 +8,7 @@ Author: David Baker - Milligan College
 Author URI: https://github.com/dbaker3
 */
 
+
 include 'inc/TodaysHoursSettings.php';
 include 'inc/TodaysHoursWidget.php';
 

@@ -72,8 +72,8 @@ function handleFormChanges() {
       }
    }
 
-   if (document.getElementById('holidayName_' + i).value != '') {
-      updatedHolidayObjects.push( createNewHolidayObject(i) );
+   if (document.getElementById('holidayName_new').value != '') {
+      updatedHolidayObjects.push( createNewHolidayObject('new') );
    }
    
    /* Store JSON string to be POSTed by PHP */
