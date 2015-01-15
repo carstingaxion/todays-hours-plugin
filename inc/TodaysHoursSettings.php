@@ -337,8 +337,8 @@ class TodaysHoursSettings {
             <?php do_settings_sections($this->option_page);?>
             <?php submit_button(); ?> 
 
-            <?php wp_enqueue_style('todayshoursettingsstyle', plugins_url('../css/todaysHoursSettings.css', __FILE__)); ?>
-            <?php wp_enqueue_script('todayshourssettings', plugins_url('../js/todaysHoursSettings.js', __FILE__), array('jquery'), '1.0', true); ?>
+            <?php wp_enqueue_style('todayshoursettingsstyle', plugins_url('../css/todaysHoursSettings.css', __FILE__), array(), filemtime(dirname(dirname(__FILE__)) . '/css/todaysHoursSettings.css'), 'all'); ?>
+            <?php wp_enqueue_script('todayshourssettings', plugins_url('../js/todaysHoursSettings.js', __FILE__), array('jquery'), filemtime(dirname(dirname(__FILE__)) . '/js/todaysHoursSettings.js'), true); ?>
             <?php wp_enqueue_script('jquerytimepicker', plugins_url('../timepicker/jquery.ui.timepicker.js', __FILE__), array('jquery'), '0.3.3', true); ?>
             <?php wp_enqueue_script('jquery-ui-datepicker');?>
             
