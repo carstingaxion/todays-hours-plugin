@@ -50,7 +50,7 @@ class TodaysHoursWidget extends WP_Widget {
       echo "<h1 class='clock-icon'>" . $this->widget_heading . "</h1>";
       echo "<div id='todaysHours' class='textwidget'>";
          echo "<p>" . $this->widget_text . "</p>";
-         echo "<a href='http://library.milligan.edu/faq/#hours'>View all business hours</a>";
+         echo "<a href='https://library.milligan.edu/faq/#hours'>View all business hours</a>";
       echo "</div>";
       echo $args['after_widget'];
 	}
