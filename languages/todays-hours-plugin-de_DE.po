@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TodaysHours\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/support/theme/style\n"
-"POT-Creation-Date: 2015-03-12 04:51+0100\n"
-"PO-Revision-Date: 2015-03-12 05:05+0100\n"
+"POT-Creation-Date: 2015-03-31 01:14+0100\n"
+"PO-Revision-Date: 2015-03-31 01:17+0100\n"
 "Last-Translator: Carsten Bach <mail@carsten-bach.de>\n"
 "Language-Team: Carsten Bach <mail@carsten-bach.de>\n"
 "Language: de_DE\n"
@@ -83,129 +83,195 @@ msgid ""
 "In order for the widget to display a day's hours, the day must fall within "
 "the date range of a Season."
 msgstr ""
+"Damit die Öffnungszeiten eines Tages ordentlich angezeigt werden, muss das "
+"Datum zwingend innerhalb einer Saison liegen."
 
 #: inc/TodaysHoursSettings.php:207
 msgid ""
 "If you schedule does not change from season to season, you should use only "
-"one season. An institution such as a college or university would probably "
-"define a season for each semester that business hours were different. For "
-"example, our library is only open on weekdays during the summer. However, "
-"during the Fall and Spring semesters have weekend hours and stay open until "
-"midnight on most nights. Therefore, we define a season for the Summer, Fall "
-"Semester, and Spring Semester."
+"one season."
+msgstr ""
+"Sollten sich Ihre Geschäftszeiten nicht nach Saison unterscheiden, verwenden "
+"Sie einfach nur eine Saison."
+
+#: inc/TodaysHoursSettings.php:208
+msgid ""
+"An institution such as a college or university would probably define a "
+"season for each semester that business hours were different. For example, "
+"our library is only open on weekdays during the summer."
+msgstr ""
+"Eine Institution wie eine Hochschule oder Universität würde am Ehesten eine "
+"Saison je Semester anlegen, für die sich die Geschäftszeiten ändern; z.B. "
+"könnte die Bibliothek nur im Sommersemester auch am Wochenende geöffnet "
+"haben."
+
+#: inc/TodaysHoursSettings.php:209
+msgid ""
+"However, during the Fall and Spring semesters have weekend hours and stay "
+"open until midnight on most nights. Therefore, we define a season for the "
+"Summer, Fall Semester, and Spring Semester."
 msgstr ""
 
-#: inc/TodaysHoursSettings.php:208 inc/TodaysHoursSettings.php:280
+#: inc/TodaysHoursSettings.php:211 inc/TodaysHoursSettings.php:283
 msgid "Blank open times are regarded as closed for the day."
 msgstr "Leere Felder werden als 'Ganztägig geschlossen' gewertet."
 
-#: inc/TodaysHoursSettings.php:215
+#: inc/TodaysHoursSettings.php:218
+msgctxt "mention the empty space at the end"
 msgid "Season "
 msgstr "Saison "
 
-#: inc/TodaysHoursSettings.php:217
+#: inc/TodaysHoursSettings.php:220
 msgid "Delete this Season"
 msgstr "Saison löschen"
 
-#: inc/TodaysHoursSettings.php:218 inc/TodaysHoursSettings.php:247
-#: inc/TodaysHoursSettings.php:290 inc/TodaysHoursSettings.php:307
+#: inc/TodaysHoursSettings.php:221 inc/TodaysHoursSettings.php:250
+#: inc/TodaysHoursSettings.php:293 inc/TodaysHoursSettings.php:310
 msgctxt "mention the empty space at the end"
 msgid "Name: "
 msgstr "Name: "
 
-#: inc/TodaysHoursSettings.php:219 inc/TodaysHoursSettings.php:248
-#: inc/TodaysHoursSettings.php:291 inc/TodaysHoursSettings.php:308
+#: inc/TodaysHoursSettings.php:222 inc/TodaysHoursSettings.php:251
+#: inc/TodaysHoursSettings.php:294 inc/TodaysHoursSettings.php:311
 msgctxt "mention the empty space at the end"
 msgid "Begin Date: "
 msgstr "Anfangs-Datum: "
 
-#: inc/TodaysHoursSettings.php:220 inc/TodaysHoursSettings.php:249
-#: inc/TodaysHoursSettings.php:292 inc/TodaysHoursSettings.php:309
+#: inc/TodaysHoursSettings.php:223 inc/TodaysHoursSettings.php:252
+#: inc/TodaysHoursSettings.php:295 inc/TodaysHoursSettings.php:312
 msgctxt "mention the empty space at the end"
 msgid "End Date: "
 msgstr "End-Datum: "
 
-#: inc/TodaysHoursSettings.php:221 inc/TodaysHoursSettings.php:250
+#: inc/TodaysHoursSettings.php:224 inc/TodaysHoursSettings.php:253
 msgctxt "mention the empty space at the end"
 msgid "Sunday "
 msgstr "Sonntag "
 
-#: inc/TodaysHoursSettings.php:222 inc/TodaysHoursSettings.php:224
-#: inc/TodaysHoursSettings.php:226 inc/TodaysHoursSettings.php:228
-#: inc/TodaysHoursSettings.php:230 inc/TodaysHoursSettings.php:232
-#: inc/TodaysHoursSettings.php:234 inc/TodaysHoursSettings.php:251
-#: inc/TodaysHoursSettings.php:253 inc/TodaysHoursSettings.php:255
+#: inc/TodaysHoursSettings.php:224 inc/TodaysHoursSettings.php:226
+#: inc/TodaysHoursSettings.php:228 inc/TodaysHoursSettings.php:230
+#: inc/TodaysHoursSettings.php:232 inc/TodaysHoursSettings.php:234
+#: inc/TodaysHoursSettings.php:236 inc/TodaysHoursSettings.php:253
 #: inc/TodaysHoursSettings.php:257 inc/TodaysHoursSettings.php:259
 #: inc/TodaysHoursSettings.php:261 inc/TodaysHoursSettings.php:263
-#: inc/TodaysHoursSettings.php:294 inc/TodaysHoursSettings.php:311
+#: inc/TodaysHoursSettings.php:265 inc/TodaysHoursSettings.php:296
+#: inc/TodaysHoursSettings.php:313
+msgctxt "mention the empty space at the end"
+msgid "Open: "
+msgstr "Geöffnet: "
+
+#: inc/TodaysHoursSettings.php:225 inc/TodaysHoursSettings.php:227
+#: inc/TodaysHoursSettings.php:229 inc/TodaysHoursSettings.php:231
+#: inc/TodaysHoursSettings.php:233 inc/TodaysHoursSettings.php:235
+#: inc/TodaysHoursSettings.php:237 inc/TodaysHoursSettings.php:254
+#: inc/TodaysHoursSettings.php:256 inc/TodaysHoursSettings.php:258
+#: inc/TodaysHoursSettings.php:260 inc/TodaysHoursSettings.php:262
+#: inc/TodaysHoursSettings.php:264 inc/TodaysHoursSettings.php:266
+#: inc/TodaysHoursSettings.php:297 inc/TodaysHoursSettings.php:314
 msgctxt "mention the empty space at the end"
 msgid "Close: "
 msgstr "Geschlossen: "
 
-#: inc/TodaysHoursSettings.php:223 inc/TodaysHoursSettings.php:252
+#: inc/TodaysHoursSettings.php:226 inc/TodaysHoursSettings.php:255
 msgctxt "mention the empty space at the end"
 msgid "Monday "
 msgstr "Montag "
 
-#: inc/TodaysHoursSettings.php:225 inc/TodaysHoursSettings.php:254
+#: inc/TodaysHoursSettings.php:228 inc/TodaysHoursSettings.php:257
 msgctxt "mention the empty space at the end"
 msgid "Tuesday "
 msgstr "Dienstag "
 
-#: inc/TodaysHoursSettings.php:227 inc/TodaysHoursSettings.php:256
+#: inc/TodaysHoursSettings.php:230 inc/TodaysHoursSettings.php:259
 msgctxt "mention the empty space at the end"
 msgid "Wednesday "
 msgstr "Mittwoch "
 
-#: inc/TodaysHoursSettings.php:229 inc/TodaysHoursSettings.php:258
+#: inc/TodaysHoursSettings.php:232 inc/TodaysHoursSettings.php:261
 msgctxt "mention the empty space at the end"
 msgid "Thursday "
 msgstr "Donnerstag "
 
-#: inc/TodaysHoursSettings.php:231 inc/TodaysHoursSettings.php:260
+#: inc/TodaysHoursSettings.php:234 inc/TodaysHoursSettings.php:263
 msgctxt "mention the empty space at the end"
 msgid "Friday "
 msgstr "Freitag "
 
-#: inc/TodaysHoursSettings.php:233 inc/TodaysHoursSettings.php:262
+#: inc/TodaysHoursSettings.php:236 inc/TodaysHoursSettings.php:265
 msgctxt "mention the empty space at the end"
 msgid "Saturday "
 msgstr "Samstag "
 
-#: inc/TodaysHoursSettings.php:242
+#: inc/TodaysHoursSettings.php:245
 msgid "Add new Season"
 msgstr "Neue Saison hinzufügen"
 
-#: inc/TodaysHoursSettings.php:245
+#: inc/TodaysHoursSettings.php:248
 msgid "Fill out the following fields to add a Season"
 msgstr "Folgende Felder ausfüllen um eine Saison anzulegen"
 
-#: inc/TodaysHoursSettings.php:279
+#: inc/TodaysHoursSettings.php:282
 msgid ""
 "Holidays are used when there is a deviation or exception to the rules "
 "defined in the Seasons. For example, your office is closed on the "
 "Thanksgiving holiday. The hours apply to each day within the date range "
 "chosen."
 msgstr ""
+"Ferien/Ausnahme kommen zum Einsatz, wenn sie innerhalb der Sasion eine "
+"Abweichung definieren möchten, z.B. wenn ihr Büro über die Jahreswende nicht "
+"besetzt ist. Die veränderten Öffnungszeiten werden auf jeden Tag der Ferien/"
+"Ausnahme angewendet."
 
-#: inc/TodaysHoursSettings.php:287
+#: inc/TodaysHoursSettings.php:290
 msgctxt "mention the empty space at the end"
 msgid "Holiday "
 msgstr "Ausnahme "
 
-#: inc/TodaysHoursSettings.php:293 inc/TodaysHoursSettings.php:310
-msgctxt "mention the empty space at the end"
-msgid "Open: "
-msgstr "Geöffnet: "
+#: inc/TodaysHoursSettings.php:292
+msgid "Delete this Holiday"
+msgstr "Ferien/Ausnahme löschen"
 
-#: inc/TodaysHoursSettings.php:302
+#: inc/TodaysHoursSettings.php:305
 msgid "Add new Holiday"
 msgstr "Neue Ausnahme hinzufügen"
 
-#: inc/TodaysHoursSettings.php:305
+#: inc/TodaysHoursSettings.php:308
 msgid "Fill out the following fields to add a Holiday"
 msgstr "Folgende Felder ausfüllen um eine Ausnahme anzulegen"
 
-#: inc/TodaysHoursSettings.php:326
-msgid "Today's Hours"
+#: inc/TodaysHoursSettings.php:328 inc/TodaysHoursSettings.php:329
+msgctxt "Admin Title"
+msgid "Todays Hours"
+msgstr "Öffnungszeiten"
+
+#: inc/TodaysHoursWidget.php:32
+msgctxt "Admin Widget Title"
+msgid "Todays Hours"
+msgstr "Öffnungszeiten"
+
+#: inc/TodaysHoursWidget.php:35
+msgctxt "Admin Widget Description"
+msgid "Displays Todays Business Hours"
+msgstr "Zeigt die (heutigen) Öffnungszeiten an."
+
+#: inc/TodaysHoursWidget.php:168
+msgctxt "The holiday-name used as 'closed' reason."
+msgid "Closed for %$1"
+msgstr "Geschlossen wegen %$1"
+
+#: inc/TodaysHoursWidget.php:171
+msgid "Closed Today"
+msgstr "Heute geschlossen"
+
+#: inc/TodaysHoursWidget.php:182
+msgctxt "today's date format in widget output"
+msgid "l F j, Y"
 msgstr ""
+
+#: inc/TodaysHoursWidget.php:191
+msgid "Midnight"
+msgstr "Mitternacht"
+
+#: inc/TodaysHoursWidget.php:194
+msgid "Noon"
+msgstr "Mittag"
