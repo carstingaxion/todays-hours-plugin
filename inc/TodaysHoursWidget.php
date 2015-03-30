@@ -27,10 +27,13 @@ class TodaysHoursWidget extends WP_Widget {
 	private $use_friendly_twelves;
 	
 	function __construct() {
-		parent::__construct('todays_hours_widget',
-								  'Todays Hours Widget',
-								  array('classname' => 'TodaysHoursWidget',
-										  'description' => 'Displays Todays Business Hours')
+		parent::__construct(
+					'todays_hours_widget',
+					_x('Todays Hours', 'Admin Title', 'todays-hours-plugin' ),
+					array(
+						'classname' => 'TodaysHoursWidget',
+						'description' => _x('Displays Todays Business Hours', 'Admin Widget Description', 'todays-hours-plugin' ),
+					)
 		);
 		
 		$this->todays_date = new DateTime( date('Y-m-d',time()), new DateTimeZone(get_option('timezone_string')) ); /* sets time to 00:00:00 */
@@ -53,7 +56,7 @@ class TodaysHoursWidget extends WP_Widget {
 		// before and after widget arguments are defined by themes
 		echo $args['before_widget'];
 		if ( ! empty( $title ) )
-		echo $args['before_title'] . $title . $args['after_title'];
+			echo $args['before_title'] . $title . $args['after_title'];
 
 //      echo "<div id='todaysHours' class='textwidget'>";
 			echo "<p>" . $this->widget_text . "</p>";
@@ -162,20 +165,21 @@ class TodaysHoursWidget extends WP_Widget {
 		if ($this->today_open_time == '') {
 			/* option - show reason closed (holiday name) */
 			if ($this->current_holiday && $this->show_reason_closed) {
-				$the_text = 'Closed for ' . $this->current_holiday->name;
+				$the_text = sprintf( _x('Closed for %$1', 'The holiday-name used as \'closed\' reason.', 'todays-hours-plugin' ), $this->current_holiday->name );
 			}
 			else {
-				$the_text = 'Closed Today';
+				$the_text = __('Closed Today', 'todays-hours-plugin' );
 			}
 		}
 		else {
 			$the_text = $this->today_open_time . ' - ' . $this->today_close_time;  
+#fb($this);
 		}
 		
 		/* option - show today's date */
 		if ($this->show_todays_date) {
 			//$the_text = date('l F j, Y') . '<br>' . $the_text;
-			$the_text = $this->todays_date->format('l F j, Y') . '<br>' . $the_text;
+			$the_text = $this->todays_date->format( _x('l F j, Y','today\'s date format in widget output', 'todays-hours-plugin' ) ) . '<br>' . $the_text;
 		}
 		
 		$this->widget_text = $the_text;
@@ -184,10 +188,10 @@ class TodaysHoursWidget extends WP_Widget {
 	
 	private function friendly_twelves($the_time) {
 		if (strtotime($the_time) == strtotime('midnight') ) {
-			$the_time = 'Midnight';
+			$the_time = __('Midnight', 'todays-hours-plugin' );
 		}
 		else if (strtotime($the_time) == strtotime('noon') ) {
-			$the_time = 'Noon';
+			$the_time = __('Noon', 'todays-hours-plugin' );
 		}
 		return $the_time;
 	}
