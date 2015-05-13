@@ -1,10 +1,19 @@
 <?php
-/*
-   Today's Hours Plugin - Settings
-   David Baker, Milligan College 2014
+/**
+* Contains the Settings class
+* @author David Baker
+* @copyright 2014 2015 Milligan College
+* @license https://www.gnu.org/licenses/gpl-2.0.html GNU Public License v2
+* @since 1.0
 */
+namespace PHWelshimer\TodaysHours;
 
-class TodaysHoursSettings {
+/**
+* Settings class
+* Settings/Options for the WP plugin 
+* @since 1.0
+*/
+class Settings {
 
    private $option_name = 'todayshours_settings';
    private $option_page = 'todayshours_settings_page';
@@ -32,7 +41,7 @@ class TodaysHoursSettings {
          $holidays_array = array();
          
          /* Sample data */
-         $s1 = new Season;
+         $s1 = new \PHWelshimer\TodaysHours\Season;
          $s1->name = "Normal Schedule";
          $s1->begin_date = "1/1/2014";
          $s1->end_date = "12/31/2025";
@@ -47,7 +56,7 @@ class TodaysHoursSettings {
          $s1->fr_open = "8:00am";
          $s1->fr_close = "9:00pm";
          
-         $h1 = new Holiday;
+         $h1 = new \PHWelshimer\TodaysHours\Holiday;
          $h1->name = "Thanksgiving";
          $h1->begin_date = "11/26/15";
          $h1->end_date = "11/27/15";
@@ -364,36 +373,4 @@ class TodaysHoursSettings {
    public function save_settings() {
       update_option($this->option_name, $this->settings);
    }
-} /* END TodaysHoursSettings class
-
-
-/* All days within the year should fall within a season. Some institutions may only have 1 season that consists of the entire year. 
-   The school year will consist of breaks and semesters */
-class Season {
-   public $name;        /* i.e. Fall Semester, Summer Break, etc. */
-   public $begin_date;
-   public $end_date;
-   public $su_open;     /* Sunday open */
-   public $su_close;    /* Sunday close */
-   public $mo_open;     /* etc. */
-   public $mo_close;
-   public $tu_open;
-   public $tu_close;
-   public $we_open;
-   public $we_close;
-   public $th_open;
-   public $th_close;
-   public $fr_open;
-   public $fr_close;
-   public $sa_open;
-   public $sa_close;
-}
-
-/* Deviations from the current season */
-class Holiday {
-   public $name;
-   public $begin_date;
-   public $end_date;
-   public $open_time;
-   public $close_time;
-}
+} 
