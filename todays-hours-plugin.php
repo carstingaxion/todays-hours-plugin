@@ -11,9 +11,11 @@ Author URI: 	https://github.com/dbaker3
 // Setup localization
 load_plugin_textdomain( 'todays-hours-plugin', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 
-include 'inc/TodaysHoursSettings.php';
-include 'inc/TodaysHoursWidget.php';
+include 'inc/Settings.php';
+include 'inc/Season.php';
+include 'inc/Holiday.php';
+include 'inc/Widget.php';
 
-$settingsObject = new TodaysHoursSettings();
-$widgetObject = new TodaysHoursWidget();
+$settingsObject = new PHWelshimer\TodaysHours\Settings;
+$widgetObject = new PHWelshimer\TodaysHours\Widget;
 

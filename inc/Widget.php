@@ -1,10 +1,20 @@
 <?php
-/*
-	Today's Hours Plugin - Widget
-	David Baker, Milligan College 2014
+/**
+* Contains the Widget class
+* @author David Baker
+* @copyright 2014-2015 Milligan College
+* @license https://www.gnu.org/licenses/gpl-2.0.html GNU Public License v2
+* @since 1.0
 */
 
-class TodaysHoursWidget extends WP_Widget {
+namespace PHWelshimer\TodaysHours;
+
+/**
+* Widget class
+* Handles registering and display of widget
+* @since 1.0
+*/
+class Widget extends \WP_Widget {
 	private $the_settings;
 
 	/* the schedule */
@@ -31,12 +41,12 @@ class TodaysHoursWidget extends WP_Widget {
 					'todays_hours_widget',
 					_x('Todays Hours', 'Admin Title', 'todays-hours-plugin' ),
 					array(
-						'classname' => 'TodaysHoursWidget',
+						'classname' => 'Widget',
 						'description' => _x('Displays Todays Business Hours', 'Admin Widget Description', 'todays-hours-plugin' ),
 					)
 		);
 		
-		$this->todays_date = new DateTime( date('Y-m-d',time()), new DateTimeZone(get_option('timezone_string')) ); /* sets time to 00:00:00 */
+		$this->todays_date = new \DateTime( date('Y-m-d',time()), new \DateTimeZone(get_option('timezone_string')) ); /* sets time to 00:00:00 */
 		$this->load_and_set_settings();
 		$this->set_current_season();
 		$this->set_current_holiday();
@@ -90,8 +100,8 @@ class TodaysHoursWidget extends WP_Widget {
 	
 	private function set_current_season() {
 		for ($i = 0; $i < count($this->the_seasons); $i++) {
-			$season_begin_date = new DateTime($this->the_seasons[$i]->begin_date);
-			$season_end_date = new DateTime($this->the_seasons[$i]->end_date);
+			$season_begin_date = new \DateTime($this->the_seasons[$i]->begin_date);
+			$season_end_date = new \DateTime($this->the_seasons[$i]->end_date);
 			if ( $this->is_date_in_range($season_begin_date, $season_end_date, $this->todays_date) ) {
 				$this->current_season = $this->the_seasons[$i];
 				break;
@@ -102,8 +112,8 @@ class TodaysHoursWidget extends WP_Widget {
 	
 	private function set_current_holiday() {
 		for ($i = 0; $i < count($this->the_holidays); $i++) {
-			$holiday_begin_date = new DateTime($this->the_holidays[$i]->begin_date);
-			$holiday_end_date = new DateTime($this->the_holidays[$i]->end_date);
+			$holiday_begin_date = new \DateTime($this->the_holidays[$i]->begin_date);
+			$holiday_end_date = new \DateTime($this->the_holidays[$i]->end_date);
 			if ( $this->is_date_in_range($holiday_begin_date, $holiday_end_date, $this->todays_date) ) {
 				$this->current_holiday = $this->the_holidays[$i];
 			  break;
@@ -196,6 +206,6 @@ class TodaysHoursWidget extends WP_Widget {
 		return $the_time;
 	}
 	
-} /* END TodaysHoursWidget class */
+} 
 
-add_action('widgets_init', create_function('', 'return register_widget("TodaysHoursWidget");'));
+add_action('widgets_init', create_function('', 'return register_widget("PHWelshimer\TodaysHours\Widget");'));
