@@ -16,6 +16,7 @@ namespace PHWelshimer\TodaysHours;
 * @since 1.0
 */
 class Holiday {
+   public $schedule;
    public $name;
    public $begin_date;
    public $end_date;

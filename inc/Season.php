@@ -18,6 +18,7 @@ namespace PHWelshimer\TodaysHours;
 * @since 1.0
 */
 class Season {
+   public $schedule;
    public $name;
    public $begin_date;
    public $end_date;
