@@ -36,7 +36,7 @@ class Settings {
             'friendly12' => true,
             'widgettext' => 'Today\'s Hours',
             'multisched' => true,
-            'schedules' => 'Welshimer Library, Emmanuel Library' /* CSV string */
+            'schedules' => 'Welshimer Library, Seminary Library' /* CSV string */
          );
          
          $seasons_array = array();
@@ -144,7 +144,7 @@ class Settings {
       
       add_settings_field(
          'schedules',
-         __( 'Schedule Names', 'todays-hours-plugin' ),
+         '',
          array($this, 'todays_hours_schedules_callback'),
          $this->option_page,
          'todays_hours_main_section'
@@ -236,8 +236,8 @@ class Settings {
    
    
    public function todays_hours_schedules_callback($args) {
-      $html .= "<input type='text' name='todayshours_settings[schedules]' id='schedules' value='" . $this->settings['schedules'] . "' >
-      <label for='schedules'>" .__( 'Enter schedule names separated by comma', 'todays-hours-plugin' ) . "</label>";
+      $html .= "<div id='schedules-setting'><input type='text' name='todayshours_settings[schedules]' id='schedules' value='" . $this->settings['schedules'] . "' >
+      <label for='schedules' >" .__( 'Enter schedule names separated by comma', 'todays-hours-plugin' ) . "</label></div>";
       echo $html;
    }
    
@@ -265,8 +265,9 @@ class Settings {
          $html .= "<h3>" . _x( 'Season ', 'mention the empty space at the end', 'todays-hours-plugin' ) . ($season_counter + 1) . "</h3>";
          $html .= "<table>";
          $html .= "<tr><td><input type='checkbox' id='seasonDelete_" . $season_counter . "' value=''><label>" . __( 'Delete this Season', 'todays-hours-plugin' ) . "</label></td></tr>";
-         $html .= "<tr><td>" . _x( 'Schedule: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<select id='seasonSchedule_" . $season_counter . "'>";
+         $html .= "<tr><td>" . _x( 'Schedule: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<select id='seasonSchedule_" . $season_counter . "' class='schedules-select'>";
          foreach ($schedules as $schedule) {
+            $schedule = trim($schedule);
             $html .= "<option";
             if ($s->schedule == $schedule)
                $html .= " selected";
@@ -302,7 +303,7 @@ class Settings {
       $html .= "<div id='addNewSeason' class='hidden'>";
       $html .= "<h3>" . __( 'Fill out the following fields to add a Season', 'todays-hours-plugin' ) . "</h3>";
       $html .= "<table>";
-      $html .= "<tr><td>" . _x( 'Schedule: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<select id='seasonSchedule_new' >";
+      $html .= "<tr><td>" . _x( 'Schedule: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<select id='seasonSchedule_new' class='schedules-select'>";
       foreach ($schedules as $schedule) {
          $html .= "<option>" . $schedule . "</option>";
       }
@@ -354,15 +355,16 @@ class Settings {
          $html .= "<h3>" . _x( 'Holiday ', 'mention the empty space at the end', 'todays-hours-plugin' ) . ($holiday_counter + 1) . "</h3>";
          $html .= "<table>";
          $html .= "<tr><td><input type='checkbox' id='holidayDelete_" . $holiday_counter . "' value=''><label>" . __( 'Delete this Holiday', 'todays-hours-plugin' ) ."</label></td></tr>";
-         $html .= "<tr><td>" . _x( 'Schedule: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<select id='holidaySchedule_" . $holiday_counter . "'>";
+         $html .= "<tr><td>" . _x( 'Schedule: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<select id='holidaySchedule_" . $holiday_counter . "' class='schedules-select'>";
          foreach ($schedules as $schedule) {
+            $schedule = trim($schedule);
             $html .= "<option";
             if ($h->schedule == $schedule)
                $html .= " selected";
             $html .= ">" . $schedule . "</option>";
          }
          $html .= "</select></td></tr>";        
-         $html .= "<tr><td>" . _x( 'Name: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<input type='text' id='holidayName_' . $holiday_counter . '' value='" . $h->name ."' ></td>";
+         $html .= "<tr><td>" . _x( 'Name: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<input type='text' id='holidayName_" . $holiday_counter . "' value='" . $h->name ."' ></td>";
          $html .= "<td>" . _x( 'Begin Date: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<input type='text' onfocus='blur()' class='datepicker' id='holidayBegin_" . $holiday_counter . "' value='" . $h->begin_date . "' maxlength='10' size='10'></td>";
          $html .= "<td>" . _x( 'End Date: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<input type='text' onfocus='blur()' class='datepicker' id='holidayEnd_" . $holiday_counter . "' value='" . $h->end_date . "' maxlength='10' size='10'></td></tr></table>";
          $html .= "<table><tr><td>" . _x( 'Open: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<input type='text' onfocus='blur()' class='timepicker' id='holidayOpen_" . $holiday_counter . "' value='" . $h->open_time . "' maxlength='8' size='8'></td>";
@@ -379,7 +381,7 @@ class Settings {
       $html .= "<div id='addNewHoliday' class='hidden'>";
       $html .= "<h3>" . __( 'Fill out the following fields to add a Holiday', 'todays-hours-plugin' ) . "</h3>";
       $html .= "<table>";
-      $html .= "<tr><td>" . _x( 'Schedule: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<select id='holidaySchedule_new' >";
+      $html .= "<tr><td>" . _x( 'Schedule: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<select id='holidaySchedule_new' class='schedules-select'>";
       foreach ($schedules as $schedule) {
          $html .= "<option>" . $schedule . "</option>";
       }
