@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TodaysHours\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/support/theme/style\n"
-"POT-Creation-Date: 2015-03-31 01:50+0100\n"
-"PO-Revision-Date: 2015-03-31 01:50+0100\n"
+"POT-Creation-Date: 2015-06-13 00:19+0100\n"
+"PO-Revision-Date: 2015-06-13 00:19+0100\n"
 "Last-Translator: Carsten Bach <mail@carsten-bach.de>\n"
 "Language-Team: Carsten Bach <mail@carsten-bach.de>\n"
 "Language: de_DE\n"
@@ -240,7 +240,7 @@ msgid "Fill out the following fields to add a Holiday"
 msgstr "Folgende Felder ausfüllen um eine Ausnahme anzulegen"
 
 #: inc/TodaysHoursSettings.php:328 inc/TodaysHoursSettings.php:329
-#: inc/TodaysHoursSettings.php:341
+#: inc/TodaysHoursSettings.php:341 inc/TodaysHoursWidget.php:32
 msgctxt "Admin Title"
 msgid "Todays Hours"
 msgstr "Öffnungszeiten"
@@ -250,37 +250,40 @@ msgctxt "Plugin Name"
 msgid "Todays Hours Plugin"
 msgstr "Todays Hours Plugin"
 
-#: inc/TodaysHoursWidget.php:32
-msgctxt "Admin Widget Title"
-msgid "Todays Hours"
-msgstr "Öffnungszeiten"
+#: inc/TodaysHoursShortcode.php:196 inc/TodaysHoursWidget.php:168
+msgctxt "The holiday-name used as 'closed' reason."
+msgid "Closed for %$1"
+msgstr "Geschlossen wegen %$1"
+
+#: inc/TodaysHoursShortcode.php:199 inc/TodaysHoursWidget.php:171
+msgid "Closed Today"
+msgstr "Heute geschlossen"
+
+#: inc/TodaysHoursShortcode.php:319
+msgid "Closed"
+msgstr "Geschlossen"
+
+#: inc/TodaysHoursShortcode.php:368 inc/TodaysHoursWidget.php:191
+msgid "Midnight"
+msgstr "Mitternacht"
+
+#: inc/TodaysHoursShortcode.php:371 inc/TodaysHoursWidget.php:194
+msgid "Noon"
+msgstr "Mittag"
 
 #: inc/TodaysHoursWidget.php:35
 msgctxt "Admin Widget Description"
 msgid "Displays Todays Business Hours"
 msgstr "Zeigt die (heutigen) Öffnungszeiten an."
 
-#: inc/TodaysHoursWidget.php:168
-msgctxt "The holiday-name used as 'closed' reason."
-msgid "Closed for %$1"
-msgstr "Geschlossen wegen %$1"
-
-#: inc/TodaysHoursWidget.php:171
-msgid "Closed Today"
-msgstr "Heute geschlossen"
-
 #: inc/TodaysHoursWidget.php:182
 msgctxt "today's date format in widget output"
 msgid "l F j, Y"
 msgstr ""
 
-#: inc/TodaysHoursWidget.php:191
-msgid "Midnight"
-msgstr "Mitternacht"
-
-#: inc/TodaysHoursWidget.php:194
-msgid "Noon"
-msgstr "Mittag"
+#~ msgctxt "Admin Widget Title"
+#~ msgid "Todays Hours"
+#~ msgstr "Öffnungszeiten"
 
 #, fuzzy
 #~ msgctxt "Admin Options-Page Title"

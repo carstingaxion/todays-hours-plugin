@@ -13,7 +13,9 @@ load_plugin_textdomain( 'todays-hours-plugin', false, dirname( plugin_basename( 
 
 include 'inc/TodaysHoursSettings.php';
 include 'inc/TodaysHoursWidget.php';
+include 'inc/TodaysHoursShortcode.php';
 
 $settingsObject = new TodaysHoursSettings();
 $widgetObject = new TodaysHoursWidget();
+$shortcodeObject = new TodaysHoursShortcode();
 
