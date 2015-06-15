@@ -215,7 +215,7 @@ class TodaysHoursSettings {
       $season_counter = 0;
       foreach ($seasons_array as $s) {
          $html .= "<div id='season" . $season_counter . "'>";
-         $html .= "<h3>" . _x( 'Season ', 'mention the empty space at the end', 'todays-hours-plugin' ) . ($season_counter + 1) . "</h3>";
+         $html .= "<h3>" . $s->name . ' - <small>' . _x( 'Season ', 'mention the empty space at the end', 'todays-hours-plugin' ) . ($season_counter + 1) . "</small></h3>";
          $html .= "<table>";
          $html .= "<tr><td><input type='checkbox' id='seasonDelete_" . $season_counter . "' value=''><label>" . __( 'Delete this Season', 'todays-hours-plugin' ) . "</label></td></tr>";
          $html .= "<tr><td>" . _x( 'Name: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<input type='text' id='seasonName_" . $season_counter . "' value='" . $s->name . "' ></td>";
@@ -287,10 +287,10 @@ class TodaysHoursSettings {
       $holiday_counter = 0;
       foreach ($holidays_array as $h) {
          $html .= "<div id='holiday" . $holiday_counter . "'>";
-         $html .= "<h3>" . _x( 'Holiday ', 'mention the empty space at the end', 'todays-hours-plugin' ) . ($holiday_counter + 1) . "</h3>";
+#         $html .= "<h3>" . $h->name . ' - <small>' . _x( 'Holiday ', 'mention the empty space at the end', 'todays-hours-plugin' ) . ($holiday_counter + 1) . "</small></h3>";
          $html .= "<table>";
          $html .= "<tr><td><input type='checkbox' id='holidayDelete_" . $holiday_counter . "' value=''><label>" . __( 'Delete this Holiday', 'todays-hours-plugin' ) ."</label></td></tr>";
-         $html .= "<tr><td>" . _x( 'Name: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<input type='text' id='holidayName_' . $holiday_counter . '' value='" . $h->name ."' ></td>";
+         $html .= "<tr><td>" . _x( 'Name: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<input type='text' id='holidayName_" . $holiday_counter . "' value='" . $h->name ."' ></td>";
          $html .= "<td>" . _x( 'Begin Date: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<input type='text' onfocus='blur()' class='datepicker' id='holidayBegin_" . $holiday_counter . "' value='" . $h->begin_date . "' maxlength='10' size='10'></td>";
          $html .= "<td>" . _x( 'End Date: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<input type='text' onfocus='blur()' class='datepicker' id='holidayEnd_" . $holiday_counter . "' value='" . $h->end_date . "' maxlength='10' size='10'></td></tr></table>";
          $html .= "<table><tr><td>" . _x( 'Open: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<input type='text' onfocus='blur()' class='timepicker' id='holidayOpen_" . $holiday_counter . "' value='" . $h->open_time . "' maxlength='8' size='8'></td>";
