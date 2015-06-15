@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TodaysHours\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/support/theme/style\n"
-"POT-Creation-Date: 2015-03-31 01:50+0100\n"
-"PO-Revision-Date: 2015-03-31 01:50+0100\n"
+"POT-Creation-Date: 2015-06-14 12:40+0100\n"
+"PO-Revision-Date: 2015-06-14 12:41+0100\n"
 "Last-Translator: Carsten Bach <mail@carsten-bach.de>\n"
 "Language-Team: Carsten Bach <mail@carsten-bach.de>\n"
 "Language: de_DE\n"
@@ -53,16 +53,16 @@ msgstr "Saison"
 msgid "Holidays/Exceptions"
 msgstr "Ferien/Ausnahmen"
 
-#: inc/TodaysHoursSettings.php:176
+#: inc/TodaysHoursSettings.php:176 inc/TodaysHoursShortcode.php:464
 msgid "Show today's date before the hours"
 msgstr "Zeige das heutige Datum vor den Zeiten"
 
-#: inc/TodaysHoursSettings.php:183
+#: inc/TodaysHoursSettings.php:183 inc/TodaysHoursShortcode.php:469
 msgid "Show reason that day is closed (uses Holiday 'Name' field)"
 msgstr ""
 "Zeige den Grund für die Schließung (verwendet Ferien/Ausnahme-Bezeichnung)"
 
-#: inc/TodaysHoursSettings.php:190
+#: inc/TodaysHoursSettings.php:190 inc/TodaysHoursShortcode.php:474
 msgid "Use 'Midnight' and 'Noon' in place of 12:00am and 12:00pm"
 msgstr "Verwende 'Mittag' und 'Mitternacht' ansstelle von 12:00 und 24:00 Uhr"
 
@@ -222,11 +222,6 @@ msgstr ""
 "besetzt ist. Die veränderten Öffnungszeiten werden auf jeden Tag der Ferien/"
 "Ausnahme angewendet."
 
-#: inc/TodaysHoursSettings.php:290
-msgctxt "mention the empty space at the end"
-msgid "Holiday "
-msgstr "Ausnahme "
-
 #: inc/TodaysHoursSettings.php:292
 msgid "Delete this Holiday"
 msgstr "Ferien/Ausnahme löschen"
@@ -240,7 +235,7 @@ msgid "Fill out the following fields to add a Holiday"
 msgstr "Folgende Felder ausfüllen um eine Ausnahme anzulegen"
 
 #: inc/TodaysHoursSettings.php:328 inc/TodaysHoursSettings.php:329
-#: inc/TodaysHoursSettings.php:341
+#: inc/TodaysHoursSettings.php:341 inc/TodaysHoursWidget.php:32
 msgctxt "Admin Title"
 msgid "Todays Hours"
 msgstr "Öffnungszeiten"
@@ -250,37 +245,79 @@ msgctxt "Plugin Name"
 msgid "Todays Hours Plugin"
 msgstr "Todays Hours Plugin"
 
-#: inc/TodaysHoursWidget.php:32
-msgctxt "Admin Widget Title"
+#: inc/TodaysHoursShortcode.php:224 inc/TodaysHoursWidget.php:168
+msgctxt "The holiday-name used as 'closed' reason."
+msgid "Closed for %$1"
+msgstr "Geschlossen wegen %$1"
+
+#: inc/TodaysHoursShortcode.php:227 inc/TodaysHoursWidget.php:171
+msgid "Closed Today"
+msgstr "Heute geschlossen"
+
+#: inc/TodaysHoursShortcode.php:365
+msgid "Closed"
+msgstr "Geschlossen"
+
+#: inc/TodaysHoursShortcode.php:418
+msgctxt "today's date format in shortcode output"
+msgid "l F j, Y"
+msgstr "l, j. F Y"
+
+#: inc/TodaysHoursShortcode.php:443
+msgctxt "Label of the shortcode UI"
 msgid "Todays Hours"
 msgstr "Öffnungszeiten"
+
+#: inc/TodaysHoursShortcode.php:453
+msgid "Week or day?"
+msgstr "Pro Woche oder Tag?"
+
+#: inc/TodaysHoursShortcode.php:454
+msgid "Show opening hours of current season or only todays' hours"
+msgstr ""
+"Zeigt die Öffnungszeiten der gesamten aktuellen Saison oder nur die des "
+"aktuellen Tages."
+
+#: inc/TodaysHoursShortcode.php:477
+msgid "Yes"
+msgstr "Ja"
+
+#: inc/TodaysHoursShortcode.php:477
+msgid "No"
+msgstr "Nein"
+
+#: inc/TodaysHoursShortcode.php:481
+msgid "Show season-title as headline"
+msgstr "Zeige die Saison-Bezeichnung als Überschrift"
+
+#: inc/TodaysHoursShortcode.php:497 inc/TodaysHoursWidget.php:191
+msgid "Midnight"
+msgstr "Mitternacht"
+
+#: inc/TodaysHoursShortcode.php:500 inc/TodaysHoursWidget.php:194
+msgid "Noon"
+msgstr "Mittag"
 
 #: inc/TodaysHoursWidget.php:35
 msgctxt "Admin Widget Description"
 msgid "Displays Todays Business Hours"
 msgstr "Zeigt die (heutigen) Öffnungszeiten an."
 
-#: inc/TodaysHoursWidget.php:168
-msgctxt "The holiday-name used as 'closed' reason."
-msgid "Closed for %$1"
-msgstr "Geschlossen wegen %$1"
-
-#: inc/TodaysHoursWidget.php:171
-msgid "Closed Today"
-msgstr "Heute geschlossen"
-
 #: inc/TodaysHoursWidget.php:182
 msgctxt "today's date format in widget output"
 msgid "l F j, Y"
 msgstr ""
 
-#: inc/TodaysHoursWidget.php:191
-msgid "Midnight"
-msgstr "Mitternacht"
+#~ msgctxt "mention the empty space at the end"
+#~ msgid "Holiday "
+#~ msgstr "Ausnahme "
 
-#: inc/TodaysHoursWidget.php:194
-msgid "Noon"
-msgstr "Mittag"
+#~ msgid "l"
+#~ msgstr "l"
+
+#~ msgctxt "Admin Widget Title"
+#~ msgid "Todays Hours"
+#~ msgstr "Öffnungszeiten"
 
 #, fuzzy
 #~ msgctxt "Admin Options-Page Title"
