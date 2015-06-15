@@ -19,6 +19,7 @@ class TodaysHoursShortcode {
 	private $today_close_time;
 
 	/* the shortcode output */
+	private $shortcode_output_show_todays_date;
 	private $shortcode_output_todays_hours;
 	private $shortcode_output_current_season_hours_list;
 
@@ -29,48 +30,79 @@ class TodaysHoursShortcode {
 	private $time_format;
 	private $timezone_string;
 
+	/**
+	 * Shortcode name
+	 *
+	 * @type   string
+	 */
+	protected $shortcode = 'TodaysHours';
+
+	private $shortcode_args;
+
+
 
 	public function __construct()
 	{
 		//Hook up to the init action
 		add_action( 'plugins_loaded', array( &$this, 'init' ) );
+#		add_action( 'init', array( &$this, 'init' ) );
 
+		// Register a UI for the Shortcode with Shortcake-Plugin
+		add_action( 'init', array( $this, 'shortcode_ui' ) );
+#		add_action( 'plugins_loaded', array( $this, 'shortcode_ui' ) );
 	}
 
 	public function init ()
 	{
-		$this->todays_date = new DateTime( date('Y-m-d',time()), new DateTimeZone(get_option('timezone_string')) ); /* sets time to 00:00:00 */
+
 		$this->load_and_set_settings();
 		$this->set_current_season();
 		$this->set_current_holiday();
 
-		$this->set_current_season_hours_list();
-		$this->set_current_season_hours_list_output();
 
 		$this->set_todays_hours();
-		$this->set_todays_hours_output();
 
-		add_shortcode( 'TodaysHours', array( $this, 'shortcode') );
+		//
+		add_shortcode( $this->shortcode, array( $this, 'shortcode') );
+
+
+
 	}
 
 
 	public function shortcode( $attr )
 	{
+		// reset for every instance of the shortcode used 
+#		$this->shortcode_args = '';
 
-		$attr = wp_parse_args( $attr, array(
-			'show_all' => false,
+		$this->shortcode_args = wp_parse_args( $attr, array(
+			'week_or_day' => 'week',
+			'show_todays_date' => ( $this->show_todays_date ) ? 'true' : 'false',
+			'show_reason_closed' => ( $this->show_reason_closed ) ? 'true' : 'false',
+			'friendly12' => ( $this->use_friendly_twelves ) ? 'true' : 'false',
+#			'' => '',
+#			'' => '',
 		) );
+
+#		$this->shortcode_args = $attr;
+
+		$this->set_current_season_hours_list();
 
 		ob_start(); ?>
 
+		<pre><?php #var_export( $this->shortcode_args ) ?></pre>
+
 		<div class='TodaysHoursShortcode'>
-			<?php #echo $this->shortcode_output_todays_hours ?>
-			<?php echo $this->shortcode_output_current_season_hours_list ?>
+			<?php #echo $this->shortcode_output_show_todays_date ?>
+			<?php echo $this->set_show_todays_date_output(); ?>
+			<?php echo $this->set_todays_hours_output(); ?>
+			<?php echo $this->set_current_season_hours_list_output(); ?>
 		</div>
 	
 		<pre><?php #var_export( $this->current_season ) ?></pre>
-		<pre><?php var_export( $this->current_holiday ) ?></pre>
+		<pre><?php #var_export( $this->current_holiday ) ?></pre>
 		<pre><?php #var_export( $this->current_season_hour_list ) ?></pre>
+		<pre><?php var_export( $this->shortcode_args ) ?></pre>
 
 		<?php
 		return ob_get_clean();
@@ -90,6 +122,8 @@ class TodaysHoursShortcode {
 		// Set timezone for coming date functions
 		$this->timezone_string = get_option( 'timezone_string' );
 		date_default_timezone_set( $this->timezone_string );
+
+		$this->todays_date = new DateTime( date('Y-m-d',time()), new DateTimeZone( $this->timezone_string ) ); /* sets time to 00:00:00 */
 
 
 		$this->the_settings = get_option('todayshours_settings');
@@ -184,41 +218,46 @@ class TodaysHoursShortcode {
 
 	private function set_todays_hours_output()
 	{
-		 /* option - use 'noon' and 'midnight' */
-		if ($this->use_friendly_twelves) {
-			$this->today_open_time = $this->friendly_twelves($this->today_open_time);
-			$this->today_close_time = $this->friendly_twelves($this->today_close_time);
-		}
-		
+#error_log( '$this->shortcode_args: ' . var_export( $this->shortcode_args ) );
+		if ( $this->shortcode_args['week_or_day'] !== 'day' )
+			return;
+
+		// reset // TODO
+#		$this->shortcode_output_todays_hours = '';
+
+#wp_die( '<pre>' . var_export( $this->shortcode_args ) . '</pre>' );
+
 		/* check if closed */
 		if ($this->today_open_time == '') {
 			/* option - show reason closed (holiday name) */
-			if ($this->current_holiday && $this->show_reason_closed) {
-				$the_text = sprintf( _x('Closed for %$1', 'The holiday-name used as \'closed\' reason.', 'todays-hours-plugin' ), $this->current_holiday->name );
+			if ($this->current_holiday && $this->shortcode_args['show_reason_closed'] ) {
+				$__output = sprintf( _x('Closed for %$1', 'The holiday-name used as \'closed\' reason.', 'todays-hours-plugin' ), $this->current_holiday->name );
 			}
 			else {
-				$the_text = __('Closed Today', 'todays-hours-plugin' );
+				$__output = __('Closed Today', 'todays-hours-plugin' );
 			}
 		}
 		else {
 
-			// i18n output
-			$_i18n_today_open = date_create_from_format( 'g:i a', $this->today_open_time )->format( $this->time_format );
-			$_i18n_today_close = date_create_from_format( 'g:i a', $this->today_close_time )->format( $this->time_format );
+			/* option - use 'noon' and 'midnight' */
+			if ( $this->shortcode_args['friendly12'] === 'true' ) {
+				$__today_open = $this->friendly_twelves($this->today_open_time);
+				$__today_close = $this->friendly_twelves($this->today_close_time);
+			} else {
+				// i18n output
+#				$__today_open = date_create_from_format( 'g:i a', $this->today_open_time )->format( $this->time_format );
+				$__today_open = date_i18n( $this->time_format, strtotime( $this->today_open_time ) );
+#				$__today_close = date_create_from_format( 'g:i a', $this->today_close_time )->format( $this->time_format );
+				$__today_close = date_i18n( $this->time_format, strtotime( $this->today_close_time ) );
+			}
 
-
-			$the_text = $_i18n_today_open . ' - ' . $_i18n_today_close;
+			$__output = $__today_open . ' - ' . $__today_close;
 
 		}
 
-		/* option - show today's date */
-/*
-		if ($this->show_todays_date) {
-			//$the_text = date('l F j, Y') . '<br>' . $the_text;
-			$the_text = $this->todays_date->format( _x('l F j, Y','today\'s date format in widget output', 'todays-hours-plugin' ) ) . '<br>' . $the_text;
-		}
-*/
-		$this->shortcode_output_todays_hours = $the_text;
+		$__output = '<p class="TH-todays-hours">' . $__output . '</p>';
+
+		return $__output;
 	}
 
 
@@ -226,12 +265,6 @@ class TodaysHoursShortcode {
 
 	private function set_current_season_hours_list()
 	{
-
-		if ($this->current_holiday) {
-			$this->today_open_time = $this->current_holiday->open_time;
-			$this->today_close_time = $this->current_holiday->close_time;     
-		}
-		else {
 
 			$__days = array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun');
 			$this->current_season_hour_list = array();
@@ -244,21 +277,37 @@ class TodaysHoursShortcode {
 				$__day_open  = $this->current_season->{$__day_two_char.'_open'};
 				$__day_close = $this->current_season->{$__day_two_char.'_close'};
 
+				if ($this->current_holiday) {
+					$__day_open = $this->current_holiday->open_time;
+					$__day_close = $this->current_holiday->close_time;
+				}
 
-
+				// setup sub-array per day
 				$this->current_season_hour_list[$__day] = array();
 				// i18n name of weekday
 				$this->current_season_hour_list[$__day][] = date_i18n( 'l', strtotime( $__day ) );
+
+				/* option - use 'noon' and 'midnight' */
+				if ( $this->shortcode_args['friendly12'] === 'true' ) {
+					$__today_open = $this->friendly_twelves( $__day_open );
+					$__today_close = $this->friendly_twelves( $__day_close );
+				} else {
+					// i18n output
+#					$__today_open = date_create_from_format( 'g:i a', $__day_open )->format( $this->time_format );
+					$__today_open = date_i18n( $this->time_format, strtotime( $__day_open ) );
+#					$__today_close = date_create_from_format( 'g:i a', $__day_close )->format( $this->time_format );
+					$__today_close = date_i18n( $this->time_format, strtotime( $__day_close ) );
+				}
 
 				// check for the existence of a time value
 				if ( $__day_open != '' ) 
 				{
 					// date object of opening
 					$this->current_season_hour_list[$__day][] = 
-						date_create_from_format( 'g:i a', $__day_open )->format( $this->time_format );
+						$__today_open;
 					// date object of closing
 					$this->current_season_hour_list[$__day][] = 
-						date_create_from_format( 'g:i a', $__day_close )->format( $this->time_format );
+						$__today_close;
 
 					// schema.org content-string
 					$this->current_season_hour_list[$__day][] = 
@@ -273,23 +322,20 @@ class TodaysHoursShortcode {
 				
 			}
 
-		}
-
-
 	}
 
 
 
 	private function set_current_season_hours_list_output()
 	{
-		$__output = '';
+		if ( $this->shortcode_args['week_or_day'] !== 'week' )
+			return;
 
-		/* option - use 'noon' and 'midnight' */
-		if ($this->use_friendly_twelves) {
-			$this->today_open_time = $this->friendly_twelves($this->today_open_time);
-			$this->today_close_time = $this->friendly_twelves($this->today_close_time);
-		}
-		
+		// reset // TODO
+#		$this->shortcode_output_current_season_hours_list = '';
+
+#		$__output = '';
+
 		/* check if closed */
 /*
 		if ($this->today_open_time == '') {
@@ -313,7 +359,8 @@ class TodaysHoursShortcode {
 				$__classes = array();
 
 				// markup todays weekday
-				if( date('l') == $__data[0] )
+#				if( date('l') == $__data[0] )
+				if( date_i18n( 'l', strtotime( $__day ) ) == date_i18n( 'l' ) )
 					$__classes[] = 'TH-today';
 
 				if( count( $__data ) == 1 )
@@ -338,10 +385,14 @@ class TodaysHoursShortcode {
 										$__data[0] .
 										'</span>' .
 										'<span class="TH-hours">' .
-											$__data[1] .
-											' - ' .
-											$__data[2] .
-											_x( '', 'german UHR behind opening time', 'todays-hours-plugin' ) .
+											'<span class="TH-hour TH-hour-opening">'.
+												$__data[1] .
+											'</span>' .
+											'<span class="TH-hyphen"> - </span>' .
+											'<span class="TH-hour TH-hour-closing">'.
+												$__data[2] .
+#											_x( '', 'german UHR behind opening time', 'todays-hours-plugin' ) .
+											'</span>' .
 										'</span>' .
 									'</data>';
 				}
@@ -356,19 +407,97 @@ class TodaysHoursShortcode {
 
 #		} // if open today
 
-
-
-		/* option - show today's date */
-/*
-		if ($this->show_todays_date) {
-			//$the_text = date('l F j, Y') . '<br>' . $the_text;
-			$the_text = $this->todays_date->format( _x('l F j, Y','today\'s date format in widget output', 'todays-hours-plugin' ) ) . '<br>' . $the_text;
-		}
-*/
-		$this->shortcode_output_current_season_hours_list = $__output;
+		return $__output;
 	}
 
 
+	private function set_show_todays_date_output()
+	{
+		if ( $this->shortcode_args['show_todays_date'] !== 'true' )
+			return;
+
+		// i18n todays date
+		$__output = date_i18n( 
+				_x('l F j, Y','today\'s date format in shortcode output', 'todays-hours-plugin' ),
+				$this->todays_date->format( 'U' )
+				);
+		// todays date markup
+		$__output = '<p class="TH-todays-date">' . $__output . '</p>';
+
+		return $__output;
+
+	}
+
+
+
+
+	/**
+	 * Register a UI for the Shortcode 
+	 * 
+	 * Using "Shortcake"-Plugin.
+	 * Pass the shortcode tag (string)
+	 * and an array or args.
+	 */
+	public function shortcode_ui ( ) {
+
+		if ( function_exists( 'shortcode_ui_register_for_shortcode' ) ) {
+			shortcode_ui_register_for_shortcode(
+				$this->shortcode,
+				array(
+
+					// Display label. String. Required.
+					'label' => _x( 'Todays Hours', 'Label of the shortcode UI', 'todays-hours-plugin' ),
+
+					// Icon/image for shortcode. Optional. src or dashicons-$icon. Defaults to carrot.
+					'listItemImage' => 'dashicons-clock',
+
+					// Available shortcode attributes and default values. Required. Array.
+					// Attribute model expects 'attr', 'type' and 'label'
+					// Supported field types: text, checkbox, textarea, radio, select, email, url, number, and date.
+					'attrs' => array(
+						array(
+							'label'   => __( 'Week or day?', 'todays-hours-plugin' ),
+							'description'   => __( 'Show opening hours of current season or only todays\' hours', 'todays-hours-plugin' ),
+							'attr'    => 'week_or_day',
+							'type'    => 'radio',
+							'options' => array(
+								'week' => __( 'Show hours of full season', 'todays-hours-plugin' ),
+								'day' => __( 'Show only todays\' hours', 'todays-hours-plugin' )
+							),
+							'value' => 'week'
+						),
+						array(
+							'label' => __( 'Show today\'s date before the hours', 'todays-hours-plugin' ),
+							'attr'  => 'show_todays_date',
+							'type'  => 'radio',
+							'options'  => array( 'true' => __('Yes'), 'false' => __('No') ),
+							'value' => ( $this->show_todays_date ) ? 'true' : 'false' // overwrites user options
+						),
+						array(
+							'label' => __( 'Show reason that day is closed (uses Holiday \'Name\' field)', 'todays-hours-plugin' ),
+							'attr'  => 'show_reason_closed',
+							'type'  => 'radio',
+							'options'  => array( 'true' => __('Yes'), 'false' => __('No') ),
+							'value' => ( $this->show_reason_closed ) ? 'true' : 'false' // overwrites user options
+						),
+						array(
+							'label' => __( 'Use \'Midnight\' and \'Noon\' in place of 12:00am and 12:00pm', 'todays-hours-plugin' ),
+							'attr'  => 'friendly12',
+							'type'  => 'radio',
+							'options'  => array( 'true' => __('Yes'), 'false' => __('No') ),
+							'value' => ( $this->use_friendly_twelves ) ? 'true' : 'false' // overwrites user options
+						),
+						array(
+							'label' => __( 'Show season-title as headline', 'todays-hours-plugin' ),
+							'attr'  => '',
+							'type'  => 'checkbox',
+						),
+
+					),
+				)
+			);
+		}
+	}
 
 
 
