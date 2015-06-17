@@ -35,6 +35,8 @@ class Widget extends \WP_Widget {
 	private $show_todays_date;
 	private $show_reason_closed;
 	private $use_friendly_twelves;
+	private $multiple_schedules;
+	private $schedules;
 	
 	function __construct() {
 		parent::__construct(
@@ -48,7 +50,7 @@ class Widget extends \WP_Widget {
 		
 		$this->todays_date = new \DateTime( date('Y-m-d',time()), new \DateTimeZone(get_option('timezone_string')) ); /* sets time to 00:00:00 */
 		$this->load_and_set_settings();
-		$this->set_current_season();
+		$this->set_current_season();			/* @todo: This and the following method calls will need to take place after multischeds has been determined */
 		$this->set_current_holiday();
 		$this->set_todays_hours();
 		$this->set_widget_text();
@@ -85,6 +87,8 @@ class Widget extends \WP_Widget {
 		$this->show_todays_date = $this->the_settings['showdate'];
 		$this->show_reason_closed = $this->the_settings['showreason'];
 		$this->use_friendly_twelves = $this->the_settings['friendly12'];
+		$this->multiple_schedules = $this->the_settings['multisched'];
+		$this->schedules = str_getcsv($this->the_settings['schedules']);
 	}
 
 	
@@ -98,7 +102,7 @@ class Widget extends \WP_Widget {
 	}
 
 	
-	private function set_current_season() {
+	private function set_current_season($schedule = '') {
 		for ($i = 0; $i < count($this->the_seasons); $i++) {
 			$season_begin_date = new \DateTime($this->the_seasons[$i]->begin_date);
 			$season_end_date = new \DateTime($this->the_seasons[$i]->end_date);
@@ -110,7 +114,7 @@ class Widget extends \WP_Widget {
 	}
 
 	
-	private function set_current_holiday() {
+	private function set_current_holiday($schedule = '') {
 		for ($i = 0; $i < count($this->the_holidays); $i++) {
 			$holiday_begin_date = new \DateTime($this->the_holidays[$i]->begin_date);
 			$holiday_end_date = new \DateTime($this->the_holidays[$i]->end_date);
@@ -122,7 +126,7 @@ class Widget extends \WP_Widget {
 	}
   
 	
-	private function set_todays_hours() {
+	private function set_todays_hours($schedule = '') {
 		if ($this->current_holiday) {
 			$this->today_open_time = $this->current_holiday->open_time;
 			$this->today_close_time = $this->current_holiday->close_time;     
@@ -165,6 +169,32 @@ class Widget extends \WP_Widget {
 
 	
 	private function set_widget_text() {
+		
+		/*
+			@todo: Check for multisched and handle text display	
+				   modify methods to accept $schedule and set properties based on which schedule it is
+				   
+				   Should this be moved into the constructor, and then call set_widget_text for each schedule?
+		*/
+		if ($this->multiple_schedules) {
+			foreach ($this->schedules as $schedule) {
+				$schedule = trim($schedule);
+				$this->set_current_season($schedule);
+				$this->set_current_holiday($schedule);
+				$this->set_todays_hours($schedule);	
+				$this->widget_text = $this->widget_text . "multisched: {$schedule}"; //testing
+			}
+			return; //testing
+		}
+		else {
+		
+		}
+	
+	
+	
+	
+		
+		
 		 /* option - use 'noon' and 'midnight' */
 		if ($this->use_friendly_twelves) {
 			$this->today_open_time = $this->friendly_twelves($this->today_open_time);
@@ -183,7 +213,6 @@ class Widget extends \WP_Widget {
 		}
 		else {
 			$the_text = $this->today_open_time . ' - ' . $this->today_close_time;  
-#fb($this);
 		}
 		
 		/* option - show today's date */
