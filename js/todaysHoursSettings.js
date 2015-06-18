@@ -51,6 +51,21 @@ jQuery(document).ready(function() {
    if (jQuery('#multisched').prop('checked') == false) {
       jQuery('#schedules-setting').addClass('hidden');
    }
+  
+  
+  /* Toggle showing URL input for linking to full hours listing */ 
+   jQuery('#showlink').change(function() {
+      if (jQuery('#showlink').prop('checked')) {
+         jQuery('#hourslink-setting').removeClass('hidden');
+      }
+      else {
+         jQuery('#hourslink-setting').addClass('hidden');
+      }
+   });
+   if (jQuery('#showlink').prop('checked') == false) {
+      jQuery('#hourslink-setting').addClass('hidden');
+   }
+   
 });
 
 

@@ -146,7 +146,7 @@ class Settings {
       
        add_settings_field(
          'hourslink',
-         __( 'URL To Hours Listing', 'todays-hours-plugin' ),
+         '',
          array($this, 'todays_hours_hourslink_callback'),
          $this->option_page,
          'todays_hours_main_section'
@@ -254,8 +254,8 @@ class Settings {
    
    
    public function todays_hours_hourslink_callback($args) {
-      $html = "<input type='text' name='todayshours_settings[hourslink]' id='hourslink' value='" . $this->settings['hourslink'] . "' >
-      <label for='hourslink'>" . __( 'The URL to your business hours listing', 'todays-hours-plugin' ) . "</label>";
+      $html = "<div id='hourslink-setting'><input type='text' name='todayshours_settings[hourslink]' id='hourslink' value='" . $this->settings['hourslink'] . "' >
+      <label for='hourslink'>" . __( 'The URL to your business hours listing', 'todays-hours-plugin' ) . "</label></div>";
       echo $html;
    }
    
