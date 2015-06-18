@@ -37,23 +37,17 @@ class Widget extends \WP_Widget {
 	private $use_friendly_twelves;
 	private $multiple_schedules;
 	private $schedules;
+	private $show_link;
+	private $hours_link;
 	
 	function __construct() {
 		parent::__construct(
 					'todays_hours_widget',
 					_x('Todays Hours', 'Admin Title', 'todays-hours-plugin' ),
 					array(
-						'classname' => 'Widget',
 						'description' => _x('Displays Todays Business Hours', 'Admin Widget Description', 'todays-hours-plugin' ),
 					)
 		);
-		
-		$this->todays_date = new \DateTime( date('Y-m-d',time()), new \DateTimeZone(get_option('timezone_string')) ); /* sets time to 00:00:00 */
-		$this->load_and_set_settings();
-		$this->set_current_season();			/* @todo: This and the following method calls will need to take place after multischeds has been determined */
-		$this->set_current_holiday();
-		$this->set_todays_hours();
-		$this->set_widget_text();
 	}
 
 	public function form( $instance ) {}
@@ -61,19 +55,37 @@ class Widget extends \WP_Widget {
 	public function update( $new_instance, $old_instance ) {}
 	
 	public function widget( $args, $instance ) {
+		$this->todays_date = new \DateTime( date('Y-m-d',time()), new \DateTimeZone(get_option('timezone_string')) ); /* sets time to 00:00:00 */
+		$this->load_and_set_settings();
 
-//      $title = apply_filters( 'widget_title', $instance['title'] );
+		if ($this->multiple_schedules) {
+			foreach ($this->schedules as $schedule) { 
+				$schedule = trim($schedule);
+				$this->set_current_season($schedule);
+				$this->set_current_holiday($schedule);
+				$this->set_todays_hours();	
+				$this->set_widget_text($schedule); 
+			}
+		}
+		else {
+			$this->set_current_season();
+			$this->set_current_holiday();
+			$this->set_todays_hours();
+			$this->set_widget_text();	
+		}
+
 		$title = apply_filters( 'widget_title', $this->widget_heading );
 
-		// before and after widget arguments are defined by themes
 		echo $args['before_widget'];
-		if ( ! empty( $title ) )
+		if ( ! empty( $title ) ) {
 			echo $args['before_title'] . $title . $args['after_title'];
+		}
+		echo $this->widget_text;
+		
+		if ($this->show_link) { 
+			echo "<div class='todays-hours-link'><a href='" . $this->hours_link . "'>" . __('View all business hours', 'todays-hours-plugin') . "</a></div>";
+		}
 
-//      echo "<div id='todaysHours' class='textwidget'>";
-			echo "<p>" . $this->widget_text . "</p>";
-//         echo "<a href='http://library.milligan.edu/faq/#hours'>View all business hours</a>";
-//      echo "</div>";
 		echo $args['after_widget'];
 	}
 	
@@ -89,6 +101,8 @@ class Widget extends \WP_Widget {
 		$this->use_friendly_twelves = $this->the_settings['friendly12'];
 		$this->multiple_schedules = $this->the_settings['multisched'];
 		$this->schedules = str_getcsv($this->the_settings['schedules']);
+		$this->show_link = $this->the_settings['showlink'];
+		$this->hours_link = $this->the_settings['hourslink'];
 	}
 
 	
@@ -106,9 +120,13 @@ class Widget extends \WP_Widget {
 		for ($i = 0; $i < count($this->the_seasons); $i++) {
 			$season_begin_date = new \DateTime($this->the_seasons[$i]->begin_date);
 			$season_end_date = new \DateTime($this->the_seasons[$i]->end_date);
-			if ( $this->is_date_in_range($season_begin_date, $season_end_date, $this->todays_date) ) {
-				$this->current_season = $this->the_seasons[$i];
-				break;
+			if ( $this->is_date_in_range($season_begin_date, $season_end_date, $this->todays_date) 
+				 && $this->the_seasons[$i]->schedule == $schedule ) { 
+					$this->current_season = $this->the_seasons[$i];
+					break;
+			}
+			else {
+				$this->current_season = '';
 			}
 		}
 	}
@@ -118,15 +136,19 @@ class Widget extends \WP_Widget {
 		for ($i = 0; $i < count($this->the_holidays); $i++) {
 			$holiday_begin_date = new \DateTime($this->the_holidays[$i]->begin_date);
 			$holiday_end_date = new \DateTime($this->the_holidays[$i]->end_date);
-			if ( $this->is_date_in_range($holiday_begin_date, $holiday_end_date, $this->todays_date) ) {
-				$this->current_holiday = $this->the_holidays[$i];
-			  break;
+			if ( $this->is_date_in_range($holiday_begin_date, $holiday_end_date, $this->todays_date) 
+				 && $this->the_holidays[$i]->schedule == $schedule ) {
+					$this->current_holiday = $this->the_holidays[$i];
+			  		break;
+			}
+			else {
+				$this->current_holiday = '';
 			}
 		}
 	}
   
 	
-	private function set_todays_hours($schedule = '') {
+	private function set_todays_hours() {
 		if ($this->current_holiday) {
 			$this->today_open_time = $this->current_holiday->open_time;
 			$this->today_close_time = $this->current_holiday->close_time;     
@@ -168,59 +190,35 @@ class Widget extends \WP_Widget {
 	}
 
 	
-	private function set_widget_text() {
-		
-		/*
-			@todo: Check for multisched and handle text display	
-				   modify methods to accept $schedule and set properties based on which schedule it is
-				   
-				   Should this be moved into the constructor, and then call set_widget_text for each schedule?
-		*/
-		if ($this->multiple_schedules) {
-			foreach ($this->schedules as $schedule) {
-				$schedule = trim($schedule);
-				$this->set_current_season($schedule);
-				$this->set_current_holiday($schedule);
-				$this->set_todays_hours($schedule);	
-				$this->widget_text = $this->widget_text . "multisched: {$schedule}"; //testing
-			}
-			return; //testing
-		}
-		else {
-		
-		}
-	
-	
-	
-	
-		
-		
-		 /* option - use 'noon' and 'midnight' */
+	private function set_widget_text($schedule = '') {
 		if ($this->use_friendly_twelves) {
 			$this->today_open_time = $this->friendly_twelves($this->today_open_time);
 			$this->today_close_time = $this->friendly_twelves($this->today_close_time);
 		}
+	
+		if ($this->multiple_schedules) {
+			$the_text = $this->widget_text . "<div class='schedname'>{$schedule}</div>";
+		}	
 		
-		/* check if closed */
-		if ($this->today_open_time == '') {
-			/* option - show reason closed (holiday name) */
-			if ($this->current_holiday && $this->show_reason_closed) {
-				$the_text = sprintf( _x('Closed for %$1', 'The holiday-name used as \'closed\' reason.', 'todays-hours-plugin' ), $this->current_holiday->name );
+		if ($this->today_open_time == '') { 
+			if ($this->current_holiday && $this->show_reason_closed) { 
+				$the_text .= sprintf( _x('Closed for %s', 'The holiday-name used as \'closed\' reason.', 'todays-hours-plugin' ), $this->current_holiday->name );
 			}
 			else {
-				$the_text = __('Closed Today', 'todays-hours-plugin' );
+				$the_text .= __('Closed Today', 'todays-hours-plugin' );
 			}
 		}
 		else {
-			$the_text = $this->today_open_time . ' - ' . $this->today_close_time;  
+			$the_text .= $this->today_open_time . ' - ' . $this->today_close_time;  
 		}
 		
-		/* option - show today's date */
 		if ($this->show_todays_date) {
-			//$the_text = date('l F j, Y') . '<br>' . $the_text;
-			$the_text = $this->todays_date->format( _x('l F j, Y','today\'s date format in widget output', 'todays-hours-plugin' ) ) . '<br>' . $the_text;
+			$date_text = "<div class='todaysdate'>" . $this->todays_date->format( _x('l F j, Y','today\'s date format in widget output', 'todays-hours-plugin' ) ) . "</div>";
+			if (strpos($the_text, $date_text) === false) {
+				$the_text = $date_text . $the_text;	
+			}
 		}
-		
+
 		$this->widget_text = $the_text;
 	}
 	

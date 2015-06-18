@@ -35,6 +35,8 @@ class Settings {
             'showreason' => true,
             'friendly12' => true,
             'widgettext' => 'Today\'s Hours',
+            'showlink' => true,
+            'hourslink' => 'https://library.milligan.edu/faq#hours',
             'multisched' => true,
             'schedules' => 'Welshimer Library, Seminary Library' /* CSV string */
          );
@@ -135,6 +137,22 @@ class Settings {
       );
       
       add_settings_field(
+         'showlink',
+         __( 'Show Full Hours Link', 'todays-hours-plugin' ),
+         array($this, 'todays_hours_showlink_callback'),
+         $this->option_page,
+         'todays_hours_main_section'
+      );
+      
+       add_settings_field(
+         'hourslink',
+         __( 'URL To Hours Listing', 'todays-hours-plugin' ),
+         array($this, 'todays_hours_hourslink_callback'),
+         $this->option_page,
+         'todays_hours_main_section'
+      );
+      
+      add_settings_field(
          'multisched',
          __( 'Use Multiple Schedules', 'todays-hours-plugin' ),
          array($this, 'todays_hours_multisched_callback'),
@@ -226,8 +244,22 @@ class Settings {
       <label for='widgettext'>" . __( 'Heading text for the widget', 'todays-hours-plugin' ) . "</label>";
       echo $html;
    }
+  
+   
+   public function todays_hours_showlink_callback($args) {
+      $html = "<input type='checkbox' name='todayshours_settings[showlink]' id='showlink' " . ($this->settings['showlink'] ? 'checked' : '') . " >
+      <label for='showlink'>" . __( 'Show link to full business hours below today\'s hours', 'todays-hours-plugin' ) . "</label>";
+      echo $html;
+   } 
    
    
+   public function todays_hours_hourslink_callback($args) {
+      $html = "<input type='text' name='todayshours_settings[hourslink]' id='hourslink' value='" . $this->settings['hourslink'] . "' >
+      <label for='hourslink'>" . __( 'The URL to your business hours listing', 'todays-hours-plugin' ) . "</label>";
+      echo $html;
+   }
+   
+    
    public function todays_hours_multisched_callback($args) {
       $html = "<input type='checkbox' name='todayshours_settings[multisched]' id='multisched' " . ($this->settings['multisched'] ? 'checked' : '') . " >
       <label for='multisched'>" . __( 'Use multiple schedules (multiple offices/branches)', 'todays-hours-plugin' ) . "</label>";
@@ -404,8 +436,8 @@ class Settings {
 
    public function register_todays_hours_settings_page() {
       add_options_page(
-         _x('Todays Hours', 'Admin Title', 'todays-hours-plugin' ),
-         _x('Todays Hours', 'Admin Title', 'todays-hours-plugin' ),
+         _x('Today&apos;s Hours', 'Admin Title', 'todays-hours-plugin' ),
+         _x('Today&apos;s Hours', 'Admin Title', 'todays-hours-plugin' ),
          'administrator',
          'todays_hours_settings_page',
          array($this, 'todays_hours_settings_page_callback')
@@ -417,8 +449,8 @@ class Settings {
       <div class="wrap">
          <div id="icon-tools" class="icon32">&nbsp;</div>
          <h2>
-            <?php _ex('Todays Hours', 'Admin Title', 'todays-hours-plugin' ); ?>
-            - <small><?php _ex('Todays Hours Plugin', 'Plugin Name', 'todays-hours-plugin' ); ?></small>
+            <?php _ex('Today\'s Hours', 'Admin Title', 'todays-hours-plugin' ); ?>
+            - <small><?php _ex('Today\'s Hours Plugin', 'Plugin Name', 'todays-hours-plugin' ); ?></small>
          </h2>
          
          <form method="post" action="options.php">
