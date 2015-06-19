@@ -205,11 +205,11 @@ class Widget extends \WP_Widget {
 				$the_text .= sprintf( _x('Closed for %s', 'The holiday-name used as \'closed\' reason.', 'todays-hours-plugin' ), $this->current_holiday->name );
 			}
 			else {
-				$the_text .= __('Closed Today', 'todays-hours-plugin' );
+				$the_text .= '<div>' . __('Closed Today', 'todays-hours-plugin' ) . '</div>';
 			}
 		}
 		else {
-			$the_text .= $this->today_open_time . ' - ' . $this->today_close_time;  
+			$the_text .= '<div>' . $this->today_open_time . ' - ' . $this->today_close_time . '</div>';  
 		}
 		
 		if ($this->show_todays_date) {
