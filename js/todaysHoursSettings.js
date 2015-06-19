@@ -33,6 +33,39 @@ jQuery(document).ready(function() {
          showLeadingZero:false,
          amPmText: ['am', 'pm']
       });
+      
+   /* Toggle multiple schedules */
+   jQuery('#multisched').change(function() {
+      if (jQuery('#multisched').prop('checked')) {
+         var schedules = jQuery('#schedules').val().split(",");
+         for (var i = 0; i < schedules.length; i++) {
+            jQuery('.schedules-select').append("<option>" + schedules[i] + "</option>");
+         }
+         jQuery('#schedules-setting').removeClass('hidden');
+      }
+      else {
+         jQuery('.schedules-select').empty();
+         jQuery('#schedules-setting').addClass('hidden');
+      }
+   });
+   if (jQuery('#multisched').prop('checked') == false) {
+      jQuery('#schedules-setting').addClass('hidden');
+   }
+  
+  
+  /* Toggle showing URL input for linking to full hours listing */ 
+   jQuery('#showlink').change(function() {
+      if (jQuery('#showlink').prop('checked')) {
+         jQuery('#hourslink-setting').removeClass('hidden');
+      }
+      else {
+         jQuery('#hourslink-setting').addClass('hidden');
+      }
+   });
+   if (jQuery('#showlink').prop('checked') == false) {
+      jQuery('#hourslink-setting').addClass('hidden');
+   }
+   
 });
 
 
@@ -88,6 +121,7 @@ function handleFormChanges() {
 function createNewSeasonObject(j) {
    newSeasonObject = {
       name       : document.getElementById('seasonName_' + j).value,
+      schedule   : document.getElementById('seasonSchedule_' + j).value,
       begin_date : document.getElementById('seasonBegin_' + j).value,
       end_date   : document.getElementById('seasonEnd_' + j).value,
       su_open    : document.getElementById('seasonSuOpen_' + j).value,
@@ -105,18 +139,17 @@ function createNewSeasonObject(j) {
       sa_open    : document.getElementById('seasonSaOpen_' + j).value,
       sa_close   : document.getElementById('seasonSaClose_' + j).value
    };
-   
    return newSeasonObject;
 }
 
-function createNewHolidayObject(j) {
+function createNewHolidayObject(j) { 
    newHolidayObject = {
       name      : document.getElementById('holidayName_' + j).value,
+      schedule  : document.getElementById('holidaySchedule_' + j).value,
       begin_date: document.getElementById('holidayBegin_' + j).value,
       end_date  : document.getElementById('holidayEnd_' + j).value,
       open_time : document.getElementById('holidayOpen_' + j).value,
       close_time: document.getElementById('holidayClose_' + j).value
    };
-
    return newHolidayObject;
 }

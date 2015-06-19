@@ -34,7 +34,11 @@ class Settings {
             'showdate' => true,
             'showreason' => true,
             'friendly12' => true,
-            'widgettext' => 'Today\'s Hours'
+            'widgettext' => 'Today\'s Hours',
+            'showlink' => true,
+            'hourslink' => 'https://library.milligan.edu/faq#hours',
+            'multisched' => true,
+            'schedules' => 'Welshimer Library, Seminary Library' /* CSV string */
          );
          
          $seasons_array = array();
@@ -42,6 +46,7 @@ class Settings {
          
          /* Sample data */
          $s1 = new \PHWelshimer\TodaysHours\Season;
+         $s1->schedule = "Welshimer Library";
          $s1->name = "Normal Schedule";
          $s1->begin_date = "1/1/2014";
          $s1->end_date = "12/31/2025";
@@ -57,6 +62,7 @@ class Settings {
          $s1->fr_close = "9:00pm";
          
          $h1 = new \PHWelshimer\TodaysHours\Holiday;
+         $h1->schedule = "Welshimer Library";
          $h1->name = "Thanksgiving";
          $h1->begin_date = "11/26/15";
          $h1->end_date = "11/27/15";
@@ -126,6 +132,38 @@ class Settings {
          'widgettext',
          __( 'Widget Title', 'todays-hours-plugin' ),
          array($this, 'todays_hours_widgettext_callback'),
+         $this->option_page,
+         'todays_hours_main_section'
+      );
+      
+      add_settings_field(
+         'showlink',
+         __( 'Show Full Hours Link', 'todays-hours-plugin' ),
+         array($this, 'todays_hours_showlink_callback'),
+         $this->option_page,
+         'todays_hours_main_section'
+      );
+      
+       add_settings_field(
+         'hourslink',
+         '',
+         array($this, 'todays_hours_hourslink_callback'),
+         $this->option_page,
+         'todays_hours_main_section'
+      );
+      
+      add_settings_field(
+         'multisched',
+         __( 'Use Multiple Schedules', 'todays-hours-plugin' ),
+         array($this, 'todays_hours_multisched_callback'),
+         $this->option_page,
+         'todays_hours_main_section'
+      );
+      
+      add_settings_field(
+         'schedules',
+         '',
+         array($this, 'todays_hours_schedules_callback'),
          $this->option_page,
          'todays_hours_main_section'
       );
@@ -206,14 +244,46 @@ class Settings {
       <label for='widgettext'>" . __( 'Heading text for the widget', 'todays-hours-plugin' ) . "</label>";
       echo $html;
    }
+  
+   
+   public function todays_hours_showlink_callback($args) {
+      $html = "<input type='checkbox' name='todayshours_settings[showlink]' id='showlink' " . ($this->settings['showlink'] ? 'checked' : '') . " >
+      <label for='showlink'>" . __( 'Show link to full business hours below today\'s hours', 'todays-hours-plugin' ) . "</label>";
+      echo $html;
+   } 
+   
+   
+   public function todays_hours_hourslink_callback($args) {
+      $html = "<div id='hourslink-setting'><input type='text' name='todayshours_settings[hourslink]' id='hourslink' value='" . $this->settings['hourslink'] . "' >
+      <label for='hourslink'>" . __( 'The URL to your business hours listing', 'todays-hours-plugin' ) . "</label></div>";
+      echo $html;
+   }
+   
+    
+   public function todays_hours_multisched_callback($args) {
+      $html = "<input type='checkbox' name='todayshours_settings[multisched]' id='multisched' " . ($this->settings['multisched'] ? 'checked' : '') . " >
+      <label for='multisched'>" . __( 'Use multiple schedules (multiple offices/branches)', 'todays-hours-plugin' ) . "</label>";
+      echo $html;
+   }
+   
+   
+   public function todays_hours_schedules_callback($args) {
+      $html .= "<div id='schedules-setting'><input type='text' name='todayshours_settings[schedules]' id='schedules' value='" . $this->settings['schedules'] . "' >
+      <label for='schedules' >" .__( 'Enter schedule names separated by comma', 'todays-hours-plugin' ) . "</label></div>";
+      echo $html;
+   }
    
    
    public function todays_hours_seasons_callback($args) {
       $seasons_array = json_decode($this->settings['seasons']);
-      
+
+      if ($this->settings['multisched']) {
+         $schedules = str_getcsv($this->settings['schedules']);
+      }     
+
       $html = "<div><p>" . __( 'A Season is a period of days. They could be used to define a year, a semester, or any block of time.', 'todays-hours-plugin' ) . "</p>";
       $html .= "<p>" . __( 'In order for the widget to display a day\'s hours, the day must fall within the date range of a Season.', 'todays-hours-plugin' ) . "</p>";
-      $html .= "<p>" . __( 'If you schedule does not change from season to season, you should use only one season.', 'todays-hours-plugin' ) . "<p>";
+      $html .= "<p>" . __( 'If your schedule does not change from season to season, you should use only one season.', 'todays-hours-plugin' ) . "<p>";
       $html .= "<p>" . __( 'An institution such as a college or university would probably define a season for each semester that business hours were different. For example, our library is only open on weekdays during the summer.', 'todays-hours-plugin' ) . "<p>";
       $html .= "<p>" . __( 'However, during the Fall and Spring semesters have weekend hours and stay open until midnight on most nights. Therefore, we define a season for the Summer, Fall Semester, and Spring Semester.', 'todays-hours-plugin' ) . "<p>";
 #      $html .= "<p>" . __( '', 'todays-hours-plugin' ) . "<p>";
@@ -227,6 +297,15 @@ class Settings {
          $html .= "<h3>" . _x( 'Season ', 'mention the empty space at the end', 'todays-hours-plugin' ) . ($season_counter + 1) . "</h3>";
          $html .= "<table>";
          $html .= "<tr><td><input type='checkbox' id='seasonDelete_" . $season_counter . "' value=''><label>" . __( 'Delete this Season', 'todays-hours-plugin' ) . "</label></td></tr>";
+         $html .= "<tr><td>" . _x( 'Schedule: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<select id='seasonSchedule_" . $season_counter . "' class='schedules-select'>";
+         foreach ($schedules as $schedule) {
+            $schedule = trim($schedule);
+            $html .= "<option";
+            if ($s->schedule == $schedule)
+               $html .= " selected";
+            $html .= ">" . $schedule . "</option>";
+         }
+         $html .= "</select></td></tr>";
          $html .= "<tr><td>" . _x( 'Name: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<input type='text' id='seasonName_" . $season_counter . "' value='" . $s->name . "' ></td>";
          $html .= "<td>" . _x( 'Begin Date: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<input type='text' onfocus='blur()' class='datepicker' id='seasonBegin_" . $season_counter . "' value='" . $s->begin_date . "' maxlength='10' size='10'></td>";
          $html .= "<td>" . _x( 'End Date: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<input type='text' onfocus='blur()' class='datepicker' id='seasonEnd_" . $season_counter . "' value='" . $s->end_date . "' maxlength='10' size='10'></td></tr></table>";
@@ -256,6 +335,11 @@ class Settings {
       $html .= "<div id='addNewSeason' class='hidden'>";
       $html .= "<h3>" . __( 'Fill out the following fields to add a Season', 'todays-hours-plugin' ) . "</h3>";
       $html .= "<table>";
+      $html .= "<tr><td>" . _x( 'Schedule: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<select id='seasonSchedule_new' class='schedules-select'>";
+      foreach ($schedules as $schedule) {
+         $html .= "<option>" . $schedule . "</option>";
+      }
+      $html .= "</select></td></tr>";     
       $html .= "<tr><td>" . _x( 'Name: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<input type='text' id='seasonName_new' value=''></td>";
       $html .= "<td>" . _x( 'Begin Date: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<input type='text' onfocus='blur()' class='datepicker' id='seasonBegin_new' value='' maxlength='10' size='10'></td>";
       $html .= "<td>" . _x( 'End Date: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<input type='text' onfocus='blur()'  class='datepicker' id='seasonEnd_new' value='' maxlength='10' size='10'></td></tr></table>";
@@ -288,6 +372,10 @@ class Settings {
    public function todays_hours_holidays_callback($args) {
       $holidays_array = json_decode($this->settings['holidays']);
 
+      if ($this->settings['multisched']) {
+         $schedules = str_getcsv($this->settings['schedules']);
+      }
+      
       $html = "<div><p>" . __( 'Holidays are used when there is a deviation or exception to the rules defined in the Seasons. For example, your office is closed on the Thanksgiving holiday. The hours apply to each day within the date range chosen.', 'todays-hours-plugin' ) . "</p>";
       $html .= "<p><strong>" . __( 'Blank open times are regarded as closed for the day.', 'todays-hours-plugin' ) . "</strong></p></div>";
       
@@ -299,7 +387,16 @@ class Settings {
          $html .= "<h3>" . _x( 'Holiday ', 'mention the empty space at the end', 'todays-hours-plugin' ) . ($holiday_counter + 1) . "</h3>";
          $html .= "<table>";
          $html .= "<tr><td><input type='checkbox' id='holidayDelete_" . $holiday_counter . "' value=''><label>" . __( 'Delete this Holiday', 'todays-hours-plugin' ) ."</label></td></tr>";
-         $html .= "<tr><td>" . _x( 'Name: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<input type='text' id='holidayName_' . $holiday_counter . '' value='" . $h->name ."' ></td>";
+         $html .= "<tr><td>" . _x( 'Schedule: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<select id='holidaySchedule_" . $holiday_counter . "' class='schedules-select'>";
+         foreach ($schedules as $schedule) {
+            $schedule = trim($schedule);
+            $html .= "<option";
+            if ($h->schedule == $schedule)
+               $html .= " selected";
+            $html .= ">" . $schedule . "</option>";
+         }
+         $html .= "</select></td></tr>";        
+         $html .= "<tr><td>" . _x( 'Name: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<input type='text' id='holidayName_" . $holiday_counter . "' value='" . $h->name ."' ></td>";
          $html .= "<td>" . _x( 'Begin Date: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<input type='text' onfocus='blur()' class='datepicker' id='holidayBegin_" . $holiday_counter . "' value='" . $h->begin_date . "' maxlength='10' size='10'></td>";
          $html .= "<td>" . _x( 'End Date: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<input type='text' onfocus='blur()' class='datepicker' id='holidayEnd_" . $holiday_counter . "' value='" . $h->end_date . "' maxlength='10' size='10'></td></tr></table>";
          $html .= "<table><tr><td>" . _x( 'Open: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<input type='text' onfocus='blur()' class='timepicker' id='holidayOpen_" . $holiday_counter . "' value='" . $h->open_time . "' maxlength='8' size='8'></td>";
@@ -316,6 +413,11 @@ class Settings {
       $html .= "<div id='addNewHoliday' class='hidden'>";
       $html .= "<h3>" . __( 'Fill out the following fields to add a Holiday', 'todays-hours-plugin' ) . "</h3>";
       $html .= "<table>";
+      $html .= "<tr><td>" . _x( 'Schedule: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<select id='holidaySchedule_new' class='schedules-select'>";
+      foreach ($schedules as $schedule) {
+         $html .= "<option>" . $schedule . "</option>";
+      }
+      $html .= "</select></td></tr>";          
       $html .= "<tr><td>" . _x( 'Name: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<input type='text' id='holidayName_new' value=''></td>";
       $html .= "<td>" . _x( 'Begin Date: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<input type='text' onfocus='blur()' class='datepicker' id='holidayBegin_new' value='' maxlength='10' size='10'></td>";
       $html .= "<td>" . _x( 'End Date: ', 'mention the empty space at the end', 'todays-hours-plugin' ) . "<input type='text' onfocus='blur()' class='datepicker' id='holidayEnd_new' value='' maxlength='10' size='10'></td></tr></table>";
@@ -334,8 +436,8 @@ class Settings {
 
    public function register_todays_hours_settings_page() {
       add_options_page(
-         _x('Todays Hours', 'Admin Title', 'todays-hours-plugin' ),
-         _x('Todays Hours', 'Admin Title', 'todays-hours-plugin' ),
+         _x('Today&apos;s Hours', 'Admin Title', 'todays-hours-plugin' ),
+         _x('Today&apos;s Hours', 'Admin Title', 'todays-hours-plugin' ),
          'administrator',
          'todays_hours_settings_page',
          array($this, 'todays_hours_settings_page_callback')
@@ -347,8 +449,8 @@ class Settings {
       <div class="wrap">
          <div id="icon-tools" class="icon32">&nbsp;</div>
          <h2>
-            <?php _ex('Todays Hours', 'Admin Title', 'todays-hours-plugin' ); ?>
-            - <small><?php _ex('Todays Hours Plugin', 'Plugin Name', 'todays-hours-plugin' ); ?></small>
+            <?php _ex('Today\'s Hours', 'Admin Title', 'todays-hours-plugin' ); ?>
+            - <small><?php _ex('Today\'s Hours Plugin', 'Plugin Name', 'todays-hours-plugin' ); ?></small>
          </h2>
          
          <form method="post" action="options.php">
