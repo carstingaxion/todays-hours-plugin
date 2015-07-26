@@ -100,7 +100,8 @@ class TodaysHoursShortcode {
 		</div>
 	
 		<pre><?php #var_export( $this->current_season ) ?></pre>
-		<pre><?php #var_export( $this->current_holiday ) ?></pre>
+		<pre><?php var_export( $this->current_holiday ) ?></pre>
+		<pre><?php var_export( $this->the_holidays ) ?></pre>
 		<pre><?php #var_export( $this->current_season_hour_list ) ?></pre>
 		<pre><?php var_export( $this->shortcode_args ) ?></pre>
 
@@ -228,6 +229,8 @@ class TodaysHoursShortcode {
 #wp_die( '<pre>' . var_export( $this->shortcode_args ) . '</pre>' );
 
 		/* check if closed */
+		$this->set_closed_and_reason_output();
+
 		if ($this->today_open_time == '') {
 			/* option - show reason closed (holiday name) */
 			if ($this->current_holiday && $this->shortcode_args['show_reason_closed'] ) {
@@ -337,6 +340,8 @@ class TodaysHoursShortcode {
 #		$__output = '';
 
 		/* check if closed */
+		$__output = $this->set_closed_and_reason_output();
+
 /*
 		if ($this->today_open_time == '') {
 			# option - show reason closed (holiday name)
@@ -350,7 +355,7 @@ class TodaysHoursShortcode {
 		}
 		else {
 */
-			$__output = '<ol class="TH-opening-hours-list">';
+			$__output .= '<ol class="TH-opening-hours-list">';
 
 			foreach ($this->current_season_hour_list as $__day => $__data) {
 
@@ -429,6 +434,40 @@ class TodaysHoursShortcode {
 	}
 
 
+
+
+
+	private function set_closed_and_reason_output()
+	{
+		// check if closed
+
+		// Check if we want to show the closed-reason
+		if ( $this->shortcode_args['show_reason_closed'] !== 'true' )
+			return;
+
+		$__reasons = array();
+		foreach ($this->current_holiday as $__holiday) {
+
+			$__validFrom_content = '2014-01-01';
+			$__validFrom_text = '1st January 2014';
+			$__validThrough_content = '2014-01-01';
+			$__validThrough_text = '1st January 2014'; // not used
+			$__opens_content = '12:00';
+			$__opens_text = 'Noon';
+			$__closes_content = '14:00';
+			$__closes_text = '2014-01-01';
+
+			$__reasons[] = '<li itemprop="openingHoursSpecification" itemscope itemtype="http://schema.org/OpeningHoursSpecification">' .
+				'<span itemprop="validFrom" content="' . $__validFrom_content . '">' . $__validThrough_content . '</span>' .
+				'<span itemprop="validThrough" content="' . $__validThrough_content . '"></span>:' .
+				'<span itemprop="opens" content="' . $__opens_content . '">' . $__opens_text . '</span>-<span itemprop="closes" content="' . $__closes_content . '">' . $__closes_text . '</span></li>';
+			}
+/**/
+		// add closed reasons as list elements
+		$__output = '<ol class="TH-closed-reasons">' . join( '', $__reasons ) . '</ol>';
+		return $__output;
+
+	}
 
 
 	/**
