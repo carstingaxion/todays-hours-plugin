@@ -92,7 +92,7 @@ class TodaysHoursShortcode {
 
 		<pre><?php #var_export( $this->shortcode_args ) ?></pre>
 
-		<div class='TodaysHoursShortcode'>
+		<div class='TodaysHoursShortcode' id="schema-org-opening-hours">
 			<?php #echo $this->shortcode_output_show_todays_date ?>
 			<?php echo $this->set_show_todays_date_output(); ?>
 			<?php echo $this->set_todays_hours_output(); ?>
@@ -355,7 +355,7 @@ class TodaysHoursShortcode {
 		}
 		else {
 */
-			$__output .= '<ol class="TH-opening-hours-list">';
+			$__output .= '<ol class="TH-opening-hours-list" id="openinghours-list">';
 
 			foreach ($this->current_season_hour_list as $__day => $__data) {
 
