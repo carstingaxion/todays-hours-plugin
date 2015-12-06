@@ -12,10 +12,10 @@ Author URI: 	https://github.com/dbaker3
 load_plugin_textdomain( 'todays-hours-plugin', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 
 include 'inc/TodaysHoursSettings.php';
-include 'inc/TodaysHoursWidget.php';
+#include 'inc/TodaysHoursWidget.php';
 include 'inc/TodaysHoursShortcode.php';
 
 $settingsObject = new TodaysHoursSettings();
-$widgetObject = new TodaysHoursWidget();
+#$widgetObject = new TodaysHoursWidget();
 $shortcodeObject = new TodaysHoursShortcode();
 

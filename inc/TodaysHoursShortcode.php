@@ -90,21 +90,23 @@ class TodaysHoursShortcode {
 
 		ob_start(); ?>
 
+<!--
 		<pre><?php #var_export( $this->shortcode_args ) ?></pre>
-
+		<pre><?php #var_export( $this->time_format ) ?></pre>
+-->
 		<div class='TodaysHoursShortcode' id="schema-org-opening-hours">
-			<?php #echo $this->shortcode_output_show_todays_date ?>
+			<?php echo $this->shortcode_output_show_todays_date ?>
 			<?php echo $this->set_show_todays_date_output(); ?>
 			<?php echo $this->set_todays_hours_output(); ?>
 			<?php echo $this->set_current_season_hours_list_output(); ?>
 		</div>
-	
+<!--
 		<pre><?php #var_export( $this->current_season ) ?></pre>
-		<pre><?php var_export( $this->current_holiday ) ?></pre>
-		<pre><?php var_export( $this->the_holidays ) ?></pre>
+		<pre><?php #var_export( $this->current_holiday ) ?></pre>
+		<pre><?php #var_export( $this->the_holidays ) ?></pre>
 		<pre><?php #var_export( $this->current_season_hour_list ) ?></pre>
-		<pre><?php var_export( $this->shortcode_args ) ?></pre>
-
+		<pre><?php #var_export( $this->shortcode_args ) ?></pre>
+-->
 		<?php
 		return ob_get_clean();
 
@@ -113,6 +115,7 @@ class TodaysHoursShortcode {
 
 	private function load_and_set_settings()
 	{
+
 		// Get Time format per language
 		if ( function_exists( 'pll__' ) ) {
 			$this->time_format = pll__('g:i a');
@@ -269,6 +272,9 @@ class TodaysHoursShortcode {
 	private function set_current_season_hours_list()
 	{
 
+//			date_default_timezone_set( $this->timezone_string );
+
+
 			$__days = array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun');
 			$this->current_season_hour_list = array();
 
@@ -291,26 +297,33 @@ class TodaysHoursShortcode {
 				$this->current_season_hour_list[$__day][] = date_i18n( 'l', strtotime( $__day ) );
 
 				/* option - use 'noon' and 'midnight' */
+/*
 				if ( $this->shortcode_args['friendly12'] === 'true' ) {
 					$__today_open = $this->friendly_twelves( $__day_open );
 					$__today_close = $this->friendly_twelves( $__day_close );
+#echo '<br><br><br><br>##################   '.$__today_open . '   #######<br><br>';
+
 				} else {
+*/					
 					// i18n output
+
 #					$__today_open = date_create_from_format( 'g:i a', $__day_open )->format( $this->time_format );
-					$__today_open = date_i18n( $this->time_format, strtotime( $__day_open ) );
+
+#					$__today_open = date_i18n( $this->time_format, strtotime( $__day_open ) );
+					$__today_open = date_i18n( _x('g:i a','First time-value in a from-to-pair', 'todays-hours-plugin'), strtotime( $__day_open ) );
+
+#echo '<br><br><br><br>##################   '.$__today_open . '   #######<br><br>';
 #					$__today_close = date_create_from_format( 'g:i a', $__day_close )->format( $this->time_format );
 					$__today_close = date_i18n( $this->time_format, strtotime( $__day_close ) );
-				}
+//				}
 
 				// check for the existence of a time value
 				if ( $__day_open != '' ) 
 				{
 					// date object of opening
-					$this->current_season_hour_list[$__day][] = 
-						$__today_open;
+					$this->current_season_hour_list[$__day][] = $__today_open;
 					// date object of closing
-					$this->current_season_hour_list[$__day][] = 
-						$__today_close;
+					$this->current_season_hour_list[$__day][] = $__today_close;
 
 					// schema.org content-string
 					$this->current_season_hour_list[$__day][] = 
@@ -446,7 +459,7 @@ class TodaysHoursShortcode {
 			return;
 
 		$__reasons = array();
-		foreach ($this->current_holiday as $__holiday) {
+/*		foreach ($this->current_holiday as $__holiday) {
 
 			$__validFrom_content = '2014-01-01';
 			$__validFrom_text = '1st January 2014';
@@ -461,8 +474,8 @@ class TodaysHoursShortcode {
 				'<span itemprop="validFrom" content="' . $__validFrom_content . '">' . $__validThrough_content . '</span>' .
 				'<span itemprop="validThrough" content="' . $__validThrough_content . '"></span>:' .
 				'<span itemprop="opens" content="' . $__opens_content . '">' . $__opens_text . '</span>-<span itemprop="closes" content="' . $__closes_content . '">' . $__closes_text . '</span></li>';
-			}
-/**/
+		}
+*/
 		// add closed reasons as list elements
 		$__output = '<ol class="TH-closed-reasons">' . join( '', $__reasons ) . '</ol>';
 		return $__output;
