@@ -34,7 +34,7 @@ class Settings {
             'showdate' => true,
             'showreason' => true,
             'friendly12' => true,
-            'widgettext' => 'Today\'s Hours',
+            'widgettext' => 'Today&#39;s Hours',
             'showlink' => true,
             'hourslink' => 'https://library.milligan.edu/faq#hours',
             'multisched' => true,
