@@ -25,7 +25,7 @@
 	 *
 	 * Finds each block wrapper, determines today's day of the week,
 	 * and applies the '--today' modifier class to the corresponding
-	 * list item for visual highlighting.
+	 * dt and dd elements for visual highlighting.
 	 *
 	 * @return {void}
 	 */
@@ -35,12 +35,18 @@
 		var todayKey = dayKeys[ todayIndex ];
 
 		blocks.forEach( function ( block ) {
-			var items = block.querySelectorAll( '.telex-hours-block__list-item' );
+			var dts = block.querySelectorAll( 'dt.telex-hours-block__day' );
+			var dds = block.querySelectorAll( 'dd.telex-hours-block__hours' );
 
-			items.forEach( function ( item ) {
-				var dayAttr = item.getAttribute( 'data-day' );
-				if ( dayAttr === todayKey ) {
-					item.classList.add( 'telex-hours-block__list-item--today' );
+			dts.forEach( function ( dt ) {
+				if ( dt.getAttribute( 'data-day' ) === todayKey ) {
+					dt.classList.add( 'telex-hours-block__day--today' );
+				}
+			} );
+
+			dds.forEach( function ( dd ) {
+				if ( dd.getAttribute( 'data-day' ) === todayKey ) {
+					dd.classList.add( 'telex-hours-block__hours--today' );
 				}
 			} );
 		} );

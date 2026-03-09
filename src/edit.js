@@ -213,7 +213,26 @@ export default function Edit( { attributes, setAttributes } ) {
 	);
 
 	/**
-	 * Renders an array of time slots as JSX spans.
+	 * Converts a time string to 24-hour HH:MM format for datetime attributes.
+	 *
+	 * @param {string} timeStr The input time string.
+	 * @return {string} Time in HH:MM format, or empty string.
+	 */
+	const to24h = useCallback( ( timeStr ) => {
+		if ( ! timeStr ) {
+			return '';
+		}
+		const parsed = new Date( '2000-01-01 ' + timeStr );
+		if ( isNaN( parsed.getTime() ) ) {
+			return '';
+		}
+		const hh = String( parsed.getHours() ).padStart( 2, '0' );
+		const mm = String( parsed.getMinutes() ).padStart( 2, '0' );
+		return hh + ':' + mm;
+	}, [] );
+
+	/**
+	 * Renders an array of time slots as JSX with <time> elements.
 	 *
 	 * @param {Array} slotsArr Array of slot objects.
 	 * @return {Array|null} JSX elements or null if no open slots.
@@ -226,20 +245,20 @@ export default function Edit( { attributes, setAttributes } ) {
 			}
 			return openSlots.map( ( slot, si ) => (
 				<span key={ si }>
-					{ si > 0 && <span className="telex-hours-block__slot-separator">, </span> }
+					{ si > 0 && <br /> }
 					<span className="telex-hours-block__slot">
-						<span className="telex-hours-block__time telex-hours-block__time--open">
+						<time dateTime={ to24h( slot.open ) }>
 							{ formatDisplayTime( slot.open ) }
-						</span>
-						<span className="telex-hours-block__separator">{ ' \u2013 ' }</span>
-						<span className="telex-hours-block__time telex-hours-block__time--close">
+						</time>
+						<span className="telex-hours-block__separator">{ '\u2013' }</span>
+						<time dateTime={ to24h( slot.close ) }>
 							{ formatDisplayTime( slot.close ) }
-						</span>
+						</time>
 					</span>
 				</span>
 			) );
 		},
-		[ formatDisplayTime ]
+		[ formatDisplayTime, to24h ]
 	);
 
 	const formatDate = ( date ) => {

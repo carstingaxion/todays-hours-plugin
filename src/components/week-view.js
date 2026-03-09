@@ -42,8 +42,6 @@ export default function WeekView( {
 		);
 	}
 
-	// Build a map of Date objects for each day of the current week,
-	// so we can check holidays per-day.
 	const todayDate = preview.today;
 	const todayDayIndex = ALL_DAY_KEYS.indexOf( preview.dayKey );
 	const holidays = preview.holidays || [];
@@ -63,7 +61,7 @@ export default function WeekView( {
 	}
 
 	return (
-		<ol className="telex-hours-block__list">
+		<dl className="telex-hours-block__list">
 			{ orderedDays
 				.filter( ( { key: dk } ) => ! hideWeekends || ! WEEKEND_KEYS.includes( dk ) )
 				.map( ( { key: dk, label: dayLabel } ) => {
@@ -81,12 +79,17 @@ export default function WeekView( {
 					const hasOpen = slotsHaveOpen( daySlots );
 					const isClosed = ! hasOpen;
 
-					const itemClasses = [
-						'telex-hours-block__list-item',
-						isToday ? 'telex-hours-block__list-item--today' : '',
-						isClosed
-							? 'telex-hours-block__list-item--closed'
-							: 'telex-hours-block__list-item--open',
+					const dtClasses = [
+						'telex-hours-block__day',
+						isToday ? 'telex-hours-block__day--today' : '',
+					]
+						.filter( Boolean )
+						.join( ' ' );
+
+					const ddClasses = [
+						'telex-hours-block__hours',
+						isToday ? 'telex-hours-block__hours--today' : '',
+						isClosed ? 'telex-hours-block__hours--closed' : '',
 					]
 						.filter( Boolean )
 						.join( ' ' );
@@ -104,16 +107,16 @@ export default function WeekView( {
 					}
 
 					return (
-						<li key={ dk } className={ itemClasses }>
-							<span className="telex-hours-block__day">
+						<div key={ dk } className="telex-hours-block__list-row">
+							<dt className={ dtClasses } data-day={ dk }>
 								{ dayLabel }
-							</span>
-							<span className="telex-hours-block__hours">
+							</dt>
+							<dd className={ ddClasses } data-day={ dk }>
 								{ isClosed ? closedLabel : renderSlots( daySlots ) }
-							</span>
-						</li>
+							</dd>
+						</div>
 					);
 				} ) }
-		</ol>
+		</dl>
 	);
 }

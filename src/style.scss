@@ -29,69 +29,75 @@
 	}
 
 	/**
-	 * Week schedule ordered list.
+	 * Week schedule definition list.
 	 */
 	&__list {
-		list-style: none;
 		margin: 0;
 		padding: 0;
+		display: grid;
+		grid-template-columns: auto 1fr;
+		gap: 0;
 	}
 
 	/**
-	 * Individual list item for each day.
+	 * Wrapper div for each dt/dd pair in the editor preview.
+	 * (Only used in the editor where React requires a wrapper.)
 	 */
-	&__list-item {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		padding: 0.5em 0.75em;
-		border-bottom: 1px solid color(from currentcolor display-p3 r g b / .1);
-		transition: background-color 0.15s ease;
-
-		&:last-child {
-			border-bottom: none;
-		}
-
-		/**
-		 * Modifier: today's row highlighted.
-		 */
-		&--today {
-			background-color: color(from currentcolor display-p3 r g b / .05);
-			font-weight: 600;
-			border-radius: 4px;
-		}
-
-		/**
-		 * Modifier: closed day styling.
-		 */
-		&--closed {
-			.telex-hours-block__hours {
-				opacity: 0.5;
-				font-style: italic;
-			}
-		}
+	&__list-row {
+		display: contents;
 	}
 
 	/**
-	 * Day name within the list.
+	 * Day name term.
 	 */
 	&__day {
-		flex: 0 0 auto;
-		min-width: 6em;
+		padding: 0.5em 0.75em;
+		border-bottom: 1px solid color(from currentcolor display-p3 r g b / .1);
+		font-weight: 400;
+		white-space: nowrap;
+
+		&--today {
+			font-weight: 600;
+			background-color: color(from currentcolor display-p3 r g b / .05);
+			border-radius: 4px 0 0 4px;
+		}
 	}
 
 	/**
-	 * Hours container within the list.
+	 * Hours definition.
 	 */
 	&__hours {
-		flex: 1 1 auto;
+		padding: 0.5em 0.75em;
+		border-bottom: 1px solid color(from currentcolor display-p3 r g b / .1);
 		text-align: right;
+		margin: 0;
+
+		&--today {
+			font-weight: 600;
+			background-color: color(from currentcolor display-p3 r g b / .05);
+			border-radius: 0 4px 4px 0;
+		}
+
+		&--closed {
+			color: color(from currentcolor display-p3 r g b / .5);
+			font-style: italic;
+		}
 	}
 
 	/**
-	 * Individual time display.
+	 * Remove bottom border from last row.
 	 */
-	&__time {
+	&__list > &__day:last-of-type,
+	&__list > &__hours:last-of-type,
+	&__list > &__list-row:last-child > &__day,
+	&__list > &__list-row:last-child > &__hours {
+		border-bottom: none;
+	}
+
+	/**
+	 * Individual time display (<time> elements).
+	 */
+	&__slot time {
 		white-space: nowrap;
 	}
 
@@ -100,13 +106,6 @@
 	 */
 	&__separator {
 		margin: 0 0.15em;
-	}
-
-	/**
-	 * Separator between multiple time slots.
-	 */
-	&__slot-separator {
-		margin: 0 0.1em;
 	}
 
 	/**
@@ -140,29 +139,24 @@
 			font-size: 0.8125em;
 		}
 
-		&__list-item {
-			flex-direction: column;
-			align-items: flex-start;
-			gap: 0.125em;
-			padding: 0.375em 0.5em;
+		&__list {
+			grid-template-columns: 1fr;
 		}
 
 		&__day {
-			min-width: 0;
+			padding: 0.375em 0.5em 0;
+			border-bottom: none;
 			font-size: 0.875em;
 		}
 
 		&__hours {
+			padding: 0 0.5em 0.375em;
 			text-align: left;
 			font-size: 0.875em;
 		}
 
 		&__today-hours {
 			font-size: 1em;
-		}
-
-		&__slot-separator {
-			margin: 0;
 		}
 	}
 }
