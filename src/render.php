@@ -4,7 +4,7 @@
  *
  * Dynamically computes the current day's hours based on seasons and holidays
  * stored as site-wide options, then outputs semantic HTML with schema.org
- * openingHours microdata.
+ * JSON-LD structured data.
  *
  * @package TelexHoursBlock
  *
@@ -45,12 +45,12 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 		private array $all_day_keys = array( 'sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat' );
 
 		/**
-		 * Schema.org short day keys.
+		 * Schema.org two-letter day abbreviations.
 		 *
 		 * @since 0.1.0
 		 * @var array
 		 */
-		private array $day_short = array(
+		private array $schema_day_map = array(
 			'sun' => 'Su',
 			'mon' => 'Mo',
 			'tue' => 'Tu',
@@ -58,6 +58,22 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 			'thu' => 'Th',
 			'fri' => 'Fr',
 			'sat' => 'Sa',
+		);
+
+		/**
+		 * Schema.org full DayOfWeek IRIs.
+		 *
+		 * @since 0.1.0
+		 * @var array
+		 */
+		private array $schema_day_of_week = array(
+			'sun' => 'https://schema.org/Sunday',
+			'mon' => 'https://schema.org/Monday',
+			'tue' => 'https://schema.org/Tuesday',
+			'wed' => 'https://schema.org/Wednesday',
+			'thu' => 'https://schema.org/Thursday',
+			'fri' => 'https://schema.org/Friday',
+			'sat' => 'https://schema.org/Saturday',
 		);
 
 		/**
@@ -395,12 +411,11 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 		 *
 		 * @since 0.1.0
 		 *
-		 * @param array  $slots             Array of slot arrays.
-		 * @param bool   $friendly_twelves  Whether to apply friendly labels.
-		 * @param string $day_short_key     Short day key for schema (e.g., 'Mo').
+		 * @param array $slots             Array of slot arrays.
+		 * @param bool  $friendly_twelves  Whether to apply friendly labels.
 		 * @return string Rendered HTML for all open slots.
 		 */
-		public function render_slots_html( array $slots, bool $friendly_twelves, string $day_short_key = '' ): string {
+		public function render_slots_html( array $slots, bool $friendly_twelves ): string {
 			$parts = array();
 			foreach ( $slots as $slot ) {
 				$open  = isset( $slot['open'] ) ? $slot['open'] : '';
@@ -423,13 +438,7 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 				$open_24  = $this->to_24h( $open );
 				$close_24 = $this->to_24h( $close );
 
-				$schema_attr = '';
-				if ( ! empty( $day_short_key ) && ! empty( $open_24 ) && ! empty( $close_24 ) ) {
-					$schema_value = $day_short_key . ' ' . $open_24 . '-' . $close_24;
-					$schema_attr  = ' itemprop="openingHours" content="' . esc_attr( $schema_value ) . '"';
-				}
-
-				$html = '<span class="telex-hours-block__slot"' . $schema_attr . '>';
+				$html = '<span class="telex-hours-block__slot">';
 				$html .= '<time datetime="' . esc_attr( $open_24 ) . '">' . esc_html( $display_open ) . '</time>';
 				$html .= '<span class="telex-hours-block__separator">' . "\xE2\x80\x93" . '</span>';
 				$html .= '<time datetime="' . esc_attr( $close_24 ) . '">' . esc_html( $display_close ) . '</time>';
@@ -439,6 +448,168 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 			}
 
 			return implode( '<br>', $parts );
+		}
+
+		/**
+		 * Builds an array of OpeningHoursSpecification objects for JSON-LD.
+		 *
+		 * Produces specs for the active season's regular weekly hours, plus
+		 * separate specs for each holiday. Per schema.org, a specification
+		 * without `opens` indicates the place is closed for that period.
+		 *
+		 * @since 0.1.0
+		 *
+		 * @param array|null $season        Active season data or null.
+		 * @param array      $holidays      All holidays.
+		 * @param DateTime   $today         Today's date object.
+		 * @param bool       $hide_weekends Whether weekend days are hidden.
+		 * @return array Array of OpeningHoursSpecification associative arrays.
+		 */
+		public function build_opening_hours_specs( ?array $season, array $holidays, DateTime $today, bool $hide_weekends ): array {
+			$specs = array();
+
+			// Regular season hours.
+			if ( null !== $season ) {
+				$season_begin = isset( $season['beginDate'] ) ? $season['beginDate'] : '';
+				$season_end   = isset( $season['endDate'] ) ? $season['endDate'] : '';
+
+				foreach ( $this->all_day_keys as $dk ) {
+					if ( $hide_weekends && in_array( $dk, $this->weekend_keys, true ) ) {
+						continue;
+					}
+
+					if ( ! isset( $season['hours'][ $dk ] ) ) {
+						continue;
+					}
+
+					$slots = $this->normalize_slots( $season['hours'][ $dk ] );
+
+					foreach ( $slots as $slot ) {
+						$open  = isset( $slot['open'] ) ? $slot['open'] : '';
+						$close = isset( $slot['close'] ) ? $slot['close'] : '';
+						if ( empty( $open ) ) {
+							continue;
+						}
+
+						$open_24  = $this->to_24h( $open );
+						$close_24 = $this->to_24h( $close );
+						if ( empty( $open_24 ) || empty( $close_24 ) ) {
+							continue;
+						}
+
+						$spec = array(
+							'@type'     => 'OpeningHoursSpecification',
+							'dayOfWeek' => $this->schema_day_of_week[ $dk ],
+							'opens'     => $open_24,
+							'closes'    => $close_24,
+						);
+
+						if ( ! empty( $season_begin ) ) {
+							$spec['validFrom'] = $season_begin;
+						}
+						if ( ! empty( $season_end ) ) {
+							$spec['validThrough'] = $season_end;
+						}
+
+						$specs[] = $spec;
+					}
+				}
+			}
+
+			// Holiday / exception specs.
+			foreach ( $holidays as $holiday ) {
+				$begin = isset( $holiday['beginDate'] ) ? trim( $holiday['beginDate'] ) : '';
+				$end   = isset( $holiday['endDate'] ) ? trim( $holiday['endDate'] ) : '';
+				if ( empty( $begin ) || empty( $end ) ) {
+					continue;
+				}
+
+				// schema.org validFrom/validThrough require full dates.
+				// For recurring (yearless) holidays, expand with the current year.
+				$begin_has_year = ( strlen( $begin ) > 5 );
+				$end_has_year   = ( strlen( $end ) > 5 );
+				$current_year   = $today->format( 'Y' );
+
+				if ( ! $begin_has_year ) {
+					$begin = $current_year . '-' . $begin;
+				}
+				if ( ! $end_has_year ) {
+					$end = $current_year . '-' . $end;
+				}
+
+				$holiday_slots = $this->normalize_holiday_slots( $holiday );
+				$has_open      = $this->slots_have_open( $holiday_slots );
+
+				if ( ! $has_open ) {
+					// Closed holiday: no opens/closes means the place is closed.
+					$specs[] = array(
+						'@type'        => 'OpeningHoursSpecification',
+						'validFrom'    => $begin,
+						'validThrough' => $end,
+					);
+				} else {
+					// Holiday with specific hours.
+					foreach ( $holiday_slots as $slot ) {
+						$open  = isset( $slot['open'] ) ? $slot['open'] : '';
+						$close = isset( $slot['close'] ) ? $slot['close'] : '';
+						if ( empty( $open ) ) {
+							continue;
+						}
+
+						$open_24  = $this->to_24h( $open );
+						$close_24 = $this->to_24h( $close );
+						if ( empty( $open_24 ) || empty( $close_24 ) ) {
+							continue;
+						}
+
+						$specs[] = array(
+							'@type'        => 'OpeningHoursSpecification',
+							'validFrom'    => $begin,
+							'validThrough' => $end,
+							'opens'        => $open_24,
+							'closes'       => $close_24,
+						);
+					}
+				}
+			}
+
+			return $specs;
+		}
+
+		/**
+		 * Builds the complete JSON-LD script tag for schema.org structured data.
+		 *
+		 * Uses a Place type with openingHoursSpecification to describe the
+		 * business hours in a machine-readable format. Includes both regular
+		 * season hours and holiday overrides/closures.
+		 *
+		 * @since 0.1.0
+		 *
+		 * @param array|null $season        Active season data or null.
+		 * @param array      $holidays      All holidays.
+		 * @param DateTime   $today         Today's date object.
+		 * @param bool       $hide_weekends Whether weekend days are hidden.
+		 * @return string JSON-LD script tag HTML, or empty string.
+		 */
+		public function render_json_ld( ?array $season, array $holidays, DateTime $today, bool $hide_weekends ): string {
+			$specs = $this->build_opening_hours_specs( $season, $holidays, $today, $hide_weekends );
+			if ( empty( $specs ) ) {
+				return '';
+			}
+
+			$ld = array(
+				'@context'                   => 'https://schema.org',
+				'@type'                      => 'Place',
+				'name'                       => get_bloginfo( 'name' ),
+				'openingHoursSpecification'  => $specs,
+			);
+
+			$json = wp_json_encode( $ld, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+			if ( false === $json ) {
+				return '';
+			}
+
+			return '<script type="application/ld+json">' . $json . '</script>';
 		}
 
 		/**
@@ -509,7 +680,6 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 			$day_keys   = $this->get_ordered_day_keys();
 			$day_labels = $this->get_day_labels();
 
-			// Build a map of day key => index in the standard week.
 			$today_index = array_search( $today_key, $this->all_day_keys, true );
 
 			$html = '<dl class="telex-hours-block__list">';
@@ -521,13 +691,11 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 
 				$is_today = ( $dk === $today_key );
 
-				// Compute the date for this day of the current week.
 				$dk_index = array_search( $dk, $this->all_day_keys, true );
 				$diff     = $dk_index - $today_index;
 				$day_date = clone $today;
 				$day_date->modify( sprintf( '%+d days', $diff ) );
 
-				// Check if there is a holiday for this specific day.
 				$day_holiday = $this->find_holiday( $holidays, $day_date );
 
 				$slots = array();
@@ -563,7 +731,7 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 					}
 					$html .= $closed_label;
 				} else {
-					$html .= $this->render_slots_html( $slots, $friendly_twelves, $this->day_short[ $dk ] );
+					$html .= $this->render_slots_html( $slots, $friendly_twelves );
 				}
 				$html .= '</dd>';
 			}
@@ -634,6 +802,8 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 					$hide_weekends
 				);
 			}
+
+			$output .= $this->render_json_ld( $current_season, $holidays, $today, $hide_weekends );
 
 			return $output;
 		}

@@ -1,12 +1,5 @@
 # Business Hours Block
 
-**Contributors:**      WordPress Telex  
-**Tags:**              block, business hours, opening hours, schedule, holidays  
-**Tested up to:**      6.8  
-**Stable tag:**        0.1.0  
-**License:**           GPLv2 or later  
-**License URI:**       https://www.gnu.org/licenses/gpl-2.0.html  
-
 Displays the current day's business hours or a full weekly schedule. Supports configurable seasons, holidays, and multiple time slots per day.
 
 ## Description
@@ -67,7 +60,8 @@ A Gutenberg block that shows business hours on the front end of a WordPress site
 ### Front-End Output
 
 - Server-side rendered on each page load.
-- Outputs semantic HTML with schema.org `openingHours` microdata on each time slot.
+- Outputs semantic HTML using `<dl>`/`<dt>`/`<dd>` with `<time>` elements and proper `datetime` attributes.
+- Includes a JSON-LD `<script>` block with schema.org `Place` and `OpeningHoursSpecification` structured data, generated from the active season and holidays. Google recommends JSON-LD over inline microdata.
 - A small front-end script highlights the current day's row in the week view.
 - BEM-structured CSS class names.
 - Responsive styles for small screens (below 480px).
@@ -137,7 +131,7 @@ In the block inspector under "Holidays / Exceptions", click "Import from iCal" a
 - Week and day display modes.
 - Site-wide schedule settings shared across all block instances.
 - Localized day and month names, respects WordPress date/time/week settings.
-- schema.org openingHours microdata output.
+- schema.org JSON-LD structured data with OpeningHoursSpecification.
 - Responsive front-end and editor styles.
 
 ## License
