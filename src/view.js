@@ -1,11 +1,10 @@
-
 /**
  * Business Hours Block — Front-End View Script
  *
  * Ensures the current day is highlighted in the weekly schedule
  * and provides any client-side interactivity.
  *
- * @package TelexHoursBlock
+ * @package
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-metadata/#view-script
  */
@@ -18,7 +17,7 @@
 	 *
 	 * @type {string[]}
 	 */
-	var dayKeys = [ 'sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat' ];
+	const dayKeys = [ 'sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat' ];
 
 	/**
 	 * Initializes all Business Hours Block instances on the page.
@@ -30,13 +29,15 @@
 	 * @return {void}
 	 */
 	function init() {
-		var blocks = document.querySelectorAll( '.wp-block-telex-block-telex-hours-block' );
-		var todayIndex = new Date().getDay();
-		var todayKey = dayKeys[ todayIndex ];
+		const blocks = document.querySelectorAll(
+			'.wp-block-telex-block-telex-hours-block'
+		);
+		const todayIndex = new Date().getDay();
+		const todayKey = dayKeys[ todayIndex ];
 
 		blocks.forEach( function ( block ) {
-			var dts = block.querySelectorAll( 'dt.telex-hours-block__day' );
-			var dds = block.querySelectorAll( 'dd.telex-hours-block__hours' );
+			const dts = block.querySelectorAll( 'dt.telex-hours-block__day' );
+			const dds = block.querySelectorAll( 'dd.telex-hours-block__hours' );
 
 			dts.forEach( function ( dt ) {
 				if ( dt.getAttribute( 'data-day' ) === todayKey ) {

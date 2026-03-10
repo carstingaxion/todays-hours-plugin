@@ -1,7 +1,7 @@
 /**
  * Time slot normalization utilities.
  *
- * @package TelexHoursBlock
+ * @package
  */
 
 /**
@@ -27,7 +27,10 @@ export function normalizeSlots( dayData ) {
 			return dayData;
 		}
 	}
-	if ( typeof dayData === 'object' && ( 'open' in dayData || 'close' in dayData ) ) {
+	if (
+		typeof dayData === 'object' &&
+		( 'open' in dayData || 'close' in dayData )
+	) {
 		return [ { open: dayData.open || '', close: dayData.close || '' } ];
 	}
 	return [ { open: '', close: '' } ];
@@ -45,7 +48,9 @@ export function normalizeHolidaySlots( holiday ) {
 		return holiday.slots.length > 0 ? holiday.slots : [];
 	}
 	if ( holiday.openTime ) {
-		return [ { open: holiday.openTime || '', close: holiday.closeTime || '' } ];
+		return [
+			{ open: holiday.openTime || '', close: holiday.closeTime || '' },
+		];
 	}
 	return [];
 }

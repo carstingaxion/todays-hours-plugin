@@ -1,4 +1,3 @@
-
 /**
  * Registers the Business Hours Block.
  *

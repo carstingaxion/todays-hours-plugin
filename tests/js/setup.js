@@ -1,7 +1,7 @@
 /**
  * Jest setup file for Business Hours Block JavaScript tests.
  *
- * @package TelexHoursBlock
+ * @package
  */
 
 // Global setup — nothing needed beyond mocks for now.

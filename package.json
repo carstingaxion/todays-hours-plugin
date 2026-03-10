@@ -1,6 +1,6 @@
 
   {
-	"name": "telex-hours-block",
+	"name": "@carstingaxion/telex-hours-block",
 	"version": "0.1.0",
 	"description": "Displays the current day's business hours or a full weekly schedule with customizable seasons and holidays.",
 	"author": "Carsten Bach & WordPress Telex",
@@ -20,6 +20,9 @@
 		"url": "https://github.com/carstingaxion/todays-hours-plugin/issues"
 	},
 	"main": "build/index.js",
+    "devDependencies": {
+        "@wordpress/scripts": "^30.15.0"
+	},
 	"scripts": {
 		"build": "wp-scripts build --webpack-copy-php",
 		"check-engines": "wp-scripts check-engines",
@@ -47,8 +50,5 @@
 		"test:php:verbose": "vendor/bin/phpunit --testdox",
 		"test:php:coverage": "vendor/bin/phpunit --coverage-html=coverage",
 		"start": "wp-scripts start --blocks-manifest"
-	},
-    "devDependencies": {
-        "@wordpress/scripts": "^30.15.0"
 	}
 }

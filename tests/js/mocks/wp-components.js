@@ -3,7 +3,7 @@
  *
  * Provides minimal pass-through components for testing.
  *
- * @package TelexHoursBlock
+ * @package
  */
 
 const React = require( 'react' );

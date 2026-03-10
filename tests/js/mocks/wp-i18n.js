@@ -1,7 +1,7 @@
 /**
  * Mock for @wordpress/i18n.
  *
- * @package TelexHoursBlock
+ * @package
  */
 
 function __( text ) {

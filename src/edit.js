@@ -9,7 +9,7 @@ import {
 	ToggleControl,
 	RadioControl,
 	Button,
-    Flex,
+	Flex,
 	Spinner,
 	// eslint-disable-next-line @wordpress/no-unsafe-wp-apis
 	__experimentalText as Text,
@@ -72,14 +72,26 @@ export default function Edit( { attributes, setAttributes } ) {
 	} );
 
 	// Site-wide schedule data.
-	const [ seasons, setSeasons, seasonsLoaded ] = useSiteSetting( 'telex_hours_seasons', [] );
-	const [ holidays, setHolidays, holidaysLoaded ] = useSiteSetting( 'telex_hours_holidays', [] );
+	const [ seasons, setSeasons, seasonsLoaded ] = useSiteSetting(
+		'telex_hours_seasons',
+		[]
+	);
+	const [ holidays, setHolidays, holidaysLoaded ] = useSiteSetting(
+		'telex_hours_holidays',
+		[]
+	);
 	const hasLoaded = seasonsLoaded && holidaysLoaded;
 
 	const { saveEditedEntityRecord } = useDispatch( 'core' );
 
-	const rawSeasons = Array.isArray( seasons ) ? seasons : [];
-	const rawHolidays = Array.isArray( holidays ) ? holidays : [];
+	const rawSeasons = useMemo(
+		() => ( Array.isArray( seasons ) ? seasons : [] ),
+		[ seasons ]
+	);
+	const rawHolidays = useMemo(
+		() => ( Array.isArray( holidays ) ? holidays : [] ),
+		[ holidays ]
+	);
 
 	// Sort seasons and holidays by begin date, preserving original indices.
 	const sortedSeasons = useMemo( () => {
@@ -239,7 +251,9 @@ export default function Edit( { attributes, setAttributes } ) {
 	 */
 	const renderSlots = useCallback(
 		( slotsArr ) => {
-			const openSlots = slotsArr.filter( ( s ) => s.open && s.open.trim() !== '' );
+			const openSlots = slotsArr.filter(
+				( s ) => s.open && s.open.trim() !== ''
+			);
 			if ( openSlots.length === 0 ) {
 				return null;
 			}
@@ -250,7 +264,9 @@ export default function Edit( { attributes, setAttributes } ) {
 						<time dateTime={ to24h( slot.open ) }>
 							{ formatDisplayTime( slot.open ) }
 						</time>
-						<span className="telex-hours-block__separator">{ '\u2013' }</span>
+						<span className="telex-hours-block__separator">
+							{ '\u2013' }
+						</span>
 						<time dateTime={ to24h( slot.close ) }>
 							{ formatDisplayTime( slot.close ) }
 						</time>
@@ -277,40 +293,60 @@ export default function Edit( { attributes, setAttributes } ) {
 						selected={ displayMode }
 						options={ [
 							{
-								label: __( 'Full week schedule', 'telex-hours-block' ),
+								label: __(
+									'Full week schedule',
+									'telex-hours-block'
+								),
 								value: 'week',
 							},
 							{
-								label: __( "Today's hours only", 'telex-hours-block' ),
+								label: __(
+									"Today's hours only",
+									'telex-hours-block'
+								),
 								value: 'day',
 							},
 						] }
-						onChange={ ( val ) => setAttributes( { displayMode: val } ) }
+						onChange={ ( val ) =>
+							setAttributes( { displayMode: val } )
+						}
 					/>
 					<ToggleControl
 						label={ __( "Show today's date", 'telex-hours-block' ) }
 						checked={ showTodaysDate }
-						onChange={ ( val ) => setAttributes( { showTodaysDate: val } ) }
+						onChange={ ( val ) =>
+							setAttributes( { showTodaysDate: val } )
+						}
 						__nextHasNoMarginBottom
 					/>
 					<ToggleControl
-						label={ __( 'Show reason when closed', 'telex-hours-block' ) }
+						label={ __(
+							'Show reason when closed',
+							'telex-hours-block'
+						) }
 						help={ __(
 							'Displays the holiday name when closed due to a holiday.',
 							'telex-hours-block'
 						) }
 						checked={ showReasonClosed }
-						onChange={ ( val ) => setAttributes( { showReasonClosed: val } ) }
+						onChange={ ( val ) =>
+							setAttributes( { showReasonClosed: val } )
+						}
 						__nextHasNoMarginBottom
 					/>
 					<ToggleControl
-						label={ __( 'Use "Noon" and "Midnight"', 'telex-hours-block' ) }
+						label={ __(
+							'Use "Noon" and "Midnight"',
+							'telex-hours-block'
+						) }
 						help={ __(
 							'Replace 12:00 AM with "Midnight" and 12:00 PM with "Noon".',
 							'telex-hours-block'
 						) }
 						checked={ friendlyTwelves }
-						onChange={ ( val ) => setAttributes( { friendlyTwelves: val } ) }
+						onChange={ ( val ) =>
+							setAttributes( { friendlyTwelves: val } )
+						}
 						__nextHasNoMarginBottom
 					/>
 					<ToggleControl
@@ -320,7 +356,9 @@ export default function Edit( { attributes, setAttributes } ) {
 							'telex-hours-block'
 						) }
 						checked={ hideWeekends }
-						onChange={ ( val ) => setAttributes( { hideWeekends: val } ) }
+						onChange={ ( val ) =>
+							setAttributes( { hideWeekends: val } )
+						}
 						__nextHasNoMarginBottom
 					/>
 				</PanelBody>
@@ -339,16 +377,18 @@ export default function Edit( { attributes, setAttributes } ) {
 					</PanelRow>
 					{ ! hasLoaded && <Spinner /> }
 					{ hasLoaded &&
-						sortedSeasons.map( ( { item: season, originalIndex } ) => (
-							<SeasonEditor
-								key={ originalIndex }
-								season={ season }
-								index={ originalIndex }
-								orderedDays={ orderedDays }
-								onChange={ updateSeason }
-								onRemove={ removeSeason }
-							/>
-						) ) }
+						sortedSeasons.map(
+							( { item: season, originalIndex } ) => (
+								<SeasonEditor
+									key={ originalIndex }
+									season={ season }
+									index={ originalIndex }
+									orderedDays={ orderedDays }
+									onChange={ updateSeason }
+									onRemove={ removeSeason }
+								/>
+							)
+						) }
 					<PanelRow>
 						<Button
 							variant="secondary"
@@ -374,15 +414,17 @@ export default function Edit( { attributes, setAttributes } ) {
 					</PanelRow>
 					{ ! hasLoaded && <Spinner /> }
 					{ hasLoaded &&
-						sortedHolidays.map( ( { item: holiday, originalIndex } ) => (
-							<HolidayEditor
-								key={ originalIndex }
-								holiday={ holiday }
-								index={ originalIndex }
-								onChange={ updateHoliday }
-								onRemove={ removeHoliday }
-							/>
-						) ) }
+						sortedHolidays.map(
+							( { item: holiday, originalIndex } ) => (
+								<HolidayEditor
+									key={ originalIndex }
+									holiday={ holiday }
+									index={ originalIndex }
+									onChange={ updateHoliday }
+									onRemove={ removeHoliday }
+								/>
+							)
+						) }
 					<PanelRow>
 						<Flex direction="column" gap={ 2 }>
 							<Button

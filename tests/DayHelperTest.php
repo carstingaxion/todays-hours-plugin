@@ -106,7 +106,10 @@ class DayHelpersTest extends PHPUnit\Framework\TestCase {
 	 */
 	public function test_normalize_slots_array_format(): void {
 		$input = array(
-			array( 'open' => '8:00 AM', 'close' => '5:00 PM' ),
+			array(
+				'open'  => '8:00 AM',
+				'close' => '5:00 PM',
+			),
 		);
 
 		$result = $this->helpers->normalize_slots( $input );
@@ -120,7 +123,10 @@ class DayHelpersTest extends PHPUnit\Framework\TestCase {
 	 * Test normalize_slots with legacy single object format.
 	 */
 	public function test_normalize_slots_legacy_format(): void {
-		$input = array( 'open' => '9:00 AM', 'close' => '5:00 PM' );
+		$input = array(
+			'open'  => '9:00 AM',
+			'close' => '5:00 PM',
+		);
 
 		$result = $this->helpers->normalize_slots( $input );
 
@@ -149,8 +155,14 @@ class DayHelpersTest extends PHPUnit\Framework\TestCase {
 	 */
 	public function test_normalize_slots_multiple(): void {
 		$input = array(
-			array( 'open' => '8:00 AM', 'close' => '11:00 AM' ),
-			array( 'open' => '1:00 PM', 'close' => '5:00 PM' ),
+			array(
+				'open'  => '8:00 AM',
+				'close' => '11:00 AM',
+			),
+			array(
+				'open'  => '1:00 PM',
+				'close' => '5:00 PM',
+			),
 		);
 
 		$result = $this->helpers->normalize_slots( $input );
@@ -166,7 +178,10 @@ class DayHelpersTest extends PHPUnit\Framework\TestCase {
 			'beginDate' => '2025-12-25',
 			'endDate'   => '2025-12-25',
 			'slots'     => array(
-				array( 'open' => '10:00 AM', 'close' => '2:00 PM' ),
+				array(
+					'open'  => '10:00 AM',
+					'close' => '2:00 PM',
+				),
 			),
 		);
 
@@ -214,7 +229,10 @@ class DayHelpersTest extends PHPUnit\Framework\TestCase {
 	 */
 	public function test_slots_have_open_true(): void {
 		$slots = array(
-			array( 'open' => '8:00 AM', 'close' => '5:00 PM' ),
+			array(
+				'open'  => '8:00 AM',
+				'close' => '5:00 PM',
+			),
 		);
 		$this->assertTrue( $this->helpers->slots_have_open( $slots ) );
 	}
@@ -224,7 +242,10 @@ class DayHelpersTest extends PHPUnit\Framework\TestCase {
 	 */
 	public function test_slots_have_open_false(): void {
 		$slots = array(
-			array( 'open' => '', 'close' => '' ),
+			array(
+				'open'  => '',
+				'close' => '',
+			),
 		);
 		$this->assertFalse( $this->helpers->slots_have_open( $slots ) );
 	}
@@ -241,8 +262,14 @@ class DayHelpersTest extends PHPUnit\Framework\TestCase {
 	 */
 	public function test_slots_have_open_mixed(): void {
 		$slots = array(
-			array( 'open' => '', 'close' => '' ),
-			array( 'open' => '1:00 PM', 'close' => '5:00 PM' ),
+			array(
+				'open'  => '',
+				'close' => '',
+			),
+			array(
+				'open'  => '1:00 PM',
+				'close' => '5:00 PM',
+			),
 		);
 		$this->assertTrue( $this->helpers->slots_have_open( $slots ) );
 	}

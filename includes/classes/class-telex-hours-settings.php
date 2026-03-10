@@ -76,13 +76,48 @@ if ( ! class_exists( 'Telex_Hours_Settings' ) ) {
 					'beginDate' => '2024-01-01',
 					'endDate'   => '2026-12-31',
 					'hours'     => array(
-						'sun' => array( array( 'open' => '', 'close' => '' ) ),
-						'mon' => array( array( 'open' => '8:00 AM', 'close' => '11:00 PM' ) ),
-						'tue' => array( array( 'open' => '8:00 AM', 'close' => '11:00 PM' ) ),
-						'wed' => array( array( 'open' => '8:00 AM', 'close' => '11:00 PM' ) ),
-						'thu' => array( array( 'open' => '8:00 AM', 'close' => '11:00 PM' ) ),
-						'fri' => array( array( 'open' => '8:00 AM', 'close' => '9:00 PM' ) ),
-						'sat' => array( array( 'open' => '', 'close' => '' ) ),
+						'sun' => array(
+							array(
+								'open'  => '',
+								'close' => '',
+							),
+						),
+						'mon' => array(
+							array(
+								'open'  => '8:00 AM',
+								'close' => '11:00 PM',
+							),
+						),
+						'tue' => array(
+							array(
+								'open'  => '8:00 AM',
+								'close' => '11:00 PM',
+							),
+						),
+						'wed' => array(
+							array(
+								'open'  => '8:00 AM',
+								'close' => '11:00 PM',
+							),
+						),
+						'thu' => array(
+							array(
+								'open'  => '8:00 AM',
+								'close' => '11:00 PM',
+							),
+						),
+						'fri' => array(
+							array(
+								'open'  => '8:00 AM',
+								'close' => '9:00 PM',
+							),
+						),
+						'sat' => array(
+							array(
+								'open'  => '',
+								'close' => '',
+							),
+						),
 					),
 				),
 			);
@@ -108,8 +143,8 @@ if ( ! class_exists( 'Telex_Hours_Settings' ) ) {
 		 */
 		public function register(): void {
 			$slot_schema = array(
-				'type'       => 'object',
-				'properties' => array(
+				'type'                 => 'object',
+				'properties'           => array(
 					'open'  => array( 'type' => 'string' ),
 					'close' => array( 'type' => 'string' ),
 				),
@@ -132,8 +167,8 @@ if ( ! class_exists( 'Telex_Hours_Settings' ) ) {
 						'schema' => array(
 							'type'  => 'array',
 							'items' => array(
-								'type'       => 'object',
-								'properties' => array(
+								'type'                 => 'object',
+								'properties'           => array(
 									'name'      => array( 'type' => 'string' ),
 									'beginDate' => array( 'type' => 'string' ),
 									'endDate'   => array( 'type' => 'string' ),
@@ -170,8 +205,8 @@ if ( ! class_exists( 'Telex_Hours_Settings' ) ) {
 						'schema' => array(
 							'type'  => 'array',
 							'items' => array(
-								'type'       => 'object',
-								'properties' => array(
+								'type'                 => 'object',
+								'properties'           => array(
 									'name'      => array( 'type' => 'string' ),
 									'beginDate' => array( 'type' => 'string' ),
 									'endDate'   => array( 'type' => 'string' ),

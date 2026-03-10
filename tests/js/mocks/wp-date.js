@@ -3,12 +3,17 @@
  *
  * Returns localized-style day names from dateI18n when format is 'l'.
  *
- * @package TelexHoursBlock
+ * @package
  */
 
 const DAY_NAMES = [
-	'Sunday', 'Monday', 'Tuesday', 'Wednesday',
-	'Thursday', 'Friday', 'Saturday',
+	'Sunday',
+	'Monday',
+	'Tuesday',
+	'Wednesday',
+	'Thursday',
+	'Friday',
+	'Saturday',
 ];
 
 function dateI18n( format, dateValue ) {

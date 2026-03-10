@@ -1,7 +1,7 @@
 /**
  * Tests for src/utils/ical-import.js
  *
- * @package TelexHoursBlock
+ * @package
  */
 
 import apiFetch from '@wordpress/api-fetch';
@@ -46,9 +46,13 @@ describe( 'importIcalFile', () => {
 	it( 'returns empty array when response has no holidays', async () => {
 		apiFetch.mockResolvedValueOnce( { holidays: [] } );
 
-		const file = new File( [ 'BEGIN:VCALENDAR\nEND:VCALENDAR' ], 'empty.ics', {
-			type: 'text/calendar',
-		} );
+		const file = new File(
+			[ 'BEGIN:VCALENDAR\nEND:VCALENDAR' ],
+			'empty.ics',
+			{
+				type: 'text/calendar',
+			}
+		);
 
 		const result = await importIcalFile( file );
 		expect( result ).toEqual( [] );

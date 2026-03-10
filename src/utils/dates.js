@@ -1,7 +1,7 @@
 /**
  * Date parsing and comparison utilities.
  *
- * @package TelexHoursBlock
+ * @package
  */
 
 import { __ } from '@wordpress/i18n';
@@ -36,9 +36,18 @@ export function parseDate( dateStr ) {
  * @return {boolean} True if testDate is within the range.
  */
 export function isDateInRange( testDate, beginDate, endDate ) {
-	const t = testDate.getFullYear() * 10000 + ( testDate.getMonth() + 1 ) * 100 + testDate.getDate();
-	const b = beginDate.getFullYear() * 10000 + ( beginDate.getMonth() + 1 ) * 100 + beginDate.getDate();
-	const e = endDate.getFullYear() * 10000 + ( endDate.getMonth() + 1 ) * 100 + endDate.getDate();
+	const t =
+		testDate.getFullYear() * 10000 +
+		( testDate.getMonth() + 1 ) * 100 +
+		testDate.getDate();
+	const b =
+		beginDate.getFullYear() * 10000 +
+		( beginDate.getMonth() + 1 ) * 100 +
+		beginDate.getDate();
+	const e =
+		endDate.getFullYear() * 10000 +
+		( endDate.getMonth() + 1 ) * 100 +
+		endDate.getDate();
 	return t >= b && t <= e;
 }
 
@@ -105,9 +114,18 @@ export function getMonthOptions() {
  */
 export function getDayOptions( month ) {
 	const daysInMonth = {
-		'01': 31, '02': 29, '03': 31, '04': 30,
-		'05': 31, '06': 30, '07': 31, '08': 31,
-		'09': 30, '10': 31, '11': 30, '12': 31,
+		'01': 31,
+		'02': 29,
+		'03': 31,
+		'04': 30,
+		'05': 31,
+		'06': 30,
+		'07': 31,
+		'08': 31,
+		'09': 30,
+		10: 31,
+		11: 30,
+		12: 31,
 	};
 	const count = daysInMonth[ month ] || 31;
 	const options = [];

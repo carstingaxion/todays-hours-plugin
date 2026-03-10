@@ -9,6 +9,7 @@
  */
 
 .telex-hours-block {
+
 	/**
 	 * Date display paragraph.
 	 */
@@ -52,13 +53,13 @@
 	 */
 	&__day {
 		padding: 0.5em 0.75em;
-		border-bottom: 1px solid color(from currentcolor display-p3 r g b / .1);
+		border-bottom: 1px solid color(from currentcolor display-p3 r g b / 0.1);
 		font-weight: 400;
 		white-space: nowrap;
 
 		&--today {
 			font-weight: 600;
-			background-color: color(from currentcolor display-p3 r g b / .05);
+			background-color: color(from currentcolor display-p3 r g b / 0.05);
 			border-radius: 4px 0 0 4px;
 		}
 	}
@@ -68,18 +69,18 @@
 	 */
 	&__hours {
 		padding: 0.5em 0.75em;
-		border-bottom: 1px solid color(from currentcolor display-p3 r g b / .1);
+		border-bottom: 1px solid color(from currentcolor display-p3 r g b / 0.1);
 		text-align: right;
 		margin: 0;
 
 		&--today {
 			font-weight: 600;
-			background-color: color(from currentcolor display-p3 r g b / .05);
+			background-color: color(from currentcolor display-p3 r g b / 0.05);
 			border-radius: 0 4px 4px 0;
 		}
 
 		&--closed {
-			color: color(from currentcolor display-p3 r g b / .5);
+			color: color(from currentcolor display-p3 r g b / 0.5);
 			font-style: italic;
 		}
 	}
@@ -135,6 +136,7 @@
 	 * Responsive: small screens (< 480px).
 	 */
 	@media (max-width: 479px) {
+
 		&__date {
 			font-size: 0.8125em;
 		}

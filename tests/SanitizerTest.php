@@ -32,7 +32,10 @@ class SanitizerTest extends PHPUnit\Framework\TestCase {
 				'endDate'   => '2025-12-31',
 				'hours'     => array(
 					'mon' => array(
-						array( 'open' => '8:00 AM', 'close' => '5:00 PM' ),
+						array(
+							'open'  => '8:00 AM',
+							'close' => '5:00 PM',
+						),
 					),
 				),
 			),
@@ -82,7 +85,10 @@ class SanitizerTest extends PHPUnit\Framework\TestCase {
 	 * Test sanitize_slots with legacy single-object format.
 	 */
 	public function test_sanitize_slots_legacy_format(): void {
-		$input = array( 'open' => '9:00 AM', 'close' => '5:00 PM' );
+		$input = array(
+			'open'  => '9:00 AM',
+			'close' => '5:00 PM',
+		);
 
 		$result = $this->sanitizer->sanitize_slots( $input );
 
@@ -96,8 +102,14 @@ class SanitizerTest extends PHPUnit\Framework\TestCase {
 	 */
 	public function test_sanitize_slots_array_format(): void {
 		$input = array(
-			array( 'open' => '8:00 AM', 'close' => '11:00 AM' ),
-			array( 'open' => '1:00 PM', 'close' => '5:00 PM' ),
+			array(
+				'open'  => '8:00 AM',
+				'close' => '11:00 AM',
+			),
+			array(
+				'open'  => '1:00 PM',
+				'close' => '5:00 PM',
+			),
 		);
 
 		$result = $this->sanitizer->sanitize_slots( $input );
@@ -137,7 +149,10 @@ class SanitizerTest extends PHPUnit\Framework\TestCase {
 				'beginDate' => '2025-12-25',
 				'endDate'   => '2025-12-25',
 				'slots'     => array(
-					array( 'open' => '10:00 AM', 'close' => '2:00 PM' ),
+					array(
+						'open'  => '10:00 AM',
+						'close' => '2:00 PM',
+					),
 				),
 			),
 		);

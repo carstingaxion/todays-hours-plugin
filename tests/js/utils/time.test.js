@@ -1,10 +1,13 @@
 /**
  * Tests for src/utils/time.js
  *
- * @package TelexHoursBlock
+ * @package
  */
 
-import { applyFriendlyTwelves, formatTimeWithSiteFormat } from '../../../src/utils/time';
+import {
+	applyFriendlyTwelves,
+	formatTimeWithSiteFormat,
+} from '../../../src/utils/time';
 
 describe( 'applyFriendlyTwelves', () => {
 	it( 'replaces 12:00 AM with Midnight', () => {
@@ -65,12 +68,8 @@ describe( 'formatTimeWithSiteFormat', () => {
 	it( 'formats with H:i (24-hour)', () => {
 		expect( formatTimeWithSiteFormat( '8:00 AM', 'H:i' ) ).toBe( '08:00' );
 		expect( formatTimeWithSiteFormat( '5:00 PM', 'H:i' ) ).toBe( '17:00' );
-		expect( formatTimeWithSiteFormat( '12:00 PM', 'H:i' ) ).toBe(
-			'12:00'
-		);
-		expect( formatTimeWithSiteFormat( '12:00 AM', 'H:i' ) ).toBe(
-			'00:00'
-		);
+		expect( formatTimeWithSiteFormat( '12:00 PM', 'H:i' ) ).toBe( '12:00' );
+		expect( formatTimeWithSiteFormat( '12:00 AM', 'H:i' ) ).toBe( '00:00' );
 	} );
 
 	it( 'formats with G:i (24-hour no leading zero)', () => {

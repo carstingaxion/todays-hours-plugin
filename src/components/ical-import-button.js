@@ -1,7 +1,7 @@
 /**
  * IcalImportButton component — File picker that imports holidays from .ics files.
  *
- * @package TelexHoursBlock
+ * @package
  */
 
 import { __ } from '@wordpress/i18n';
@@ -45,7 +45,10 @@ export default function IcalImportButton( { onImport, disabled } ) {
 				const holidays = await importIcalFile( file );
 				if ( holidays.length === 0 ) {
 					setError(
-						__( 'No events found in the file.', 'telex-hours-block' )
+						__(
+							'No events found in the file.',
+							'telex-hours-block'
+						)
 					);
 				} else {
 					onImport( holidays );
@@ -82,7 +85,13 @@ export default function IcalImportButton( { onImport, disabled } ) {
 					: __( 'Import from iCal', 'telex-hours-block' ) }
 			</Button>
 			{ error && (
-				<p style={ { color: '#cc1818', fontSize: '12px', marginTop: '4px' } }>
+				<p
+					style={ {
+						color: '#cc1818',
+						fontSize: '12px',
+						marginTop: '4px',
+					} }
+				>
 					{ error }
 				</p>
 			) }

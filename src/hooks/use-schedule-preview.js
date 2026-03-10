@@ -1,7 +1,7 @@
 /**
  * Custom hook that computes the schedule preview for the editor.
  *
- * @package TelexHoursBlock
+ * @package
  */
 
 import { useMemo } from '@wordpress/element';
@@ -61,7 +61,11 @@ export function findHolidayForDate( holidays, dateObj ) {
 export function useSchedulePreview( seasons, holidays ) {
 	return useMemo( () => {
 		const now = new Date();
-		const today = new Date( now.getFullYear(), now.getMonth(), now.getDate() );
+		const today = new Date(
+			now.getFullYear(),
+			now.getMonth(),
+			now.getDate()
+		);
 		const dayKey = ALL_DAY_KEYS[ today.getDay() ];
 
 		const currentHoliday = findHolidayForDate( holidays, today );

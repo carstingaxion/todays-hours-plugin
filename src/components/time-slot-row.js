@@ -1,7 +1,7 @@
 /**
  * TimeSlotRow component — Editable row for a single time slot.
  *
- * @package TelexHoursBlock
+ * @package
  */
 
 import { __ } from '@wordpress/i18n';
@@ -24,12 +24,20 @@ import {
  * @param {boolean}  props.canRemove Whether the remove button should be shown.
  * @return {import('@wordpress/element').WPElement} Rendered component.
  */
-export default function TimeSlotRow( { slot, slotIndex, onUpdate, onRemove, canRemove } ) {
+export default function TimeSlotRow( {
+	slot,
+	slotIndex,
+	onUpdate,
+	onRemove,
+	canRemove,
+} ) {
 	return (
 		<Flex align="flex-end" gap={ 2 }>
 			<FlexBlock>
 				<TextControl
-					label={ slotIndex === 0 ? __( 'Open', 'telex-hours-block' ) : '' }
+					label={
+						slotIndex === 0 ? __( 'Open', 'telex-hours-block' ) : ''
+					}
 					placeholder="8:00 AM"
 					value={ slot.open || '' }
 					onChange={ ( val ) => onUpdate( slotIndex, 'open', val ) }
@@ -38,7 +46,11 @@ export default function TimeSlotRow( { slot, slotIndex, onUpdate, onRemove, canR
 			</FlexBlock>
 			<FlexBlock>
 				<TextControl
-					label={ slotIndex === 0 ? __( 'Close', 'telex-hours-block' ) : '' }
+					label={
+						slotIndex === 0
+							? __( 'Close', 'telex-hours-block' )
+							: ''
+					}
 					placeholder="5:00 PM"
 					value={ slot.close || '' }
 					onChange={ ( val ) => onUpdate( slotIndex, 'close', val ) }

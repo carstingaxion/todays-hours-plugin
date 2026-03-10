@@ -111,13 +111,48 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 					'beginDate' => '2024-01-01',
 					'endDate'   => '2026-12-31',
 					'hours'     => array(
-						'sun' => array( array( 'open' => '', 'close' => '' ) ),
-						'mon' => array( array( 'open' => '8:00 AM', 'close' => '11:00 PM' ) ),
-						'tue' => array( array( 'open' => '8:00 AM', 'close' => '11:00 PM' ) ),
-						'wed' => array( array( 'open' => '8:00 AM', 'close' => '11:00 PM' ) ),
-						'thu' => array( array( 'open' => '8:00 AM', 'close' => '11:00 PM' ) ),
-						'fri' => array( array( 'open' => '8:00 AM', 'close' => '9:00 PM' ) ),
-						'sat' => array( array( 'open' => '', 'close' => '' ) ),
+						'sun' => array(
+							array(
+								'open'  => '',
+								'close' => '',
+							),
+						),
+						'mon' => array(
+							array(
+								'open'  => '8:00 AM',
+								'close' => '11:00 PM',
+							),
+						),
+						'tue' => array(
+							array(
+								'open'  => '8:00 AM',
+								'close' => '11:00 PM',
+							),
+						),
+						'wed' => array(
+							array(
+								'open'  => '8:00 AM',
+								'close' => '11:00 PM',
+							),
+						),
+						'thu' => array(
+							array(
+								'open'  => '8:00 AM',
+								'close' => '11:00 PM',
+							),
+						),
+						'fri' => array(
+							array(
+								'open'  => '8:00 AM',
+								'close' => '9:00 PM',
+							),
+						),
+						'sat' => array(
+							array(
+								'open'  => '',
+								'close' => '',
+							),
+						),
 					),
 				),
 			);
@@ -282,11 +317,11 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 		 * @return string The rendered HTML output.
 		 */
 		public function render( array $attributes ): string {
-			$display_mode      = isset( $attributes['displayMode'] ) ? $attributes['displayMode'] : 'week';
-			$show_todays_date  = ! empty( $attributes['showTodaysDate'] );
-			$show_reason       = ! empty( $attributes['showReasonClosed'] );
-			$friendly_twelves  = ! empty( $attributes['friendlyTwelves'] );
-			$hide_weekends     = ! empty( $attributes['hideWeekends'] );
+			$display_mode     = isset( $attributes['displayMode'] ) ? $attributes['displayMode'] : 'week';
+			$show_todays_date = ! empty( $attributes['showTodaysDate'] );
+			$show_reason      = ! empty( $attributes['showReasonClosed'] );
+			$friendly_twelves = ! empty( $attributes['friendlyTwelves'] );
+			$hide_weekends    = ! empty( $attributes['hideWeekends'] );
 
 			$seasons  = get_option( 'telex_hours_seasons', $this->default_seasons );
 			$holidays = get_option( 'telex_hours_holidays', array() );

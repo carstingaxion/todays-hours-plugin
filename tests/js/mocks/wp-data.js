@@ -1,7 +1,7 @@
 /**
  * Mock for @wordpress/data.
  *
- * @package TelexHoursBlock
+ * @package
  */
 
 function useSelect( mapSelect ) {

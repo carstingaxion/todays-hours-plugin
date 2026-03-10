@@ -4,16 +4,6 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased](https://github.com/carstingaxion/todays-hours-plugin/compare/1.1...HEAD)
 
-- Initial release as a Gutenberg block.
-- Seasons with per-day multiple time slots.
-- Holidays with recurring (yearless) and year-specific date support.
-- iCal (.ics) file import for holidays via server-side REST endpoint.
-- Week and day display modes.
-- Site-wide schedule settings shared across all block instances.
-- Localized day and month names, respects WordPress date/time/week settings.
-- schema.org JSON-LD structured data with OpeningHoursSpecification.
-- Responsive front-end and editor styles.
-
 ## [1.1 - The age old first version](https://github.com/carstingaxion/todays-hours-plugin/compare/1.1...1.1) - 2026-03-09 (untouched for 11 years)
 
 Wordpress plugin - Displays the current days business hours. Default business hours and exceptions/holidays can be customized to meet your unique needs. Ideal for use at institutions with highly variable yearly schedules, such as colleges and universities.

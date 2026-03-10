@@ -4,7 +4,7 @@
  * The useSchedulePreview hook itself uses useMemo and depends on the current date,
  * so we test the exported findHolidayForDate function directly.
  *
- * @package TelexHoursBlock
+ * @package
  */
 
 import { findHolidayForDate } from '../../../src/hooks/use-schedule-preview';
@@ -20,10 +20,7 @@ describe( 'findHolidayForDate', () => {
 			},
 		];
 
-		const result = findHolidayForDate(
-			holidays,
-			new Date( 2025, 11, 25 )
-		);
+		const result = findHolidayForDate( holidays, new Date( 2025, 11, 25 ) );
 		expect( result ).not.toBeNull();
 		expect( result.name ).toBe( 'Christmas' );
 	} );
@@ -113,9 +110,7 @@ describe( 'findHolidayForDate', () => {
 	} );
 
 	it( 'returns null for empty holidays array', () => {
-		expect(
-			findHolidayForDate( [], new Date( 2025, 6, 4 ) )
-		).toBeNull();
+		expect( findHolidayForDate( [], new Date( 2025, 6, 4 ) ) ).toBeNull();
 	} );
 
 	it( 'skips holidays with empty dates', () => {
@@ -149,10 +144,7 @@ describe( 'findHolidayForDate', () => {
 			},
 		];
 
-		const result = findHolidayForDate(
-			holidays,
-			new Date( 2025, 6, 4 )
-		);
+		const result = findHolidayForDate( holidays, new Date( 2025, 6, 4 ) );
 		expect( result.name ).toBe( 'First' );
 	} );
 

@@ -1,50 +1,46 @@
 {
-	"name": "telex/hours-block",
+	"name": "carstingaxion/todays-hours-block",
 	"description": "Business Hours Block for WordPress — displays configurable weekly schedules with seasons and holidays.",
-	"type": "wordpress-plugin",
 	"license": "GPL-2.0-or-later",
-    "keywords": [
-        "wordpress",
-        "wordpress-plugin",
-        "business hours",
+	"type": "wordpress-plugin",
+	"keywords": [
+		"wordpress",
+		"wordpress-plugin",
+		"business hours",
 		"schedule"
-    ],
-    "authors": [
-        {
-            "name": "figuren.theater",
-            "email": "info@figuren.theater"
-        },
-        {
-            "name": "Carsten Bach",
-            "email": "mail@carsten-bach.de",
-            "homepage": "https://carsten-bach.de",
-            "role": "Developer"
-        }
-    ],
-    "homepage": "https://websites.fuer.figuren.theater",
-    "support": {
-        "email": "info@figuren.theater",
-        "issues": "https://github.com/carstingaxion/todays-hours-plugin/issues",
-        "source": "https://github.com/carstingaxion/todays-hours-plugin"
-    },
+	],
+	"authors": [
+		{
+			"name": "figuren.theater",
+			"email": "info@figuren.theater"
+		},
+		{
+			"name": "Carsten Bach",
+			"email": "mail@carsten-bach.de",
+			"homepage": "https://carsten-bach.de",
+			"role": "Developer"
+		}
+	],
+	"homepage": "https://websites.fuer.figuren.theater",
+	"support": {
+		"email": "info@figuren.theater",
+		"issues": "https://github.com/carstingaxion/todays-hours-plugin/issues",
+		"source": "https://github.com/carstingaxion/todays-hours-plugin"
+	},
 	"require": {
 		"php": ">=7.4"
 	},
 	"require-dev": {
-		"phpunit/phpunit": "^9.6",
-		"figuren-theater/code-quality": "*"
+		"figuren-theater/code-quality": "*",
+		"phpunit/phpunit": "^9.6"
 	},
 	"autoload-dev": {
 		"classmap": [
 			"tests/"
 		]
 	},
-	"scripts": {
-		"test": "phpunit",
-		"test:verbose": "phpunit --testdox"
-	},
 	"config": {
-        "allow-plugins": {
+		"allow-plugins": {
 			"composer/installers": true,
 			"dealerdirect/phpcodesniffer-composer-installer": true,
 			"ergebnis/composer-normalize": true,
@@ -52,5 +48,9 @@
 			"phpstan/extension-installer": true
 		},
 		"sort-packages": true
+	},
+	"scripts": {
+		"test": "phpunit",
+		"test:verbose": "phpunit --testdox"
 	}
 }

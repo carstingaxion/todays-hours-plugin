@@ -1,7 +1,7 @@
 /**
  * Mock for @wordpress/block-editor.
  *
- * @package TelexHoursBlock
+ * @package
  */
 
 const React = require( 'react' );
@@ -11,7 +11,11 @@ function useBlockProps( props ) {
 }
 
 function InspectorControls( { children } ) {
-	return React.createElement( 'div', { className: 'inspector-controls' }, children );
+	return React.createElement(
+		'div',
+		{ className: 'inspector-controls' },
+		children
+	);
 }
 
 module.exports = { useBlockProps, InspectorControls };

@@ -1,30 +1,14 @@
 {
+	"$schema": "https://playground.wordpress.net/blueprint-schema.json",
 	"landingPage": "/business-hours-demo/",
 	"preferredVersions": {
-		"php": "8.2",
+		"php": "8.3",
 		"wp": "latest"
 	},
-	"phpExtensionBundles": [
-		"kitchen-sink"
-	],
 	"features": {
 		"networking": true
 	},
 	"steps": [
-		{
-			"step": "mkdir",
-			"path": "/wordpress/wp-content/plugins/telex-hours-block"
-		},
-		{
-			"step": "installPlugin",
-			"pluginData": {
-				"resource": "url",
-				"url": "https://github-proxy.voidd.workers.dev"
-			},
-			"options": {
-				"activate": true
-			}
-		},
 		{
 			"step": "setSiteOptions",
 			"options": {
@@ -33,6 +17,30 @@
 				"date_format": "F j, Y",
 				"time_format": "g:i A",
 				"start_of_week": "1",
+				"permalink_structure": "/%postname%/"
+			}
+		},
+		{
+			"step": "login",
+			"username": "admin"
+		},
+		{
+			"step": "installPlugin",
+			"pluginData": {
+				"resource": "git:directory",
+				"url": "https://github.com/carstingaxion/todays-hours-plugin",
+				"ref": "HEAD"
+			},
+			"options": {
+				"activate": true
+			},
+			"progress": {
+				"caption": "Installing plugin from GitHub: carstingaxion/todays-hours-plugin"
+			}
+		},
+		{
+			"step": "setSiteOptions",
+			"options": {
 				"telex_hours_seasons": [
 					{
 						"name": "Fall Semester",
