@@ -1,0 +1,209 @@
+{
+	"landingPage": "/business-hours-demo/",
+	"preferredVersions": {
+		"php": "8.2",
+		"wp": "latest"
+	},
+	"phpExtensionBundles": [
+		"kitchen-sink"
+	],
+	"features": {
+		"networking": true
+	},
+	"steps": [
+		{
+			"step": "mkdir",
+			"path": "/wordpress/wp-content/plugins/telex-hours-block"
+		},
+		{
+			"step": "installPlugin",
+			"pluginData": {
+				"resource": "url",
+				"url": "https://github-proxy.voidd.workers.dev"
+			},
+			"options": {
+				"activate": true
+			}
+		},
+		{
+			"step": "setSiteOptions",
+			"options": {
+				"blogname": "Campus Library",
+				"blogdescription": "Your neighborhood knowledge hub",
+				"date_format": "F j, Y",
+				"time_format": "g:i A",
+				"start_of_week": "1",
+				"telex_hours_seasons": [
+					{
+						"name": "Fall Semester",
+						"beginDate": "2025-08-25",
+						"endDate": "2025-12-19",
+						"hours": {
+							"sun": [
+								{ "open": "12:00 PM", "close": "10:00 PM" }
+							],
+							"mon": [
+								{ "open": "7:30 AM", "close": "12:00 PM" },
+								{ "open": "1:00 PM", "close": "11:00 PM" }
+							],
+							"tue": [
+								{ "open": "7:30 AM", "close": "12:00 PM" },
+								{ "open": "1:00 PM", "close": "11:00 PM" }
+							],
+							"wed": [
+								{ "open": "7:30 AM", "close": "12:00 PM" },
+								{ "open": "1:00 PM", "close": "11:00 PM" }
+							],
+							"thu": [
+								{ "open": "7:30 AM", "close": "12:00 PM" },
+								{ "open": "1:00 PM", "close": "11:00 PM" }
+							],
+							"fri": [
+								{ "open": "7:30 AM", "close": "6:00 PM" }
+							],
+							"sat": [
+								{ "open": "10:00 AM", "close": "6:00 PM" }
+							]
+						}
+					},
+					{
+						"name": "Winter Break",
+						"beginDate": "2025-12-20",
+						"endDate": "2026-01-11",
+						"hours": {
+							"sun": [
+								{ "open": "", "close": "" }
+							],
+							"mon": [
+								{ "open": "9:00 AM", "close": "5:00 PM" }
+							],
+							"tue": [
+								{ "open": "9:00 AM", "close": "5:00 PM" }
+							],
+							"wed": [
+								{ "open": "9:00 AM", "close": "5:00 PM" }
+							],
+							"thu": [
+								{ "open": "9:00 AM", "close": "5:00 PM" }
+							],
+							"fri": [
+								{ "open": "9:00 AM", "close": "3:00 PM" }
+							],
+							"sat": [
+								{ "open": "", "close": "" }
+							]
+						}
+					},
+					{
+						"name": "Spring Semester",
+						"beginDate": "2026-01-12",
+						"endDate": "2026-05-15",
+						"hours": {
+							"sun": [
+								{ "open": "12:00 PM", "close": "10:00 PM" }
+							],
+							"mon": [
+								{ "open": "7:30 AM", "close": "11:00 PM" }
+							],
+							"tue": [
+								{ "open": "7:30 AM", "close": "11:00 PM" }
+							],
+							"wed": [
+								{ "open": "7:30 AM", "close": "11:00 PM" }
+							],
+							"thu": [
+								{ "open": "7:30 AM", "close": "11:00 PM" }
+							],
+							"fri": [
+								{ "open": "7:30 AM", "close": "6:00 PM" }
+							],
+							"sat": [
+								{ "open": "10:00 AM", "close": "6:00 PM" }
+							]
+						}
+					},
+					{
+						"name": "Summer Hours",
+						"beginDate": "2026-05-16",
+						"endDate": "2026-08-23",
+						"hours": {
+							"sun": [
+								{ "open": "", "close": "" }
+							],
+							"mon": [
+								{ "open": "8:00 AM", "close": "7:00 PM" }
+							],
+							"tue": [
+								{ "open": "8:00 AM", "close": "7:00 PM" }
+							],
+							"wed": [
+								{ "open": "8:00 AM", "close": "7:00 PM" }
+							],
+							"thu": [
+								{ "open": "8:00 AM", "close": "7:00 PM" }
+							],
+							"fri": [
+								{ "open": "8:00 AM", "close": "5:00 PM" }
+							],
+							"sat": [
+								{ "open": "", "close": "" }
+							]
+						}
+					}
+				],
+				"telex_hours_holidays": [
+					{
+						"name": "Labor Day",
+						"beginDate": "09-01",
+						"endDate": "09-01",
+						"slots": []
+					},
+					{
+						"name": "Thanksgiving Break",
+						"beginDate": "11-27",
+						"endDate": "11-28",
+						"slots": []
+					},
+					{
+						"name": "Christmas Eve",
+						"beginDate": "12-24",
+						"endDate": "12-24",
+						"slots": [
+							{ "open": "9:00 AM", "close": "12:00 PM" }
+						]
+					},
+					{
+						"name": "Christmas Day",
+						"beginDate": "12-25",
+						"endDate": "12-25",
+						"slots": []
+					},
+					{
+						"name": "New Year's Day",
+						"beginDate": "01-01",
+						"endDate": "01-01",
+						"slots": []
+					},
+					{
+						"name": "Independence Day",
+						"beginDate": "07-04",
+						"endDate": "07-04",
+						"slots": []
+					},
+					{
+						"name": "Spring Break",
+						"beginDate": "2026-03-09",
+						"endDate": "2026-03-13",
+						"slots": [
+							{ "open": "10:00 AM", "close": "4:00 PM" }
+						]
+					}
+				]
+			}
+		},
+		{
+			"step": "runPHP",
+			"code": "<?php require '/wordpress/wp-load.php'; $page_content = '<!-- wp:heading {\"level\":2} -->\n<h2 class=\"wp-block-heading\">This Week\\'s Schedule</h2>\n<!-- /wp:heading -->\n\n<!-- wp:telex/block-telex-hours-block {\"displayMode\":\"week\",\"showTodaysDate\":true,\"showReasonClosed\":true,\"friendlyTwelves\":true,\"hideWeekends\":false} /-->\n\n<!-- wp:separator -->\n<hr class=\"wp-block-separator has-alpha-channel-opacity\"/>\n<!-- /wp:separator -->\n\n<!-- wp:heading {\"level\":2} -->\n<h2 class=\"wp-block-heading\">Open Right Now?</h2>\n<!-- /wp:heading -->\n\n<!-- wp:paragraph -->\n<p>Check if we are open today:</p>\n<!-- /wp:paragraph -->\n\n<!-- wp:telex/block-telex-hours-block {\"displayMode\":\"day\",\"showTodaysDate\":true,\"showReasonClosed\":true,\"friendlyTwelves\":true,\"hideWeekends\":false} /-->\n\n<!-- wp:separator -->\n<hr class=\"wp-block-separator has-alpha-channel-opacity\"/>\n<!-- /wp:separator -->\n\n<!-- wp:heading {\"level\":2} -->\n<h2 class=\"wp-block-heading\">Weekdays Only</h2>\n<!-- /wp:heading -->\n\n<!-- wp:paragraph -->\n<p>Our weekday schedule (weekends hidden):</p>\n<!-- /wp:paragraph -->\n\n<!-- wp:telex/block-telex-hours-block {\"displayMode\":\"week\",\"showTodaysDate\":false,\"showReasonClosed\":true,\"friendlyTwelves\":false,\"hideWeekends\":true} /-->'; $page_id = wp_insert_post(array('post_title' => 'Business Hours Demo', 'post_name' => 'business-hours-demo', 'post_content' => $page_content, 'post_status' => 'publish', 'post_type' => 'page')); echo 'Page created: ' . $page_id;"
+		}
+	]
+}
