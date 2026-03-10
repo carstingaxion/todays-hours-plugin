@@ -150,7 +150,7 @@ if ( ! class_exists( 'Telex_Hours_Time_Formatter' ) ) {
 				$open_24  = $this->to_24h( $open );
 				$close_24 = $this->to_24h( $close );
 
-				$html = '<span class="telex-hours-block__slot">';
+				$html  = '<span class="telex-hours-block__slot">';
 				$html .= '<time datetime="' . esc_attr( $open_24 ) . '">' . esc_html( $display_open ) . '</time>';
 				$html .= '<span class="telex-hours-block__separator">' . "\xE2\x80\x93" . '</span>';
 				$html .= '<time datetime="' . esc_attr( $close_24 ) . '">' . esc_html( $display_close ) . '</time>';

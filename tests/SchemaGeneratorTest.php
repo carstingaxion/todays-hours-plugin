@@ -46,19 +46,59 @@ class SchemaGeneratorTest extends PHPUnit\Framework\TestCase {
 			'beginDate' => '2025-01-01',
 			'endDate'   => '2025-12-31',
 			'hours'     => array(
-				'sun' => array( array( 'open' => '', 'close' => '' ) ),
-				'mon' => array( array( 'open' => '8:00 AM', 'close' => '5:00 PM' ) ),
-				'tue' => array( array( 'open' => '8:00 AM', 'close' => '5:00 PM' ) ),
-				'wed' => array( array( 'open' => '', 'close' => '' ) ),
-				'thu' => array( array( 'open' => '8:00 AM', 'close' => '5:00 PM' ) ),
-				'fri' => array( array( 'open' => '8:00 AM', 'close' => '5:00 PM' ) ),
-				'sat' => array( array( 'open' => '', 'close' => '' ) ),
+				'sun' => array(
+					array(
+						'open'  => '',
+						'close' => '',
+					),
+				),
+				'mon' => array(
+					array(
+						'open'  => '8:00 AM',
+						'close' => '5:00 PM',
+					),
+				),
+				'tue' => array(
+					array(
+						'open'  => '8:00 AM',
+						'close' => '5:00 PM',
+					),
+				),
+				'wed' => array(
+					array(
+						'open'  => '',
+						'close' => '',
+					),
+				),
+				'thu' => array(
+					array(
+						'open'  => '8:00 AM',
+						'close' => '5:00 PM',
+					),
+				),
+				'fri' => array(
+					array(
+						'open'  => '8:00 AM',
+						'close' => '5:00 PM',
+					),
+				),
+				'sat' => array(
+					array(
+						'open'  => '',
+						'close' => '',
+					),
+				),
 			),
 		);
 
 		$today = new DateTime( '2025-06-15' );
 		$specs = $this->generator->build_opening_hours_specs(
-			$season, array(), $today, false, $this->day_helpers, $this->time_fmt
+			$season,
+			array(),
+			$today,
+			false,
+			$this->day_helpers,
+			$this->time_fmt
 		);
 
 		// 4 open days: mon, tue, thu, fri.
@@ -82,22 +122,67 @@ class SchemaGeneratorTest extends PHPUnit\Framework\TestCase {
 			'beginDate' => '2025-01-01',
 			'endDate'   => '2025-12-31',
 			'hours'     => array(
-				'sun' => array( array( 'open' => '10:00 AM', 'close' => '4:00 PM' ) ),
-				'mon' => array( array( 'open' => '8:00 AM', 'close' => '5:00 PM' ) ),
-				'tue' => array( array( 'open' => '8:00 AM', 'close' => '5:00 PM' ) ),
-				'wed' => array( array( 'open' => '8:00 AM', 'close' => '5:00 PM' ) ),
-				'thu' => array( array( 'open' => '8:00 AM', 'close' => '5:00 PM' ) ),
-				'fri' => array( array( 'open' => '8:00 AM', 'close' => '5:00 PM' ) ),
-				'sat' => array( array( 'open' => '10:00 AM', 'close' => '4:00 PM' ) ),
+				'sun' => array(
+					array(
+						'open'  => '10:00 AM',
+						'close' => '4:00 PM',
+					),
+				),
+				'mon' => array(
+					array(
+						'open'  => '8:00 AM',
+						'close' => '5:00 PM',
+					),
+				),
+				'tue' => array(
+					array(
+						'open'  => '8:00 AM',
+						'close' => '5:00 PM',
+					),
+				),
+				'wed' => array(
+					array(
+						'open'  => '8:00 AM',
+						'close' => '5:00 PM',
+					),
+				),
+				'thu' => array(
+					array(
+						'open'  => '8:00 AM',
+						'close' => '5:00 PM',
+					),
+				),
+				'fri' => array(
+					array(
+						'open'  => '8:00 AM',
+						'close' => '5:00 PM',
+					),
+				),
+				'sat' => array(
+					array(
+						'open'  => '10:00 AM',
+						'close' => '4:00 PM',
+					),
+				),
 			),
 		);
 
 		$today          = new DateTime( '2025-06-15' );
 		$specs_all      = $this->generator->build_opening_hours_specs(
-			$season, array(), $today, false, $this->day_helpers, $this->time_fmt
+			$season,
+			array(),
+			$today,
+			false,
+			$this->day_helpers,
+			$this->time_fmt
 		);
 		$specs_no_wkend = $this->generator->build_opening_hours_specs(
-			$season, array(), $today, true, $this->day_helpers, $this->time_fmt
+			$season,
+			array(),
+			$today,
+			true,
+			$this->day_helpers,
+			$this->time_fmt
 		);
 
 		$this->assertCount( 7, $specs_all );
@@ -119,7 +204,12 @@ class SchemaGeneratorTest extends PHPUnit\Framework\TestCase {
 
 		$today = new DateTime( '2025-06-15' );
 		$specs = $this->generator->build_opening_hours_specs(
-			null, $holidays, $today, false, $this->day_helpers, $this->time_fmt
+			null,
+			$holidays,
+			$today,
+			false,
+			$this->day_helpers,
+			$this->time_fmt
 		);
 
 		$this->assertCount( 1, $specs );
@@ -139,14 +229,22 @@ class SchemaGeneratorTest extends PHPUnit\Framework\TestCase {
 				'beginDate' => '2025-07-04',
 				'endDate'   => '2025-07-04',
 				'slots'     => array(
-					array( 'open' => '10:00 AM', 'close' => '2:00 PM' ),
+					array(
+						'open'  => '10:00 AM',
+						'close' => '2:00 PM',
+					),
 				),
 			),
 		);
 
 		$today = new DateTime( '2025-06-15' );
 		$specs = $this->generator->build_opening_hours_specs(
-			null, $holidays, $today, false, $this->day_helpers, $this->time_fmt
+			null,
+			$holidays,
+			$today,
+			false,
+			$this->day_helpers,
+			$this->time_fmt
 		);
 
 		$this->assertCount( 1, $specs );
@@ -170,7 +268,12 @@ class SchemaGeneratorTest extends PHPUnit\Framework\TestCase {
 
 		$today = new DateTime( '2025-06-15' );
 		$specs = $this->generator->build_opening_hours_specs(
-			null, $holidays, $today, false, $this->day_helpers, $this->time_fmt
+			null,
+			$holidays,
+			$today,
+			false,
+			$this->day_helpers,
+			$this->time_fmt
 		);
 
 		$this->assertCount( 1, $specs );
@@ -187,19 +290,59 @@ class SchemaGeneratorTest extends PHPUnit\Framework\TestCase {
 			'beginDate' => '2025-01-01',
 			'endDate'   => '2025-12-31',
 			'hours'     => array(
-				'sun' => array( array( 'open' => '', 'close' => '' ) ),
-				'mon' => array( array( 'open' => '9:00 AM', 'close' => '5:00 PM' ) ),
-				'tue' => array( array( 'open' => '', 'close' => '' ) ),
-				'wed' => array( array( 'open' => '', 'close' => '' ) ),
-				'thu' => array( array( 'open' => '', 'close' => '' ) ),
-				'fri' => array( array( 'open' => '', 'close' => '' ) ),
-				'sat' => array( array( 'open' => '', 'close' => '' ) ),
+				'sun' => array(
+					array(
+						'open'  => '',
+						'close' => '',
+					),
+				),
+				'mon' => array(
+					array(
+						'open'  => '9:00 AM',
+						'close' => '5:00 PM',
+					),
+				),
+				'tue' => array(
+					array(
+						'open'  => '',
+						'close' => '',
+					),
+				),
+				'wed' => array(
+					array(
+						'open'  => '',
+						'close' => '',
+					),
+				),
+				'thu' => array(
+					array(
+						'open'  => '',
+						'close' => '',
+					),
+				),
+				'fri' => array(
+					array(
+						'open'  => '',
+						'close' => '',
+					),
+				),
+				'sat' => array(
+					array(
+						'open'  => '',
+						'close' => '',
+					),
+				),
 			),
 		);
 
 		$today = new DateTime( '2025-06-15' );
 		$html  = $this->generator->render_json_ld(
-			$season, array(), $today, false, $this->day_helpers, $this->time_fmt
+			$season,
+			array(),
+			$today,
+			false,
+			$this->day_helpers,
+			$this->time_fmt
 		);
 
 		$this->assertStringStartsWith( '<script type="application/ld+json">', $html );
@@ -215,7 +358,12 @@ class SchemaGeneratorTest extends PHPUnit\Framework\TestCase {
 	public function test_render_json_ld_empty(): void {
 		$today = new DateTime( '2025-06-15' );
 		$html  = $this->generator->render_json_ld(
-			null, array(), $today, false, $this->day_helpers, $this->time_fmt
+			null,
+			array(),
+			$today,
+			false,
+			$this->day_helpers,
+			$this->time_fmt
 		);
 
 		$this->assertSame( '', $html );
@@ -230,22 +378,63 @@ class SchemaGeneratorTest extends PHPUnit\Framework\TestCase {
 			'beginDate' => '2025-01-01',
 			'endDate'   => '2025-12-31',
 			'hours'     => array(
-				'sun' => array( array( 'open' => '', 'close' => '' ) ),
-				'mon' => array(
-					array( 'open' => '8:00 AM', 'close' => '11:00 AM' ),
-					array( 'open' => '1:00 PM', 'close' => '5:00 PM' ),
+				'sun' => array(
+					array(
+						'open'  => '',
+						'close' => '',
+					),
 				),
-				'tue' => array( array( 'open' => '', 'close' => '' ) ),
-				'wed' => array( array( 'open' => '', 'close' => '' ) ),
-				'thu' => array( array( 'open' => '', 'close' => '' ) ),
-				'fri' => array( array( 'open' => '', 'close' => '' ) ),
-				'sat' => array( array( 'open' => '', 'close' => '' ) ),
+				'mon' => array(
+					array(
+						'open'  => '8:00 AM',
+						'close' => '11:00 AM',
+					),
+					array(
+						'open'  => '1:00 PM',
+						'close' => '5:00 PM',
+					),
+				),
+				'tue' => array(
+					array(
+						'open'  => '',
+						'close' => '',
+					),
+				),
+				'wed' => array(
+					array(
+						'open'  => '',
+						'close' => '',
+					),
+				),
+				'thu' => array(
+					array(
+						'open'  => '',
+						'close' => '',
+					),
+				),
+				'fri' => array(
+					array(
+						'open'  => '',
+						'close' => '',
+					),
+				),
+				'sat' => array(
+					array(
+						'open'  => '',
+						'close' => '',
+					),
+				),
 			),
 		);
 
 		$today = new DateTime( '2025-06-15' );
 		$specs = $this->generator->build_opening_hours_specs(
-			$season, array(), $today, false, $this->day_helpers, $this->time_fmt
+			$season,
+			array(),
+			$today,
+			false,
+			$this->day_helpers,
+			$this->time_fmt
 		);
 
 		// Monday has 2 slots, so 2 specs.

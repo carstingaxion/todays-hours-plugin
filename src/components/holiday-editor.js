@@ -16,7 +16,7 @@ import {
 	// eslint-disable-next-line @wordpress/no-unsafe-wp-apis
 	__experimentalText as Text,
 } from '@wordpress/components';
-import { useState, useCallback, useRef } from '@wordpress/element';
+import { useState, useCallback, useMemo } from '@wordpress/element';
 import { dateHasYear, parseMonthDay } from '../utils/dates';
 import { normalizeHolidaySlots } from '../utils/slots';
 import TimeSlotRow from './time-slot-row';
@@ -78,9 +78,12 @@ export default function HolidayEditor( {
 		[ index, holiday, onChange ]
 	);
 
-	const holidaySlots = normalizeHolidaySlots( holiday );
-	const currentSlots =
-		holidaySlots.length > 0 ? holidaySlots : [ { open: '', close: '' } ];
+	const currentSlots = useMemo( () => {
+		const holidaySlots = normalizeHolidaySlots( holiday );
+		return holidaySlots.length > 0
+			? holidaySlots
+			: [ { open: '', close: '' } ];
+	}, [ holiday ] );
 
 	const updateSlotTime = useCallback(
 		( slotIndex, timeKey, value ) => {

@@ -112,10 +112,8 @@ if ( ! class_exists( 'Telex_Hours_Season_Finder' ) ) {
 						if ( $today_md >= $begin && $today_md <= $end ) {
 							return $holiday;
 						}
-					} else {
-						if ( $today_md >= $begin || $today_md <= $end ) {
+					} elseif ( $today_md >= $begin || $today_md <= $end ) {
 							return $holiday;
-						}
 					}
 				}
 			}

@@ -81,7 +81,7 @@ if ( ! class_exists( 'Telex_Hours_Sanitizer' ) ) {
 				$hours = isset( $season['hours'] ) && is_array( $season['hours'] ) ? $season['hours'] : array();
 
 				foreach ( $day_keys as $dk ) {
-					$day_data           = isset( $hours[ $dk ] ) ? $hours[ $dk ] : array();
+					$day_data              = isset( $hours[ $dk ] ) ? $hours[ $dk ] : array();
 					$clean['hours'][ $dk ] = $this->sanitize_slots( $day_data );
 				}
 
@@ -104,7 +104,12 @@ if ( ! class_exists( 'Telex_Hours_Sanitizer' ) ) {
 		 */
 		public function sanitize_slots( $slots ): array {
 			if ( ! is_array( $slots ) ) {
-				return array( array( 'open' => '', 'close' => '' ) );
+				return array(
+					array(
+						'open'  => '',
+						'close' => '',
+					),
+				);
 			}
 
 			// Legacy format: { open: '...', close: '...' } — convert to array of one slot.
@@ -129,7 +134,12 @@ if ( ! class_exists( 'Telex_Hours_Sanitizer' ) ) {
 			}
 
 			if ( empty( $sanitized ) ) {
-				return array( array( 'open' => '', 'close' => '' ) );
+				return array(
+					array(
+						'open'  => '',
+						'close' => '',
+					),
+				);
 			}
 
 			return $sanitized;

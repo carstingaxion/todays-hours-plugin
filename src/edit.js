@@ -84,8 +84,14 @@ export default function Edit( { attributes, setAttributes } ) {
 
 	const { saveEditedEntityRecord } = useDispatch( 'core' );
 
-	const rawSeasons = Array.isArray( seasons ) ? seasons : [];
-	const rawHolidays = Array.isArray( holidays ) ? holidays : [];
+	const rawSeasons = useMemo(
+		() => ( Array.isArray( seasons ) ? seasons : [] ),
+		[ seasons ]
+	);
+	const rawHolidays = useMemo(
+		() => ( Array.isArray( holidays ) ? holidays : [] ),
+		[ holidays ]
+	);
 
 	// Sort seasons and holidays by begin date, preserving original indices.
 	const sortedSeasons = useMemo( () => {

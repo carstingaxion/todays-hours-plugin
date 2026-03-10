@@ -200,7 +200,12 @@ if ( ! class_exists( 'Telex_Hours_Day_Helpers' ) ) {
 			$open  = isset( $holiday['openTime'] ) ? $holiday['openTime'] : '';
 			$close = isset( $holiday['closeTime'] ) ? $holiday['closeTime'] : '';
 			if ( ! empty( $open ) ) {
-				return array( array( 'open' => $open, 'close' => $close ) );
+				return array(
+					array(
+						'open'  => $open,
+						'close' => $close,
+					),
+				);
 			}
 
 			return array();

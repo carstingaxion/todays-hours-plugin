@@ -1,3 +1,4 @@
+/* eslint-env browser */
 /**
  * iCal import utility.
  *

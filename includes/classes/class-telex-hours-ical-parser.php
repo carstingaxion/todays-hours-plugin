@@ -90,10 +90,12 @@ if ( ! class_exists( 'Telex_Hours_Ical_Parser' ) ) {
 			$ical_text = $request->get_param( 'ical_text' );
 			$holidays  = $this->parse( $ical_text );
 
-			return rest_ensure_response( array(
-				'holidays' => $holidays,
-				'count'    => count( $holidays ),
-			) );
+			return rest_ensure_response(
+				array(
+					'holidays' => $holidays,
+					'count'    => count( $holidays ),
+				) 
+			);
 		}
 
 		/**
@@ -140,8 +142,8 @@ if ( ! class_exists( 'Telex_Hours_Ical_Parser' ) ) {
 				if ( $in_event ) {
 					$colon_pos = strpos( $line, ':' );
 					if ( false !== $colon_pos ) {
-						$key   = strtoupper( substr( $line, 0, $colon_pos ) );
-						$value = substr( $line, $colon_pos + 1 );
+						$key                = strtoupper( substr( $line, 0, $colon_pos ) );
+						$value              = substr( $line, $colon_pos + 1 );
 						$event_data[ $key ] = $value;
 					}
 				}

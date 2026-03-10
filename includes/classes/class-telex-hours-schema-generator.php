@@ -74,11 +74,11 @@ if ( ! class_exists( 'Telex_Hours_Schema_Generator' ) ) {
 		 *
 		 * @since 0.1.0
 		 *
-		 * @param array|null                $season        Active season data or null.
-		 * @param array                     $holidays      All holidays.
-		 * @param DateTime                  $today         Today's date object.
-		 * @param bool                      $hide_weekends Whether weekend days are hidden.
-		 * @param Telex_Hours_Day_Helpers   $day_helpers   Day helpers instance.
+		 * @param array|null                 $season        Active season data or null.
+		 * @param array                      $holidays      All holidays.
+		 * @param DateTime                   $today         Today's date object.
+		 * @param bool                       $hide_weekends Whether weekend days are hidden.
+		 * @param Telex_Hours_Day_Helpers    $day_helpers   Day helpers instance.
 		 * @param Telex_Hours_Time_Formatter $time_fmt     Time formatter instance.
 		 * @return array Array of OpeningHoursSpecification associative arrays.
 		 */
@@ -205,11 +205,11 @@ if ( ! class_exists( 'Telex_Hours_Schema_Generator' ) ) {
 		 *
 		 * @since 0.1.0
 		 *
-		 * @param array|null                $season        Active season data or null.
-		 * @param array                     $holidays      All holidays.
-		 * @param DateTime                  $today         Today's date object.
-		 * @param bool                      $hide_weekends Whether weekend days are hidden.
-		 * @param Telex_Hours_Day_Helpers   $day_helpers   Day helpers instance.
+		 * @param array|null                 $season        Active season data or null.
+		 * @param array                      $holidays      All holidays.
+		 * @param DateTime                   $today         Today's date object.
+		 * @param bool                       $hide_weekends Whether weekend days are hidden.
+		 * @param Telex_Hours_Day_Helpers    $day_helpers   Day helpers instance.
 		 * @param Telex_Hours_Time_Formatter $time_fmt     Time formatter instance.
 		 * @return string JSON-LD script tag HTML, or empty string.
 		 */

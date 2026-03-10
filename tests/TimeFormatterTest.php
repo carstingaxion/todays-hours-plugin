@@ -139,7 +139,10 @@ class TimeFormatterTest extends PHPUnit\Framework\TestCase {
 	 */
 	public function test_render_slots_html_single(): void {
 		$slots = array(
-			array( 'open' => '8:00 AM', 'close' => '5:00 PM' ),
+			array(
+				'open'  => '8:00 AM',
+				'close' => '5:00 PM',
+			),
 		);
 
 		$html = $this->formatter->render_slots_html( $slots, false );
@@ -155,8 +158,14 @@ class TimeFormatterTest extends PHPUnit\Framework\TestCase {
 	 */
 	public function test_render_slots_html_multiple(): void {
 		$slots = array(
-			array( 'open' => '8:00 AM', 'close' => '11:00 AM' ),
-			array( 'open' => '1:00 PM', 'close' => '5:00 PM' ),
+			array(
+				'open'  => '8:00 AM',
+				'close' => '11:00 AM',
+			),
+			array(
+				'open'  => '1:00 PM',
+				'close' => '5:00 PM',
+			),
 		);
 
 		$html = $this->formatter->render_slots_html( $slots, false );
@@ -171,8 +180,14 @@ class TimeFormatterTest extends PHPUnit\Framework\TestCase {
 	 */
 	public function test_render_slots_html_skips_empty(): void {
 		$slots = array(
-			array( 'open' => '', 'close' => '' ),
-			array( 'open' => '9:00 AM', 'close' => '5:00 PM' ),
+			array(
+				'open'  => '',
+				'close' => '',
+			),
+			array(
+				'open'  => '9:00 AM',
+				'close' => '5:00 PM',
+			),
 		);
 
 		$html = $this->formatter->render_slots_html( $slots, false );
@@ -186,7 +201,10 @@ class TimeFormatterTest extends PHPUnit\Framework\TestCase {
 	 */
 	public function test_render_slots_html_all_empty(): void {
 		$slots = array(
-			array( 'open' => '', 'close' => '' ),
+			array(
+				'open'  => '',
+				'close' => '',
+			),
 		);
 
 		$html = $this->formatter->render_slots_html( $slots, false );
@@ -199,7 +217,10 @@ class TimeFormatterTest extends PHPUnit\Framework\TestCase {
 	 */
 	public function test_render_slots_html_friendly(): void {
 		$slots = array(
-			array( 'open' => '12:00 AM', 'close' => '12:00 PM' ),
+			array(
+				'open'  => '12:00 AM',
+				'close' => '12:00 PM',
+			),
 		);
 
 		$html = $this->formatter->render_slots_html( $slots, true );
