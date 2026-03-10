@@ -120,19 +120,11 @@ Yes. All block instances read from and write to the same site-wide settings. Edi
 
 In the block inspector under "Holidays / Exceptions", click "Import from iCal" and select a `.ics` file. The events are parsed and added to the holidays list. The file itself is not stored.
 
+
 ## Changelog
 
-### 0.1.0
+All notable changes to this project will be documented in the [CHANGELOG.md](CHANGELOG.md).
 
-- Initial release as a Gutenberg block.
-- Seasons with per-day multiple time slots.
-- Holidays with recurring (yearless) and year-specific date support.
-- iCal (.ics) file import for holidays via server-side REST endpoint.
-- Week and day display modes.
-- Site-wide schedule settings shared across all block instances.
-- Localized day and month names, respects WordPress date/time/week settings.
-- schema.org JSON-LD structured data with OpeningHoursSpecification.
-- Responsive front-end and editor styles.
 
 ## License
 
