@@ -1,0 +1,27 @@
+{
+	"name": "telex/hours-block",
+	"description": "Business Hours Block for WordPress — displays configurable weekly schedules with seasons and holidays.",
+	"type": "wordpress-plugin",
+	"license": "GPL-2.0-or-later",
+	"require": {
+		"php": ">=7.4"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "^9.6",
+		"php-stubs/wordpress-stubs": "^6.4",
+		"szepeviktor/phpstan-wordpress": "^1.3"
+	},
+	"autoload-dev": {
+		"classmap": [
+			"tests/"
+		]
+	},
+	"scripts": {
+		"test": "phpunit",
+		"test:verbose": "phpunit --testdox"
+	},
+	"config": {
+		"allow-plugins": {},
+		"sort-packages": true
+	}
+}

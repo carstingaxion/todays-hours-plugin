@@ -7,6 +7,9 @@
 /wiki
 .vscode
 
+composer.lock
+.phpunit.result.cache
+
 
 /.wp-env.override.json
 
