@@ -1,0 +1,333 @@
+# Copyright (C) 2026 WordPress Telex
+# This file is distributed under the GPLv2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Today's Hours 1.1\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/telex-hours-block\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-03-10T21:53:59+01:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.7.1\n"
+"X-Domain: telex-hours-block\n"
+
+#. Plugin Name of the plugin
+msgid "Today's Hours"
+msgstr ""
+
+#. Description of the plugin
+msgid "Displays the current day's business hours or a full weekly schedule. Seasons and holidays can be customized. Ideal for institutions with variable yearly schedules."
+msgstr ""
+
+#. Author of the plugin
+msgid "WordPress Telex"
+msgstr ""
+
+#: build/render.php:168
+#: src/render.php:203
+#: build/index.js:66
+#: src/components/day-view.js:43
+#: build/index.js:43
+msgid "Closed Today"
+msgstr ""
+
+#. translators: %s: holiday/exception name
+#: build/render.php:171
+#: build/render.php:260
+#: src/render.php:206
+#: src/render.php:295
+msgid "Closed for %s"
+msgstr ""
+
+#: build/render.php:205
+#: src/render.php:240
+#: build/index.js:840
+#: src/components/week-view.js:44
+#: build/index.js:743
+msgid "No active season for today."
+msgstr ""
+
+#: build/render.php:257
+#: src/render.php:292
+#: build/index.js:881
+#: src/components/week-view.js:106
+#: build/index.js:800
+msgid "Closed"
+msgstr ""
+
+#: includes/classes/class-telex-hours-settings.php:164
+msgid "Business hours seasons/semesters schedule data."
+msgstr ""
+
+#: includes/classes/class-telex-hours-settings.php:202
+msgid "Business hours holidays/exceptions data."
+msgstr ""
+
+#: includes/classes/class-telex-hours-time-formatter.php:68
+#: build/index.js:2048
+#: src/utils/time.js:22
+#: build/index.js:1817
+msgid "Midnight"
+msgstr ""
+
+#: includes/classes/class-telex-hours-time-formatter.php:71
+#: build/index.js:2051
+#: src/utils/time.js:25
+#: build/index.js:1820
+msgid "Noon"
+msgstr ""
+
+#: build/index.js:68
+#: build/index.js:883
+#: build/index.js:45
+#: build/index.js:808
+msgid "Closed for "
+msgstr ""
+
+#: build/index.js:228
+#: src/components/holiday-editor.js:145
+#: build/index.js:176
+msgid "Holiday"
+msgstr ""
+
+#: build/index.js:237
+#: src/components/holiday-editor.js:157
+#: build/index.js:186
+msgid "Remove holiday"
+msgstr ""
+
+#: build/index.js:244
+#: build/index.js:640
+#: src/components/holiday-editor.js:165
+#: src/components/season-editor.js:131
+#: build/index.js:194
+#: build/index.js:566
+msgid "Name"
+msgstr ""
+
+#: build/index.js:249
+#: src/components/holiday-editor.js:171
+#: build/index.js:200
+msgid "Repeats every year"
+msgstr ""
+
+#: build/index.js:256
+#: build/index.js:270
+#: build/index.js:647
+#: src/components/holiday-editor.js:183
+#: src/components/holiday-editor.js:210
+#: src/components/season-editor.js:139
+#: build/index.js:209
+#: build/index.js:226
+#: build/index.js:574
+msgid "Begin Date"
+msgstr ""
+
+#: build/index.js:262
+#: build/index.js:278
+#: build/index.js:655
+#: src/components/holiday-editor.js:195
+#: src/components/holiday-editor.js:224
+#: src/components/season-editor.js:153
+#: build/index.js:216
+#: build/index.js:235
+#: build/index.js:583
+msgid "End Date"
+msgstr ""
+
+#: build/index.js:290
+#: src/components/holiday-editor.js:239
+#: build/index.js:250
+msgid "Leave all slots blank if closed all day"
+msgstr ""
+
+#: build/index.js:302
+#: build/index.js:693
+#: src/components/holiday-editor.js:260
+#: src/components/season-editor.js:218
+#: build/index.js:268
+#: build/index.js:629
+msgid "+ Add time slot"
+msgstr ""
+
+#: build/index.js:374
+#: src/components/ical-import-button.js:48
+#: build/index.js:323
+msgid "No events found in the file."
+msgstr ""
+
+#: build/index.js:379
+#: src/components/ical-import-button.js:59
+#: build/index.js:331
+msgid "Failed to import iCal file."
+msgstr ""
+
+#: build/index.js:398
+#: src/components/ical-import-button.js:84
+#: build/index.js:356
+msgid "Importing…"
+msgstr ""
+
+#: build/index.js:398
+#: src/components/ical-import-button.js:85
+#: build/index.js:357
+msgid "Import from iCal"
+msgstr ""
+
+#: build/index.js:624
+#: src/components/season-editor.js:111
+#: build/index.js:548
+msgid "Season"
+msgstr ""
+
+#: build/index.js:633
+#: src/components/season-editor.js:123
+#: build/index.js:558
+msgid "Remove season"
+msgstr ""
+
+#: build/index.js:670
+#: src/components/season-editor.js:171
+#: build/index.js:599
+msgid "Leave blank for closed"
+msgstr ""
+
+#: build/index.js:754
+#: src/components/time-slot-row.js:39
+#: build/index.js:673
+msgid "Open"
+msgstr ""
+
+#: build/index.js:762
+#: src/components/time-slot-row.js:51
+#: build/index.js:682
+msgid "Close"
+msgstr ""
+
+#: build/index.js:773
+#: src/components/time-slot-row.js:66
+#: build/index.js:695
+msgid "Remove time slot"
+msgstr ""
+
+#: build/index.js:1171
+#: src/edit.js:288
+#: build/index.js:1098
+msgid "Display Settings"
+msgstr ""
+
+#: build/index.js:1174
+#: src/edit.js:292
+#: build/index.js:1102
+msgid "Display Mode"
+msgstr ""
+
+#: build/index.js:1177
+#: src/edit.js:296
+#: build/index.js:1106
+msgid "Full week schedule"
+msgstr ""
+
+#: build/index.js:1180
+#: src/edit.js:303
+#: build/index.js:1110
+msgid "Today's hours only"
+msgstr ""
+
+#: build/index.js:1187
+#: src/edit.js:315
+#: build/index.js:1117
+msgid "Show today's date"
+msgstr ""
+
+#: build/index.js:1194
+#: src/edit.js:323
+#: build/index.js:1123
+msgid "Show reason when closed"
+msgstr ""
+
+#: build/index.js:1195
+#: src/edit.js:327
+#: build/index.js:1124
+msgid "Displays the holiday name when closed due to a holiday."
+msgstr ""
+
+#: build/index.js:1202
+#: src/edit.js:338
+#: build/index.js:1133
+msgid "Use \"Noon\" and \"Midnight\""
+msgstr ""
+
+#: build/index.js:1203
+#: src/edit.js:342
+#: build/index.js:1134
+msgid "Replace 12:00 AM with \"Midnight\" and 12:00 PM with \"Noon\"."
+msgstr ""
+
+#: build/index.js:1210
+#: src/edit.js:353
+#: build/index.js:1143
+msgid "Hide weekend days"
+msgstr ""
+
+#: build/index.js:1211
+#: src/edit.js:354
+#: build/index.js:1144
+msgid "Hides Saturday and Sunday from the schedule."
+msgstr ""
+
+#: build/index.js:1219
+#: src/edit.js:367
+#: build/index.js:1155
+msgid "Seasons / Semesters"
+msgstr ""
+
+#: build/index.js:1225
+#: src/edit.js:372
+#: build/index.js:1160
+msgid "Define periods with specific weekly schedules. These settings are shared across all Business Hours blocks on this site."
+msgstr ""
+
+#: build/index.js:1241
+#: src/edit.js:398
+#: build/index.js:1184
+msgid "Add Season"
+msgstr ""
+
+#: build/index.js:1245
+#: src/edit.js:404
+#: build/index.js:1190
+msgid "Holidays / Exceptions"
+msgstr ""
+
+#: build/index.js:1251
+#: src/edit.js:409
+#: build/index.js:1195
+msgid "Holidays override season hours for specific date ranges. These settings are shared across all Business Hours blocks on this site."
+msgstr ""
+
+#: build/index.js:1269
+#: src/edit.js:435
+#: build/index.js:1219
+msgid "Add Holiday"
+msgstr ""
+
+#: src/components/day-view.js:45
+#: src/components/week-view.js:114
+msgid "Closed for"
+msgstr ""
+
+#: build/block.json
+#: src/block.json
+msgctxt "block title"
+msgid "Business Hours Block"
+msgstr ""
+
+#: build/block.json
+#: src/block.json
+msgctxt "block description"
+msgid "Displays the current day's business hours or a full weekly schedule with customizable seasons and holidays."
+msgstr ""

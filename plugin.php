@@ -9,6 +9,7 @@
  * License:           GPLv2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       telex-hours-block
+ * Domain Path:       /languages
  *
  * @package TelexHoursBlock
  */
@@ -121,6 +122,7 @@ class Telex_Hours_Block {
 	 */
 	private function register_hooks(): void {
 		add_action( 'init', array( $this, 'register_block' ) );
+		add_action( 'init', array( $this, 'load_textdomain' ) );
 		add_action( 'init', array( $this->settings, 'register' ) );
 		add_action( 'rest_api_init', array( $this->ical_parser, 'register_routes' ) );
 	}
@@ -134,6 +136,21 @@ class Telex_Hours_Block {
 	 */
 	public function register_block(): void {
 		register_block_type( __DIR__ . '/build/' );
+	}
+
+	/**
+	 * Loads the plugin text domain for translations.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return void
+	 */
+	public function load_textdomain(): void {
+		load_plugin_textdomain(
+			'telex-hours-block',
+			false,
+			dirname( plugin_basename( __FILE__ ) ) . '/languages'
+		);
 	}
 
 	/**
