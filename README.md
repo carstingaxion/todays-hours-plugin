@@ -1,5 +1,12 @@
 # Business Hours Block
 
+**Contributors:**      carstenbach & WordPress Telex  
+**Tags:**              business hours, schedule, opening times, block
+**Tested up to:**      7.0  
+**Stable tag:**        1.1  
+**License:**           GPLv2 or later  
+**License URI:**       https://www.gnu.org/licenses/gpl-2.0.html  
+
 Displays the current day's business hours or a full weekly schedule. Supports configurable seasons, holidays, and multiple time slots per day.
 
 [![Playground Demo Link](https://img.shields.io/badge/WordPress_Playground-blue?logo=wordpress&logoColor=%23fff&labelColor=%233858e9&color=%233858e9)](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/carstingaxion/todays-hours-plugin/main/.wordpress-org/blueprints/blueprint.json) [![Build, test & measure](https://github.com/carstingaxion/todays-hours-plugin/actions/workflows/build-test-measure.yml/badge.svg?branch=main)](https://github.com/carstingaxion/todays-hours-plugin/actions/workflows/build-test-measure.yml)
