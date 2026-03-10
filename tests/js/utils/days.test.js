@@ -1,10 +1,15 @@
 /**
  * Tests for src/utils/days.js
  *
- * @package TelexHoursBlock
+ * @package
  */
 
-import { ALL_DAY_KEYS, WEEKEND_KEYS, getOrderedDays, getDefaultHours } from '../../../src/utils/days';
+import {
+	ALL_DAY_KEYS,
+	WEEKEND_KEYS,
+	getOrderedDays,
+	getDefaultHours,
+} from '../../../src/utils/days';
 
 describe( 'ALL_DAY_KEYS', () => {
 	it( 'contains 7 day keys starting with sun', () => {

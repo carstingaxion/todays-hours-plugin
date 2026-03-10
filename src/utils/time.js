@@ -1,7 +1,7 @@
 /**
  * Time formatting utilities.
  *
- * @package TelexHoursBlock
+ * @package
  */
 
 import { __ } from '@wordpress/i18n';
@@ -61,13 +61,13 @@ export function formatTimeWithSiteFormat( timeStr, timeFormat ) {
 
 		switch ( ch ) {
 			case 'g':
-				result += ( hours % 12 ) || 12;
+				result += hours % 12 || 12;
 				break;
 			case 'G':
 				result += hours;
 				break;
 			case 'h':
-				result += String( ( hours % 12 ) || 12 ).padStart( 2, '0' );
+				result += String( hours % 12 || 12 ).padStart( 2, '0' );
 				break;
 			case 'H':
 				result += String( hours ).padStart( 2, '0' );

@@ -1,7 +1,7 @@
 /**
  * Mock for @wordpress/api-fetch.
  *
- * @package TelexHoursBlock
+ * @package
  */
 
 const apiFetch = jest.fn( () => Promise.resolve( { holidays: [] } ) );

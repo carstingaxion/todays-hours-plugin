@@ -1,7 +1,7 @@
 /**
  * MonthDayPicker component — Selects a month and day without year.
  *
- * @package TelexHoursBlock
+ * @package
  */
 
 import {
@@ -47,9 +47,13 @@ export default function MonthDayPicker( { label, value, onChange } ) {
 						onChange={ ( e ) => {
 							const newMonth = e.target.value;
 							const newDayOpts = getDayOptions( newMonth );
-							const clampedDay = parseInt( day, 10 ) > newDayOpts.length
-								? String( newDayOpts.length ).padStart( 2, '0' )
-								: day;
+							const clampedDay =
+								parseInt( day, 10 ) > newDayOpts.length
+									? String( newDayOpts.length ).padStart(
+											2,
+											'0'
+									  )
+									: day;
 							onChange( newMonth + '-' + clampedDay );
 						} }
 						style={ { width: '100%', minHeight: '36px' } }

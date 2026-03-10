@@ -4,7 +4,7 @@
  * Reads a .ics file via FileReader and sends its content to the
  * server-side REST endpoint for parsing.
  *
- * @package TelexHoursBlock
+ * @package
  */
 
 import apiFetch from '@wordpress/api-fetch';

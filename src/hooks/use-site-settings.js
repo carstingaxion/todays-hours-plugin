@@ -1,7 +1,7 @@
 /**
  * Custom hook for reading WordPress site settings (start_of_week, time_format, date_format).
  *
- * @package TelexHoursBlock
+ * @package
  */
 
 import { useSelect } from '@wordpress/data';

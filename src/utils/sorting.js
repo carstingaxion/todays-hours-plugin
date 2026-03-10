@@ -1,7 +1,7 @@
 /**
  * Sorting utilities for seasons and holidays.
  *
- * @package TelexHoursBlock
+ * @package
  */
 
 /**

@@ -1,6 +1,6 @@
 /**
  * Mock for SCSS/CSS imports in Jest.
  *
- * @package TelexHoursBlock
+ * @package
  */
 module.exports = {};

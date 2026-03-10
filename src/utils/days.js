@@ -1,7 +1,7 @@
 /**
  * Day key and label utilities.
  *
- * @package TelexHoursBlock
+ * @package
  */
 
 import { dateI18n } from '@wordpress/date';

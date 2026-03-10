@@ -1,7 +1,7 @@
 /**
  * Custom hook for reading and writing a site setting via the core data store.
  *
- * @package TelexHoursBlock
+ * @package
  */
 
 import { useCallback } from '@wordpress/element';
@@ -25,7 +25,10 @@ export function useSiteSetting( settingKey, fallback ) {
 			store.getEntityRecord( 'root', 'site' );
 			// Read from the edited record to pick up local changes.
 			const record = store.getEditedEntityRecord( 'root', 'site' );
-			const resolved = store.hasFinishedResolution( 'getEntityRecord', [ 'root', 'site' ] );
+			const resolved = store.hasFinishedResolution( 'getEntityRecord', [
+				'root',
+				'site',
+			] );
 			return {
 				editedValue: record ? record[ settingKey ] : undefined,
 				hasResolved: resolved,
@@ -45,7 +48,8 @@ export function useSiteSetting( settingKey, fallback ) {
 		[ settingKey, editEntityRecord ]
 	);
 
-	const currentValue = hasResolved && editedValue !== undefined ? editedValue : fallback;
+	const currentValue =
+		hasResolved && editedValue !== undefined ? editedValue : fallback;
 
 	return [ currentValue, setValue, hasResolved ];
 }

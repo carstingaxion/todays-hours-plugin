@@ -1,7 +1,7 @@
 /**
  * Tests for src/utils/sorting.js
  *
- * @package TelexHoursBlock
+ * @package
  */
 
 import { getSortableBeginDate } from '../../../src/utils/sorting';
@@ -40,11 +40,9 @@ describe( 'getSortableBeginDate', () => {
 	} );
 
 	it( 'sorts year-specific dates chronologically', () => {
-		const dates = [
-			'2025-12-01',
-			'2025-01-15',
-			'2025-06-30',
-		].map( getSortableBeginDate );
+		const dates = [ '2025-12-01', '2025-01-15', '2025-06-30' ].map(
+			getSortableBeginDate
+		);
 
 		const sorted = [ ...dates ].sort();
 		expect( sorted ).toEqual( [

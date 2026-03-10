@@ -1,7 +1,7 @@
 /**
  * Tests for src/utils/slots.js
  *
- * @package TelexHoursBlock
+ * @package
  */
 
 import {
@@ -24,9 +24,7 @@ describe( 'normalizeSlots', () => {
 	} );
 
 	it( 'returns default empty slot for null', () => {
-		expect( normalizeSlots( null ) ).toEqual( [
-			{ open: '', close: '' },
-		] );
+		expect( normalizeSlots( null ) ).toEqual( [ { open: '', close: '' } ] );
 	} );
 
 	it( 'returns default empty slot for undefined', () => {
@@ -36,9 +34,7 @@ describe( 'normalizeSlots', () => {
 	} );
 
 	it( 'returns default empty slot for empty array', () => {
-		expect( normalizeSlots( [] ) ).toEqual( [
-			{ open: '', close: '' },
-		] );
+		expect( normalizeSlots( [] ) ).toEqual( [ { open: '', close: '' } ] );
 	} );
 
 	it( 'handles multiple slots', () => {

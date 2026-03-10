@@ -1,12 +1,16 @@
 /**
  * WeekView component — Renders the full weekly schedule preview in the editor.
  *
- * @package TelexHoursBlock
+ * @package
  */
 
 import { __ } from '@wordpress/i18n';
 import { Spinner } from '@wordpress/components';
-import { normalizeSlots, normalizeHolidaySlots, slotsHaveOpen } from '../utils/slots';
+import {
+	normalizeSlots,
+	normalizeHolidaySlots,
+	slotsHaveOpen,
+} from '../utils/slots';
 import { WEEKEND_KEYS, ALL_DAY_KEYS } from '../utils/days';
 import { findHolidayForDate } from '../hooks/use-schedule-preview';
 
@@ -63,7 +67,10 @@ export default function WeekView( {
 	return (
 		<dl className="telex-hours-block__list">
 			{ orderedDays
-				.filter( ( { key: dk } ) => ! hideWeekends || ! WEEKEND_KEYS.includes( dk ) )
+				.filter(
+					( { key: dk } ) =>
+						! hideWeekends || ! WEEKEND_KEYS.includes( dk )
+				)
 				.map( ( { key: dk, label: dayLabel } ) => {
 					const isToday = dk === preview.dayKey;
 					const dayDate = getDateForDay( dk );
@@ -73,7 +80,9 @@ export default function WeekView( {
 					if ( dayHoliday ) {
 						daySlots = normalizeHolidaySlots( dayHoliday );
 					} else if ( preview.currentSeason.hours?.[ dk ] ) {
-						daySlots = normalizeSlots( preview.currentSeason.hours[ dk ] );
+						daySlots = normalizeSlots(
+							preview.currentSeason.hours[ dk ]
+						);
 					}
 
 					const hasOpen = slotsHaveOpen( daySlots );
@@ -102,7 +111,7 @@ export default function WeekView( {
 						dayHoliday.name
 					) {
 						closedLabel =
-							__( 'Closed for ', 'telex-hours-block' ) +
+							__( 'Closed for', 'telex-hours-block' ) +
 							dayHoliday.name;
 					}
 
@@ -112,7 +121,9 @@ export default function WeekView( {
 								{ dayLabel }
 							</dt>
 							<dd className={ ddClasses } data-day={ dk }>
-								{ isClosed ? closedLabel : renderSlots( daySlots ) }
+								{ isClosed
+									? closedLabel
+									: renderSlots( daySlots ) }
 							</dd>
 						</div>
 					);

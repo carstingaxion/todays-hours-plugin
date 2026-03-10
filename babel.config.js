@@ -4,7 +4,7 @@
  * Uses the WordPress default Babel preset which handles JSX,
  * ES modules, and other modern JavaScript features.
  *
- * @package TelexHoursBlock
+ * @package
  */
 
 module.exports = function ( api ) {

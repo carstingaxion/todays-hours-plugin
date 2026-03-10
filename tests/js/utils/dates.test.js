@@ -1,7 +1,7 @@
 /**
  * Tests for src/utils/dates.js
  *
- * @package TelexHoursBlock
+ * @package
  */
 
 import {

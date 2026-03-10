@@ -1,7 +1,7 @@
 /**
  * HolidayEditor component — Inspector panel editor for a single holiday.
  *
- * @package TelexHoursBlock
+ * @package
  */
 
 import { __ } from '@wordpress/i18n';
@@ -25,17 +25,23 @@ import MonthDayPicker from './month-day-picker';
 /**
  * Renders the editor for a single holiday in the inspector panel.
  *
- * @param {Object}   props           Component props.
- * @param {Object}   props.holiday   Holiday data object.
- * @param {number}   props.index     Index of this holiday in the array.
- * @param {Function} props.onChange  Callback: (index, updatedHoliday) => void.
+ * @param {Object}   props          Component props.
+ * @param {Object}   props.holiday  Holiday data object.
+ * @param {number}   props.index    Index of this holiday in the array.
+ * @param {Function} props.onChange Callback: (index, updatedHoliday) => void.
  * @param {Function} props.onRemove Callback: (index) => void.
  * @return {import('@wordpress/element').WPElement} Rendered component.
  */
-export default function HolidayEditor( { holiday, index, onChange, onRemove } ) {
+export default function HolidayEditor( {
+	holiday,
+	index,
+	onChange,
+	onRemove,
+} ) {
 	const [ isOpen, setIsOpen ] = useState( false );
 
-	const isRecurring = ! dateHasYear( holiday.beginDate ) && ! dateHasYear( holiday.endDate );
+	const isRecurring =
+		! dateHasYear( holiday.beginDate ) && ! dateHasYear( holiday.endDate );
 
 	const updateField = useCallback(
 		( field, value ) => {
@@ -49,7 +55,9 @@ export default function HolidayEditor( { holiday, index, onChange, onRemove } ) 
 			const updated = { ...holiday };
 			if ( recurring ) {
 				if ( dateHasYear( updated.beginDate ) ) {
-					const { month, day: d } = parseMonthDay( updated.beginDate );
+					const { month, day: d } = parseMonthDay(
+						updated.beginDate
+					);
 					updated.beginDate = month + '-' + d;
 				}
 				if ( dateHasYear( updated.endDate ) ) {
@@ -71,29 +79,43 @@ export default function HolidayEditor( { holiday, index, onChange, onRemove } ) 
 	);
 
 	const holidaySlots = normalizeHolidaySlots( holiday );
-	const currentSlots = holidaySlots.length > 0 ? holidaySlots : [ { open: '', close: '' } ];
+	const currentSlots =
+		holidaySlots.length > 0 ? holidaySlots : [ { open: '', close: '' } ];
 
 	const updateSlotTime = useCallback(
 		( slotIndex, timeKey, value ) => {
 			const updated = currentSlots.map( ( s, si ) =>
 				si === slotIndex ? { ...s, [ timeKey ]: value } : s
 			);
-			onChange( index, { ...holiday, slots: updated, openTime: undefined, closeTime: undefined } );
+			onChange( index, {
+				...holiday,
+				slots: updated,
+				openTime: undefined,
+				closeTime: undefined,
+			} );
 		},
 		[ index, holiday, currentSlots, onChange ]
 	);
 
 	const addSlot = useCallback( () => {
 		const updated = [ ...currentSlots, { open: '', close: '' } ];
-		onChange( index, { ...holiday, slots: updated, openTime: undefined, closeTime: undefined } );
+		onChange( index, {
+			...holiday,
+			slots: updated,
+			openTime: undefined,
+			closeTime: undefined,
+		} );
 	}, [ index, holiday, currentSlots, onChange ] );
 
 	const removeSlot = useCallback(
 		( slotIndex ) => {
-			const updated = currentSlots.filter( ( _, si ) => si !== slotIndex );
+			const updated = currentSlots.filter(
+				( _, si ) => si !== slotIndex
+			);
 			onChange( index, {
 				...holiday,
-				slots: updated.length > 0 ? updated : [ { open: '', close: '' } ],
+				slots:
+					updated.length > 0 ? updated : [ { open: '', close: '' } ],
 				openTime: undefined,
 				closeTime: undefined,
 			} );
@@ -110,10 +132,16 @@ export default function HolidayEditor( { holiday, index, onChange, onRemove } ) 
 						onClick={ () => setIsOpen( ! isOpen ) }
 						className="telex-hours-block-inspector__holiday-toggle"
 					>
-						<Icon icon={ isOpen ? 'arrow-up-alt2' : 'arrow-down-alt2' } />
+						<Icon
+							icon={
+								isOpen ? 'arrow-up-alt2' : 'arrow-down-alt2'
+							}
+						/>
 						<span>
 							{ holiday.name ||
-								( __( 'Holiday', 'telex-hours-block' ) + ' ' + ( index + 1 ) ) }
+								__( 'Holiday', 'telex-hours-block' ) +
+									' ' +
+									( index + 1 ) }
 						</span>
 					</Button>
 				</FlexBlock>
@@ -137,7 +165,10 @@ export default function HolidayEditor( { holiday, index, onChange, onRemove } ) 
 						__nextHasNoMarginBottom
 					/>
 					<ToggleControl
-						label={ __( 'Repeats every year', 'telex-hours-block' ) }
+						label={ __(
+							'Repeats every year',
+							'telex-hours-block'
+						) }
 						checked={ isRecurring }
 						onChange={ toggleRecurring }
 						__nextHasNoMarginBottom
@@ -146,16 +177,26 @@ export default function HolidayEditor( { holiday, index, onChange, onRemove } ) 
 						<Flex>
 							<FlexBlock>
 								<MonthDayPicker
-									label={ __( 'Begin Date', 'telex-hours-block' ) }
+									label={ __(
+										'Begin Date',
+										'telex-hours-block'
+									) }
 									value={ holiday.beginDate || '01-01' }
-									onChange={ ( val ) => updateField( 'beginDate', val ) }
+									onChange={ ( val ) =>
+										updateField( 'beginDate', val )
+									}
 								/>
 							</FlexBlock>
 							<FlexBlock>
 								<MonthDayPicker
-									label={ __( 'End Date', 'telex-hours-block' ) }
+									label={ __(
+										'End Date',
+										'telex-hours-block'
+									) }
 									value={ holiday.endDate || '01-01' }
-									onChange={ ( val ) => updateField( 'endDate', val ) }
+									onChange={ ( val ) =>
+										updateField( 'endDate', val )
+									}
 								/>
 							</FlexBlock>
 						</Flex>
@@ -163,31 +204,39 @@ export default function HolidayEditor( { holiday, index, onChange, onRemove } ) 
 						<Flex>
 							<FlexBlock>
 								<TextControl
-									label={ __( 'Begin Date', 'telex-hours-block' ) }
+									label={ __(
+										'Begin Date',
+										'telex-hours-block'
+									) }
 									type="date"
 									value={ holiday.beginDate }
-									onChange={ ( val ) => updateField( 'beginDate', val ) }
+									onChange={ ( val ) =>
+										updateField( 'beginDate', val )
+									}
 									__nextHasNoMarginBottom
 								/>
 							</FlexBlock>
 							<FlexBlock>
 								<TextControl
-									label={ __( 'End Date', 'telex-hours-block' ) }
+									label={ __(
+										'End Date',
+										'telex-hours-block'
+									) }
 									type="date"
 									value={ holiday.endDate }
-									onChange={ ( val ) => updateField( 'endDate', val ) }
+									onChange={ ( val ) =>
+										updateField( 'endDate', val )
+									}
 									__nextHasNoMarginBottom
 								/>
 							</FlexBlock>
 						</Flex>
 					) }
-					<Text
-						variant="muted"
-						size="11"
-						upperCase
-						weight={ 500 }
-					>
-						{ __( 'Leave all slots blank if closed all day', 'telex-hours-block' ) }
+					<Text variant="muted" size="11" upperCase weight={ 500 }>
+						{ __(
+							'Leave all slots blank if closed all day',
+							'telex-hours-block'
+						) }
 					</Text>
 					{ currentSlots.map( ( slot, si ) => (
 						<TimeSlotRow

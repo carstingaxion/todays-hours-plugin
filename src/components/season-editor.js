@@ -1,7 +1,7 @@
 /**
  * SeasonEditor component — Inspector panel editor for a single season.
  *
- * @package TelexHoursBlock
+ * @package
  */
 
 import { __ } from '@wordpress/i18n';
@@ -27,10 +27,16 @@ import TimeSlotRow from './time-slot-row';
  * @param {number}   props.index       Index of this season in the array.
  * @param {Array}    props.orderedDays Ordered array of {key, label} day objects.
  * @param {Function} props.onChange    Callback: (index, updatedSeason) => void.
- * @param {Function} props.onRemove   Callback: (index) => void.
+ * @param {Function} props.onRemove    Callback: (index) => void.
  * @return {import('@wordpress/element').WPElement} Rendered component.
  */
-export default function SeasonEditor( { season, index, orderedDays, onChange, onRemove } ) {
+export default function SeasonEditor( {
+	season,
+	index,
+	orderedDays,
+	onChange,
+	onRemove,
+} ) {
 	const [ isOpen, setIsOpen ] = useState( false );
 
 	const updateField = useCallback(
@@ -71,10 +77,15 @@ export default function SeasonEditor( { season, index, orderedDays, onChange, on
 	const removeSlot = useCallback(
 		( dayKey, slotIndex ) => {
 			const currentSlots = normalizeSlots( season.hours?.[ dayKey ] );
-			const updatedSlots = currentSlots.filter( ( _, si ) => si !== slotIndex );
+			const updatedSlots = currentSlots.filter(
+				( _, si ) => si !== slotIndex
+			);
 			const updatedHours = {
 				...season.hours,
-				[ dayKey ]: updatedSlots.length > 0 ? updatedSlots : [ { open: '', close: '' } ],
+				[ dayKey ]:
+					updatedSlots.length > 0
+						? updatedSlots
+						: [ { open: '', close: '' } ],
 			};
 			onChange( index, { ...season, hours: updatedHours } );
 		},
@@ -90,10 +101,16 @@ export default function SeasonEditor( { season, index, orderedDays, onChange, on
 						onClick={ () => setIsOpen( ! isOpen ) }
 						className="telex-hours-block-inspector__season-toggle"
 					>
-						<Icon icon={ isOpen ? 'arrow-up-alt2' : 'arrow-down-alt2' } />
+						<Icon
+							icon={
+								isOpen ? 'arrow-up-alt2' : 'arrow-down-alt2'
+							}
+						/>
 						<span>
 							{ season.name ||
-								( __( 'Season', 'telex-hours-block' ) + ' ' + ( index + 1 ) ) }
+								__( 'Season', 'telex-hours-block' ) +
+									' ' +
+									( index + 1 ) }
 						</span>
 					</Button>
 				</FlexBlock>
@@ -119,10 +136,15 @@ export default function SeasonEditor( { season, index, orderedDays, onChange, on
 					<Flex>
 						<FlexBlock>
 							<TextControl
-								label={ __( 'Begin Date', 'telex-hours-block' ) }
+								label={ __(
+									'Begin Date',
+									'telex-hours-block'
+								) }
 								type="date"
 								value={ season.beginDate }
-								onChange={ ( val ) => updateField( 'beginDate', val ) }
+								onChange={ ( val ) =>
+									updateField( 'beginDate', val )
+								}
 								__nextHasNoMarginBottom
 							/>
 						</FlexBlock>
@@ -131,7 +153,9 @@ export default function SeasonEditor( { season, index, orderedDays, onChange, on
 								label={ __( 'End Date', 'telex-hours-block' ) }
 								type="date"
 								value={ season.endDate }
-								onChange={ ( val ) => updateField( 'endDate', val ) }
+								onChange={ ( val ) =>
+									updateField( 'endDate', val )
+								}
 								__nextHasNoMarginBottom
 							/>
 						</FlexBlock>
@@ -144,12 +168,20 @@ export default function SeasonEditor( { season, index, orderedDays, onChange, on
 							weight={ 500 }
 							className="telex-hours-block-inspector__day-grid-hint"
 						>
-							{ __( 'Leave blank for closed', 'telex-hours-block' ) }
+							{ __(
+								'Leave blank for closed',
+								'telex-hours-block'
+							) }
 						</Text>
 						{ orderedDays.map( ( { key, label } ) => {
-							const slots = normalizeSlots( season.hours?.[ key ] );
+							const slots = normalizeSlots(
+								season.hours?.[ key ]
+							);
 							return (
-								<div key={ key } className="telex-hours-block-inspector__day-row">
+								<div
+									key={ key }
+									className="telex-hours-block-inspector__day-row"
+								>
 									<div className="telex-hours-block-inspector__day-label">
 										{ label }
 									</div>
@@ -159,8 +191,17 @@ export default function SeasonEditor( { season, index, orderedDays, onChange, on
 												key={ si }
 												slot={ slot }
 												slotIndex={ si }
-												onUpdate={ ( slotIdx, timeKey, val ) =>
-													updateSlotTime( key, slotIdx, timeKey, val )
+												onUpdate={ (
+													slotIdx,
+													timeKey,
+													val
+												) =>
+													updateSlotTime(
+														key,
+														slotIdx,
+														timeKey,
+														val
+													)
 												}
 												onRemove={ ( slotIdx ) =>
 													removeSlot( key, slotIdx )
@@ -174,7 +215,10 @@ export default function SeasonEditor( { season, index, orderedDays, onChange, on
 											onClick={ () => addSlot( key ) }
 											className="telex-hours-block-inspector__add-slot"
 										>
-											{ __( '+ Add time slot', 'telex-hours-block' ) }
+											{ __(
+												'+ Add time slot',
+												'telex-hours-block'
+											) }
 										</Button>
 									</div>
 								</div>

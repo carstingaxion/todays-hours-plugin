@@ -1,7 +1,7 @@
 /**
  * Mock for @wordpress/element — re-exports React hooks.
  *
- * @package TelexHoursBlock
+ * @package
  */
 
 const React = require( 'react' );
