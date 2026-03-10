@@ -14,6 +14,9 @@
 		"packages-update": "wp-scripts packages-update",
 		"plugin-zip": "wp-scripts plugin-zip",
 		"start": "wp-scripts start --webpack-copy-php",
+		"test:js": "wp-scripts test-unit-js --config jest.config.js",
+		"test:js:watch": "wp-scripts test-unit-js --config jest.config.js --watch",
+		"test:js:coverage": "wp-scripts test-unit-js --config jest.config.js --coverage"
 	},
     "devDependencies": {
         "@wordpress/scripts": "^30.15.0"
