@@ -1,6 +1,6 @@
 
   {
-	"name": "telex-hours-block",
+	"name": "@carstingaxion/telex-hours-block",
 	"version": "0.1.0",
 	"description": "Displays the current day's business hours or a full weekly schedule with customizable seasons and holidays.",
 	"author": "Carsten Bach & WordPress Telex",

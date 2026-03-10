@@ -5,7 +5,8 @@
  * Version:           1.1
  * Requires at least: 6.4
  * Requires PHP:      7.4
- * Author:            WordPress Telex
+ * Author:            Carsten Bach
+ * Author URI:        https://carsten-bach.de
  * License:           GPLv2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       telex-hours-block
