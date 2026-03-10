@@ -2,6 +2,8 @@
 
 Displays the current day's business hours or a full weekly schedule. Supports configurable seasons, holidays, and multiple time slots per day.
 
+[![Playground Demo Link](https://img.shields.io/badge/WordPress_Playground-blue?logo=wordpress&logoColor=%23fff&labelColor=%233858e9&color=%233858e9)](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/carstingaxion/todays-hours-plugin/main/.wordpress-org/blueprints/blueprint.json) [![Build, test & measure](https://github.com/carstingaxion/todays-hours-plugin/actions/workflows/build-test-measure.yml/badge.svg?branch=main)](https://github.com/carstingaxion/todays-hours-plugin/actions/workflows/build-test-measure.yml)
+
 ## Description
 
 A Gutenberg block that shows business hours on the front end of a WordPress site. Schedule data (seasons and holidays) is stored as site-wide settings and shared across all block instances. Each block instance has its own display settings.
