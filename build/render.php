@@ -8,9 +8,9 @@
  *
  * @package TelexHoursBlock
  *
- * @var array    $attributes Block attributes.
- * @var string   $content    Block content (empty for dynamic blocks).
- * @var WP_Block $block      Block instance.
+ * @var array<string, mixed> $attributes Block attributes.
+ * @var string               $content    Block content (empty for dynamic blocks).
+ * @var WP_Block             $block      Block instance.
  */
 
 // Exit if accessed directly.
@@ -76,7 +76,7 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 		 * Default season data used when no seasons have been configured.
 		 *
 		 * @since 0.1.0
-		 * @var array
+		 * @var array<int, array{name: string, beginDate: string, endDate: string, hours: array<string, array<int, array{open: string, close: string}>>}>
 		 */
 		private array $default_seasons;
 
@@ -181,11 +181,11 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 		 *
 		 * @since 0.1.0
 		 *
-		 * @param array|null $season           Active season data or null.
-		 * @param array|null $holiday          Active holiday data or null.
-		 * @param string     $day_key          Day key (e.g., 'mon').
-		 * @param bool       $show_reason      Whether to show the closed reason.
-		 * @param bool       $friendly_twelves Whether to use friendly twelve labels.
+		 * @param array{name?: string, beginDate?: string, endDate?: string, hours?: array<string, array<int, array{open: string, close: string}>>}|null $season Active season data or null.
+		 * @param array{name?: string, beginDate?: string, endDate?: string, slots?: array<int, array{open: string, close: string}>}|null                $holiday Active holiday data or null.
+		 * @param string                                                                                                                                 $day_key          Day key (e.g., 'mon').
+		 * @param bool                                                                                                                                   $show_reason      Whether to show the closed reason.
+		 * @param bool                                                                                                                                   $friendly_twelves Whether to use friendly twelve labels.
 		 * @return string Rendered HTML.
 		 */
 		public function render_day( ?array $season, ?array $holiday, string $day_key, bool $show_reason, bool $friendly_twelves ): string {
@@ -202,8 +202,9 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 			if ( ! $has_open ) {
 				$closed_text = __( 'Closed Today', 'telex-hours-block' );
 				if ( $show_reason && null !== $holiday && ! empty( $holiday['name'] ) ) {
+					$holiday_name = (string) $holiday['name'];
 					/* translators: %s: holiday/exception name */
-					$closed_text = sprintf( __( 'Closed for %s', 'telex-hours-block' ), $holiday['name'] );
+					$closed_text = sprintf( __( 'Closed for %s', 'telex-hours-block' ), $holiday_name );
 				}
 				return '<p class="telex-hours-block__today-hours telex-hours-block__today-hours--closed">'
 					. esc_html( $closed_text )
@@ -225,13 +226,13 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 		 *
 		 * @since 0.1.0
 		 *
-		 * @param array|null $season           Active season data or null.
-		 * @param array      $holidays         All holidays for per-day checking.
-		 * @param string     $today_key        Today's day key.
-		 * @param bool       $friendly_twelves Whether to use friendly twelve labels.
-		 * @param DateTime   $today            Today's date object.
-		 * @param bool       $show_reason      Whether to show the closed reason.
-		 * @param bool       $hide_weekends    Whether to hide weekend days.
+		 * @param array{name?: string, beginDate?: string, endDate?: string, hours?: array<string, array<int, array{open: string, close: string}>>}|null $season Active season data or null.
+		 * @param array<int, array{name?: string, beginDate?: string, endDate?: string, slots?: array<int, array{open: string, close: string}>}>         $holidays All holidays for per-day checking.
+		 * @param string                                                                                                                                 $today_key        Today's day key.
+		 * @param bool                                                                                                                                   $friendly_twelves Whether to use friendly twelve labels.
+		 * @param DateTime                                                                                                                               $today            Today's date object.
+		 * @param bool                                                                                                                                   $show_reason      Whether to show the closed reason.
+		 * @param bool                                                                                                                                   $hide_weekends    Whether to hide weekend days.
 		 * @return string Rendered HTML.
 		 */
 		public function render_week( ?array $season, array $holidays, string $today_key, bool $friendly_twelves, DateTime $today, bool $show_reason, bool $hide_weekends = false ): string {
@@ -247,6 +248,8 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 
 			$today_index = array_search( $today_key, $all_day_keys, true );
 
+			$season_hours = $season['hours'] ?? array();
+
 			$html = '<dl class="telex-hours-block__list">';
 
 			foreach ( $day_keys as $dk ) {
@@ -257,7 +260,7 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 				$is_today = ( $dk === $today_key );
 
 				$dk_index = array_search( $dk, $all_day_keys, true );
-				$diff     = $dk_index - $today_index;
+				$diff     = (int) $dk_index - (int) $today_index;
 				$day_date = clone $today;
 				$day_date->modify( sprintf( '%+d days', $diff ) );
 
@@ -266,8 +269,8 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 				$slots = array();
 				if ( null !== $day_holiday ) {
 					$slots = $this->day_helpers->normalize_holiday_slots( $day_holiday );
-				} elseif ( isset( $season['hours'][ $dk ] ) ) {
-					$slots = $this->day_helpers->normalize_slots( $season['hours'][ $dk ] );
+				} elseif ( isset( $season_hours[ $dk ] ) ) {
+					$slots = $this->day_helpers->normalize_slots( $season_hours[ $dk ] );
 				}
 
 				$has_open  = $this->day_helpers->slots_have_open( $slots );
@@ -313,18 +316,24 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 		 *
 		 * @since 0.1.0
 		 *
-		 * @param array $attributes Block attributes containing display options.
+		 * @param array<string, mixed> $attributes Block attributes containing display options.
 		 * @return string The rendered HTML output.
 		 */
 		public function render( array $attributes ): string {
-			$display_mode     = isset( $attributes['displayMode'] ) ? $attributes['displayMode'] : 'week';
+			$display_mode     = isset( $attributes['displayMode'] ) && is_string( $attributes['displayMode'] ) ? $attributes['displayMode'] : 'week';
 			$show_todays_date = ! empty( $attributes['showTodaysDate'] );
 			$show_reason      = ! empty( $attributes['showReasonClosed'] );
 			$friendly_twelves = ! empty( $attributes['friendlyTwelves'] );
 			$hide_weekends    = ! empty( $attributes['hideWeekends'] );
 
-			$seasons  = get_option( 'telex_hours_seasons', $this->default_seasons );
-			$holidays = get_option( 'telex_hours_holidays', array() );
+			$raw_seasons  = get_option( 'telex_hours_seasons', $this->default_seasons );
+			$raw_holidays = get_option( 'telex_hours_holidays', array() );
+
+			/** @var array<int, array{name?: string, beginDate?: string, endDate?: string, hours?: array<string, array<int, array{open: string, close: string}>>}> $seasons */
+			$seasons = is_array( $raw_seasons ) ? $raw_seasons : $this->default_seasons;
+
+			/** @var array<int, array{name?: string, beginDate?: string, endDate?: string, slots?: array<int, array{open: string, close: string}>}> $holidays */
+			$holidays = $raw_holidays;
 
 			$timezone_string = wp_timezone_string();
 			$timezone        = new DateTimeZone( $timezone_string );
@@ -340,8 +349,12 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 			$output = '';
 
 			if ( $show_todays_date ) {
+				$date_format_raw = get_option( 'date_format', 'F j, Y' );
+				$date_format     = is_string( $date_format_raw ) ? $date_format_raw : 'F j, Y';
+				$formatted_date  = wp_date( $date_format, $today->getTimestamp(), $timezone );
+
 				$output .= '<p class="telex-hours-block__date">';
-				$output .= esc_html( wp_date( get_option( 'date_format' ), $today->getTimestamp(), $timezone ) );
+				$output .= esc_html( is_string( $formatted_date ) ? $formatted_date : '' );
 				$output .= '</p>';
 			}
 
