@@ -5,7 +5,7 @@
  * @package TelexHoursBlock\Tests
  */
 
-class IcalParserTest extends PHPUnit\Framework\TestCase {
+class IcalParserTest extends WP_UnitTestCase {
 
 	/**
 	 * iCal parser instance.
@@ -17,7 +17,8 @@ class IcalParserTest extends PHPUnit\Framework\TestCase {
 	/**
 	 * Set up the test fixture.
 	 */
-	protected function setUp(): void {
+	public function set_up(): void {
+		parent::set_up();
 		$this->parser = Telex_Hours_Ical_Parser::get_instance();
 	}
 

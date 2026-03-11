@@ -99,6 +99,67 @@ A Gutenberg block that shows business hours on the front end of a WordPress site
 3. Add the "Business Hours Block" to any post, page, or widget area via the block editor.
 4. Configure seasons, holidays, and display options in the block's inspector panel.
 
+## Running Tests
+
+### PHP Tests
+
+The PHP tests use `wp-phpunit/wp-phpunit` and require a MySQL/MariaDB test database.
+
+#### Setup
+
+1. Install dependencies:
+
+```bash
+composer install
+```
+
+2. Create the test database (it will be wiped on every run):
+
+```sql
+CREATE DATABASE wordpress_test;
+```
+
+3. Copy the sample config and edit with your database credentials:
+
+```bash
+cp tests/wp-tests-config-sample.php tests/wp-tests-config.php
+```
+
+Edit `tests/wp-tests-config.php` and set `DB_NAME`, `DB_USER`, `DB_PASSWORD`, and `DB_HOST`.
+
+#### Running
+
+```bash
+composer test
+```
+
+Or with verbose output:
+
+```bash
+composer test:verbose
+```
+
+Coverage report (requires Xdebug or PCOV):
+
+```bash
+composer test:coverage
+```
+
+This generates an HTML report in `coverage-php/`, a Clover XML at `coverage-php/clover.xml`, and prints a text summary to the terminal.
+
+### JavaScript Tests
+
+```bash
+npm install
+npm run test:js
+```
+
+Watch mode:
+
+```bash
+npm run test:js:watch
+```
+
 ## FAQ
 
 ### How do I set up a schedule?

@@ -16,12 +16,15 @@
 		<properties>
 			<property name="text_domain" type="array">
 				<element value="todays-hours-plugin"/>
+				<element value="telex-hours-block"/>
 			</property>
 		</properties>
 	</rule>
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
 		<properties>
 			<property name="prefixes" type="array">
+				<element value="Telex_Hours_"/>
+				<element value="TODAYS_HOURS_"/>
 				<element value="__NAMESPACE__"/>
 			</property>
 

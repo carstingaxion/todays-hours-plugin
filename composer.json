@@ -32,7 +32,9 @@
 	},
 	"require-dev": {
 		"figuren-theater/code-quality": "*",
-		"phpunit/phpunit": "^9.6"
+		"phpunit/phpunit": "^9.6",
+		"wp-phpunit/wp-phpunit": "^6.3",
+		"yoast/phpunit-polyfills": "^1.0"
 	},
 	"autoload-dev": {
 		"classmap": [

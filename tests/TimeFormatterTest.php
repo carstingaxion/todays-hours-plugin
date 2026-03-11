@@ -5,7 +5,7 @@
  * @package TelexHoursBlock\Tests
  */
 
-class TimeFormatterTest extends PHPUnit\Framework\TestCase {
+class TimeFormatterTest extends WP_UnitTestCase {
 
 	/**
 	 * Time formatter instance.
@@ -17,7 +17,8 @@ class TimeFormatterTest extends PHPUnit\Framework\TestCase {
 	/**
 	 * Set up the test fixture.
 	 */
-	protected function setUp(): void {
+	public function set_up(): void {
+		parent::set_up();
 		$this->formatter = Telex_Hours_Time_Formatter::get_instance();
 	}
 
@@ -113,7 +114,8 @@ class TimeFormatterTest extends PHPUnit\Framework\TestCase {
 	 * Test format_time uses the site time_format option.
 	 */
 	public function test_format_time(): void {
-		// The stub get_option returns 'g:i a' for time_format.
+		update_option( 'time_format', 'g:i a' );
+
 		$result = $this->formatter->format_time( '8:00 AM' );
 		$this->assertSame( '8:00 am', $result );
 	}
@@ -122,8 +124,20 @@ class TimeFormatterTest extends PHPUnit\Framework\TestCase {
 	 * Test format_time with PM time.
 	 */
 	public function test_format_time_pm(): void {
+		update_option( 'time_format', 'g:i a' );
+
 		$result = $this->formatter->format_time( '5:00 PM' );
 		$this->assertSame( '5:00 pm', $result );
+	}
+
+	/**
+	 * Test format_time with 24-hour format.
+	 */
+	public function test_format_time_24h(): void {
+		update_option( 'time_format', 'H:i' );
+
+		$result = $this->formatter->format_time( '5:00 PM' );
+		$this->assertSame( '17:00', $result );
 	}
 
 	/**

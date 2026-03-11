@@ -5,7 +5,7 @@
  * @package TelexHoursBlock\Tests
  */
 
-class SanitizerTest extends PHPUnit\Framework\TestCase {
+class SanitizerTest extends WP_UnitTestCase {
 
 	/**
 	 * Sanitizer instance.
@@ -17,7 +17,8 @@ class SanitizerTest extends PHPUnit\Framework\TestCase {
 	/**
 	 * Set up the test fixture.
 	 */
-	protected function setUp(): void {
+	public function set_up(): void {
+		parent::set_up();
 		$this->sanitizer = Telex_Hours_Sanitizer::get_instance();
 	}
 

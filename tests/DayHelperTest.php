@@ -5,7 +5,7 @@
  * @package TelexHoursBlock\Tests
  */
 
-class DayHelpersTest extends PHPUnit\Framework\TestCase {
+class DayHelpersTest extends WP_UnitTestCase {
 
 	/**
 	 * Day helpers instance.
@@ -17,7 +17,8 @@ class DayHelpersTest extends PHPUnit\Framework\TestCase {
 	/**
 	 * Set up the test fixture.
 	 */
-	protected function setUp(): void {
+	public function set_up(): void {
+		parent::set_up();
 		$this->helpers = Telex_Hours_Day_Helpers::get_instance();
 	}
 
@@ -64,8 +65,7 @@ class DayHelpersTest extends PHPUnit\Framework\TestCase {
 	 * Test ordered day keys respect start_of_week = 0 (Sunday).
 	 */
 	public function test_get_ordered_day_keys_sunday_start(): void {
-		global $telex_test_options;
-		$telex_test_options['start_of_week'] = 0;
+		update_option( 'start_of_week', 0 );
 
 		$keys = $this->helpers->get_ordered_day_keys();
 
@@ -77,16 +77,12 @@ class DayHelpersTest extends PHPUnit\Framework\TestCase {
 	 * Test ordered day keys respect start_of_week = 1 (Monday).
 	 */
 	public function test_get_ordered_day_keys_monday_start(): void {
-		global $telex_test_options;
-		$telex_test_options['start_of_week'] = 1;
+		update_option( 'start_of_week', 1 );
 
 		$keys = $this->helpers->get_ordered_day_keys();
 
 		$this->assertSame( 'mon', $keys[0] );
 		$this->assertSame( 'sun', $keys[6] );
-
-		// Reset.
-		$telex_test_options['start_of_week'] = 0;
 	}
 
 	/**

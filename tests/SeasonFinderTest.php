@@ -5,7 +5,7 @@
  * @package TelexHoursBlock\Tests
  */
 
-class SeasonFinderTest extends PHPUnit\Framework\TestCase {
+class SeasonFinderTest extends WP_UnitTestCase {
 
 	/**
 	 * Season finder instance.
@@ -17,7 +17,8 @@ class SeasonFinderTest extends PHPUnit\Framework\TestCase {
 	/**
 	 * Set up the test fixture.
 	 */
-	protected function setUp(): void {
+	public function set_up(): void {
+		parent::set_up();
 		$this->finder = Telex_Hours_Season_Finder::get_instance();
 	}
 

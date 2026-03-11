@@ -5,7 +5,7 @@
  * @package TelexHoursBlock\Tests
  */
 
-class SchemaGeneratorTest extends PHPUnit\Framework\TestCase {
+class SchemaGeneratorTest extends WP_UnitTestCase {
 
 	/**
 	 * Schema generator instance.
@@ -31,7 +31,8 @@ class SchemaGeneratorTest extends PHPUnit\Framework\TestCase {
 	/**
 	 * Set up the test fixture.
 	 */
-	protected function setUp(): void {
+	public function set_up(): void {
+		parent::set_up();
 		$this->generator   = Telex_Hours_Schema_Generator::get_instance();
 		$this->day_helpers = Telex_Hours_Day_Helpers::get_instance();
 		$this->time_fmt    = Telex_Hours_Time_Formatter::get_instance();
