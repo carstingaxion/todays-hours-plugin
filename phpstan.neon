@@ -14,5 +14,6 @@ parameters:
             # when package is tested
             - wp-content/ (?)
             - tests/ (?)
+            - build/
         analyseAndScan:
             - node_modules/ (?)
