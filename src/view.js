@@ -1,61 +1,72 @@
 /**
- * Business Hours Block — Front-End View Script
+ * Business Hours Block — Front-End View (Interactivity API)
  *
- * Ensures the current day is highlighted in the weekly schedule
- * and provides any client-side interactivity.
+ * Re-computes the current day key from the visitor's browser clock
+ * and toggles "--today" modifier classes on the correct <dt>/<dd>
+ * elements. This ensures the today highlight is always accurate,
+ * even when the page is served from an HTML cache.
+ *
+ * The server already renders "--today" classes as the initial state
+ * (using the server's clock), so there is no flash on non-cached
+ * page loads. On cached pages the Interactivity API corrects the
+ * highlight during hydration.
  *
  * @package
  *
- * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-metadata/#view-script
+ * @see https://developer.wordpress.org/block-editor/reference-guides/interactivity-api/
  */
 
-( function () {
-	'use strict';
+import { store, getContext } from '@wordpress/interactivity';
 
-	/**
-	 * Day key map indexed by Date.getDay() value.
-	 *
-	 * @type {string[]}
-	 */
-	const dayKeys = [ 'sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat' ];
+/**
+ * Maps JS Date.getDay() index to the day key used in the block markup.
+ */
+const DAY_KEYS = [ 'sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat' ];
 
-	/**
-	 * Initializes all Business Hours Block instances on the page.
-	 *
-	 * Finds each block wrapper, determines today's day of the week,
-	 * and applies the '--today' modifier class to the corresponding
-	 * dt and dd elements for visual highlighting.
-	 *
-	 * @return {void}
-	 */
-	function init() {
-		const blocks = document.querySelectorAll(
-			'.wp-block-telex-block-telex-hours-block'
-		);
-		const todayIndex = new Date().getDay();
-		const todayKey = dayKeys[ todayIndex ];
+/**
+ * Returns the current day key based on the visitor's local clock.
+ *
+ * @return {string} Day key string (e.g. 'mon').
+ */
+function getClientDayKey() {
+	return DAY_KEYS[ new Date().getDay() ];
+}
 
-		blocks.forEach( function ( block ) {
-			const dts = block.querySelectorAll( 'dt.telex-hours-block__day' );
-			const dds = block.querySelectorAll( 'dd.telex-hours-block__hours' );
+store( 'telex/hours-block', {
+	state: {
+		/**
+		 * The current day key, re-evaluated client-side on each access
+		 * so that cached pages self-correct.
+		 *
+		 * @return {string} The current day key.
+		 */
+		get currentDayKey() {
+			return getClientDayKey();
+		},
 
-			dts.forEach( function ( dt ) {
-				if ( dt.getAttribute( 'data-day' ) === todayKey ) {
-					dt.classList.add( 'telex-hours-block__day--today' );
-				}
-			} );
+		/**
+		 * Whether the current element's day context matches the current day.
+		 * Used by data-wp-class directives on both <dt> and <dd>.
+		 *
+		 * Reads the dayKey from the element's data-wp-context and compares
+		 * it against the browser's current day.
+		 *
+		 * @return {boolean} True if this element represents today.
+		 */
+		get isDayToday() {
+			const ctx = getContext();
+			return ctx.dayKey === getClientDayKey();
+		},
 
-			dds.forEach( function ( dd ) {
-				if ( dd.getAttribute( 'data-day' ) === todayKey ) {
-					dd.classList.add( 'telex-hours-block__hours--today' );
-				}
-			} );
-		} );
-	}
-
-	if ( document.readyState === 'loading' ) {
-		document.addEventListener( 'DOMContentLoaded', init );
-	} else {
-		init();
-	}
-} )();
+		/**
+		 * Alias for isDayToday — used on <dd> elements.
+		 * Both <dt> and <dd> share the same context-based logic.
+		 *
+		 * @return {boolean} True if this element represents today.
+		 */
+		get isHoursToday() {
+			const ctx = getContext();
+			return ctx.dayKey === getClientDayKey();
+		},
+	},
+} );

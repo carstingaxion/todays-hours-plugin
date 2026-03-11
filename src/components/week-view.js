@@ -111,7 +111,8 @@ export default function WeekView( {
 						dayHoliday.name
 					) {
 						closedLabel =
-							__( 'Closed for', 'telex-hours-block' ) + ' ' +
+							__( 'Closed for', 'telex-hours-block' ) +
+							' ' +
 							dayHoliday.name;
 					}
 

@@ -20,6 +20,7 @@ return array(
 		),
 		'supports' => array(
 			'html' => false,
+			'interactivity' => true,
 			'color' => array(
 				'background' => true,
 				'text' => true
@@ -67,7 +68,7 @@ return array(
 		'editorScript' => 'file:./index.js',
 		'editorStyle' => 'file:./index.css',
 		'style' => 'file:./style-index.css',
-		'viewScript' => 'file:./view.js',
+		'viewScriptModule' => 'file:./view.js',
 		'render' => 'file:./render.php'
 	)
 );

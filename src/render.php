@@ -224,6 +224,10 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 		 * Checks holidays per-day so that holidays on any day of the current
 		 * week are displayed, not just today's holiday.
 		 *
+		 * Each <dt> and <dd> is annotated with Interactivity API directives
+		 * so the client-side store can re-evaluate "--today" modifier classes
+		 * after hydration, which is essential for bypassing HTML page caching.
+		 *
 		 * @since 0.1.0
 		 *
 		 * @param array{name?: string, beginDate?: string, endDate?: string, hours?: array<string, array<int, array{open: string, close: string}>>}|null $season Active season data or null.
@@ -257,8 +261,6 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 					continue;
 				}
 
-				$is_today = ( $dk === $today_key );
-
 				$dk_index = array_search( $dk, $all_day_keys, true );
 				$diff     = (int) $dk_index - (int) $today_index;
 				$day_date = clone $today;
@@ -276,26 +278,47 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 				$has_open  = $this->day_helpers->slots_have_open( $slots );
 				$is_closed = ! $has_open;
 
-				$dt_classes = array( 'telex-hours-block__day' );
-				$dd_classes = array( 'telex-hours-block__hours' );
-				if ( $is_today ) {
-					$dt_classes[] = 'telex-hours-block__day--today';
-					$dd_classes[] = 'telex-hours-block__hours--today';
-				}
+				$is_today = ( $dk === $today_key );
+
+				// Base classes without --today modifier (Interactivity API adds it client-side).
+				$dt_base_classes = 'telex-hours-block__day';
+				$dd_base_classes = 'telex-hours-block__hours';
 				if ( $is_closed ) {
-					$dd_classes[] = 'telex-hours-block__hours--closed';
+					$dd_base_classes .= ' telex-hours-block__hours--closed';
 				}
 
-				$html .= '<dt class="' . esc_attr( implode( ' ', $dt_classes ) ) . '" data-day="' . esc_attr( $dk ) . '">';
+				// Server renders --today classes as initial state; Interactivity API
+				// directives override them client-side to handle cached pages.
+				$dt_classes = $dt_base_classes;
+				$dd_classes = $dd_base_classes;
+				if ( $is_today ) {
+					$dt_classes .= ' telex-hours-block__day--today';
+					$dd_classes .= ' telex-hours-block__hours--today';
+				}
+
+				$day_context = wp_json_encode( array( 'dayKey' => $dk ), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP );
+
+				$html .= '<dt'
+					. ' class="' . esc_attr( $dt_classes ) . '"'
+					. ' data-day="' . esc_attr( $dk ) . '"'
+					. ' data-wp-context=\'' . $day_context . '\''
+					. ' data-wp-class--telex-hours-block__day--today="state.isDayToday"'
+					. '>';
 				$html .= esc_html( $day_labels[ $dk ] );
 				$html .= '</dt>';
 
-				$html .= '<dd class="' . esc_attr( implode( ' ', $dd_classes ) ) . '" data-day="' . esc_attr( $dk ) . '">';
+				$html .= '<dd'
+					. ' class="' . esc_attr( $dd_classes ) . '"'
+					. ' data-day="' . esc_attr( $dk ) . '"'
+					. ' data-wp-context=\'' . $day_context . '\''
+					. ' data-wp-class--telex-hours-block__hours--today="state.isHoursToday"'
+					. '>';
 				if ( $is_closed ) {
 					$closed_label = esc_html__( 'Closed', 'telex-hours-block' );
 					if ( $show_reason && null !== $day_holiday && ! empty( $day_holiday['name'] ) ) {
+						$holiday_name = is_string( $day_holiday['name'] ) ? $day_holiday['name'] : '';
 						/* translators: %s: holiday/exception name */
-						$closed_label = esc_html( sprintf( __( 'Closed for %s', 'telex-hours-block' ), $day_holiday['name'] ) );
+						$closed_label = esc_html( sprintf( __( 'Closed for %s', 'telex-hours-block' ), $holiday_name ) );
 					}
 					$html .= $closed_label;
 				} else {
@@ -399,8 +422,22 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 $renderer        = Telex_Hours_Block_Renderer::get_instance();
 $rendered_output = $renderer->render( $attributes );
 
+// Provide initial server state to the Interactivity API store.
+// The client re-computes the current day key from the browser's clock,
+// so the today highlight stays correct even on cached pages.
+$all_day_keys_list = array( 'sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat' );
+$tz_string         = wp_timezone_string();
+$tz_obj            = new DateTimeZone( $tz_string );
+$now_obj           = new DateTime( 'now', $tz_obj );
+$server_day_key    = $all_day_keys_list[ (int) $now_obj->format( 'w' ) ];
+
+$context = array(
+	'serverDayKey' => $server_day_key,
+);
+
 printf(
-	'<div %s>%s</div>',
+	'<div %s data-wp-interactive="telex/hours-block" data-wp-context=\'%s\'>%s</div>',
 	get_block_wrapper_attributes( array( 'class' => 'telex-hours-block' ) ),
-	$rendered_output // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is escaped within render methods.
+	wp_json_encode( $context, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP ),
+	$rendered_output // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 );
