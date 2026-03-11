@@ -42,7 +42,7 @@ export default function DayView( {
 	if ( ! hasOpen ) {
 		let closedText = __( 'Closed Today', 'telex-hours-block' );
 		if ( showReasonClosed && holidayName ) {
-			closedText = __( 'Closed for', 'telex-hours-block' ) + holidayName;
+			closedText = __( 'Closed for', 'telex-hours-block' ) + ' ' + holidayName;
 		}
 		return (
 			<p className="telex-hours-block__today-hours telex-hours-block__today-hours--closed">
