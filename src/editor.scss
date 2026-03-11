@@ -4,11 +4,14 @@
  *
  * Styles for the inspector panel season and holiday editors.
  * Follows BEM naming conventions with proper nesting.
+ * Uses CSS container queries for intrinsic responsive layout.
  *
  * @package TelexHoursBlock
  */
 
 .telex-hours-block-inspector {
+	container-type: inline-size;
+	container-name: telex-inspector;
 
 	/**
 	 * Season panel section.
@@ -99,28 +102,31 @@
 		font-size: 11px !important;
 		margin-top: 2px;
 	}
+}
 
-	/**
-	 * Responsive: small screens (< 480px).
-	 */
-	@media (max-width: 479px) {
+/**
+ * Intrinsic responsive: narrow inspector panels (< 16em / ~256px).
+ *
+ * Uses container queries so the inspector adapts to the panel's own
+ * width rather than the viewport.
+ */
+@container telex-inspector (max-width: 16em) {
 
-		&__season-details,
-		&__holiday-details {
-			gap: 8px;
+	.telex-hours-block-inspector__season-details,
+	.telex-hours-block-inspector__holiday-details {
+		gap: 8px;
+	}
+
+	.telex-hours-block-inspector__day-row {
+		padding: 4px 0;
+
+		.components-flex {
+			flex-wrap: wrap;
+			gap: 4px;
 		}
+	}
 
-		&__day-row {
-			padding: 4px 0;
-
-			.components-flex {
-				flex-wrap: wrap;
-				gap: 4px;
-			}
-		}
-
-		&__day-label {
-			font-size: 11px;
-		}
+	.telex-hours-block-inspector__day-label {
+		font-size: 11px;
 	}
 }
