@@ -87,8 +87,9 @@ if ( ! class_exists( 'Telex_Hours_Ical_Parser' ) ) {
 		 * @return WP_REST_Response The parsed holidays.
 		 */
 		public function handle_import( $request ) {
-			$ical_text = $request->get_param( 'ical_text' );
-			$holidays  = $this->parse( $ical_text );
+			$ical_text_raw = $request->get_param( 'ical_text' );
+			$ical_text     = is_string( $ical_text_raw ) ? $ical_text_raw : '';
+			$holidays      = $this->parse( $ical_text );
 
 			return rest_ensure_response(
 				array(
@@ -108,17 +109,24 @@ if ( ! class_exists( 'Telex_Hours_Ical_Parser' ) ) {
 		 * @since 0.1.0
 		 *
 		 * @param string $ical_text Raw iCal file content.
-		 * @return array Array of holiday data arrays.
+		 * @return array<int, array{name: string, beginDate: string, endDate: string, slots: array<int, array{open: string, close: string}>}> Array of holiday data arrays.
 		 */
 		public function parse( string $ical_text ): array {
 			$holidays = array();
 
 			// Unfold lines per RFC 5545 (continuation lines start with space or tab).
-			$ical_text = preg_replace( '/\r\n[ \t]/', '', $ical_text );
-			$ical_text = preg_replace( '/\r/', "\n", $ical_text );
-			$lines     = explode( "\n", $ical_text );
+			$unfolded = preg_replace( '/\r\n[ \t]/', '', $ical_text );
+			if ( ! is_string( $unfolded ) ) {
+				$unfolded = $ical_text;
+			}
+			$normalized = preg_replace( '/\r/', "\n", $unfolded );
+			if ( ! is_string( $normalized ) ) {
+				$normalized = $unfolded;
+			}
+			$lines = explode( "\n", $normalized );
 
-			$in_event   = false;
+			$in_event = false;
+			/** @var array<string, string> $event_data */
 			$event_data = array();
 
 			foreach ( $lines as $line ) {
@@ -157,8 +165,8 @@ if ( ! class_exists( 'Telex_Hours_Ical_Parser' ) ) {
 		 *
 		 * @since 0.1.0
 		 *
-		 * @param array $event_data Associative array of VEVENT properties.
-		 * @return array|null Holiday data array or null if insufficient data.
+		 * @param array<string, string> $event_data Associative array of VEVENT properties.
+		 * @return array{name: string, beginDate: string, endDate: string, slots: array<int, array{open: string, close: string}>}|null Holiday data array or null if insufficient data.
 		 */
 		private function vevent_to_holiday( array $event_data ): ?array {
 			$summary = '';
@@ -181,7 +189,7 @@ if ( ! class_exists( 'Telex_Hours_Ical_Parser' ) ) {
 				}
 			}
 
-			if ( empty( $dtstart_raw ) ) {
+			if ( '' === $dtstart_raw ) {
 				return null;
 			}
 
@@ -197,23 +205,24 @@ if ( ! class_exists( 'Telex_Hours_Ical_Parser' ) ) {
 				$is_all_day = true;
 			}
 			// Also check if the value is exactly 8 digits (YYYYMMDD format = all-day).
-			if ( preg_match( '/^\d{8}$/', $dtstart_raw ) ) {
+			if ( 1 === preg_match( '/^\d{8}$/', $dtstart_raw ) ) {
 				$is_all_day = true;
 			}
 
 			$begin_date = $this->parse_datetime( $dtstart_raw );
-			$end_date   = ! empty( $dtend_raw ) ? $this->parse_datetime( $dtend_raw ) : $begin_date;
+			$end_date   = '' !== $dtend_raw ? $this->parse_datetime( $dtend_raw ) : $begin_date;
 
-			if ( empty( $begin_date ) ) {
+			if ( '' === $begin_date ) {
 				return null;
 			}
 
+			/** @var array<int, array{open: string, close: string}> $slots */
 			$slots = array();
 
 			if ( $is_all_day ) {
 				// For all-day events, DTEND is the day after the last day.
 				// Adjust end date back by one day.
-				if ( ! empty( $end_date ) && $end_date !== $begin_date ) {
+				if ( '' !== $end_date && $end_date !== $begin_date ) {
 					$end_dt = new DateTime( $end_date );
 					$end_dt->modify( '-1 day' );
 					$end_date = $end_dt->format( 'Y-m-d' );
@@ -223,11 +232,11 @@ if ( ! class_exists( 'Telex_Hours_Ical_Parser' ) ) {
 				// Timed event: extract times.
 				$start_time = $this->parse_time( $dtstart_raw );
 				$end_time   = $this->parse_time( $dtend_raw );
-				if ( ! empty( $start_time ) ) {
+				if ( '' !== $start_time ) {
 					$slots = array(
 						array(
 							'open'  => $start_time,
-							'close' => ! empty( $end_time ) ? $end_time : '',
+							'close' => '' !== $end_time ? $end_time : '',
 						),
 					);
 				}
@@ -257,7 +266,7 @@ if ( ! class_exists( 'Telex_Hours_Ical_Parser' ) ) {
 			$value = rtrim( $value, 'Z' );
 			// Take only the date part (first 8 chars).
 			$date_part = substr( $value, 0, 8 );
-			if ( ! preg_match( '/^\d{8}$/', $date_part ) ) {
+			if ( 1 !== preg_match( '/^\d{8}$/', $date_part ) ) {
 				return '';
 			}
 			$year  = substr( $date_part, 0, 4 );
@@ -295,6 +304,9 @@ if ( ! class_exists( 'Telex_Hours_Ical_Parser' ) ) {
 			$minutes = (int) substr( $time_part, 2, 2 );
 
 			$timestamp = mktime( $hours, $minutes, 0, 1, 1, 2000 );
+			if ( false === $timestamp ) {
+				return '';
+			}
 			return date( 'g:i A', $timestamp );
 		}
 	}

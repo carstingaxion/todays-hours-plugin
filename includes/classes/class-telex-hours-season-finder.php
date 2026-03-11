@@ -57,16 +57,16 @@ if ( ! class_exists( 'Telex_Hours_Season_Finder' ) ) {
 		 *
 		 * @since 0.1.0
 		 *
-		 * @param array    $seasons Array of season data.
-		 * @param DateTime $today   The date to check.
-		 * @return array|null The matching season or null.
+		 * @param array<int, array{name?: string, beginDate?: string, endDate?: string, hours?: array<string, array<int, array{open: string, close: string}>>}> $seasons Array of season data.
+		 * @param DateTime                                                                                                                                      $today The date to check.
+		 * @return array{name?: string, beginDate?: string, endDate?: string, hours?: array<string, array<int, array{open: string, close: string}>>}|null The matching season or null.
 		 */
 		public function find_season( array $seasons, DateTime $today ): ?array {
 			$today_str = $today->format( 'Y-m-d' );
 			foreach ( $seasons as $season ) {
-				$begin = isset( $season['beginDate'] ) ? $season['beginDate'] : '';
-				$end   = isset( $season['endDate'] ) ? $season['endDate'] : '';
-				if ( empty( $begin ) || empty( $end ) ) {
+				$begin = $season['beginDate'] ?? '';
+				$end   = $season['endDate'] ?? '';
+				if ( '' === $begin || '' === $end ) {
 					continue;
 				}
 				if ( $today_str >= $begin && $today_str <= $end ) {
@@ -85,18 +85,18 @@ if ( ! class_exists( 'Telex_Hours_Season_Finder' ) ) {
 		 *
 		 * @since 0.1.0
 		 *
-		 * @param array    $holidays Array of holiday data.
-		 * @param DateTime $today    The date to check.
-		 * @return array|null The matching holiday or null.
+		 * @param array<int, array{name?: string, beginDate?: string, endDate?: string, slots?: array<int, array{open: string, close: string}>}> $holidays Array of holiday data.
+		 * @param DateTime                                                                                                                       $today The date to check.
+		 * @return array{name?: string, beginDate?: string, endDate?: string, slots?: array<int, array{open: string, close: string}>}|null The matching holiday or null.
 		 */
 		public function find_holiday( array $holidays, DateTime $today ): ?array {
 			$today_full = $today->format( 'Y-m-d' );
 			$today_md   = $today->format( 'm-d' );
 
 			foreach ( $holidays as $holiday ) {
-				$begin = isset( $holiday['beginDate'] ) ? trim( $holiday['beginDate'] ) : '';
-				$end   = isset( $holiday['endDate'] ) ? trim( $holiday['endDate'] ) : '';
-				if ( empty( $begin ) || empty( $end ) ) {
+				$begin = trim( $holiday['beginDate'] ?? '' );
+				$end   = trim( $holiday['endDate'] ?? '' );
+				if ( '' === $begin || '' === $end ) {
 					continue;
 				}
 

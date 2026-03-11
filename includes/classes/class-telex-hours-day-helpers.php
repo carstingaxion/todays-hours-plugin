@@ -30,7 +30,7 @@ if ( ! class_exists( 'Telex_Hours_Day_Helpers' ) ) {
 		 * All day keys in standard order starting from Sunday.
 		 *
 		 * @since 0.1.0
-		 * @var array
+		 * @var array<int, string>
 		 */
 		private array $all_day_keys = array( 'sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat' );
 
@@ -38,7 +38,7 @@ if ( ! class_exists( 'Telex_Hours_Day_Helpers' ) ) {
 		 * Weekend day keys.
 		 *
 		 * @since 0.1.0
-		 * @var array
+		 * @var array<int, string>
 		 */
 		private array $weekend_keys = array( 'sun', 'sat' );
 
@@ -68,7 +68,7 @@ if ( ! class_exists( 'Telex_Hours_Day_Helpers' ) ) {
 		 *
 		 * @since 0.1.0
 		 *
-		 * @return array Array of day key strings.
+		 * @return array<int, string> Array of day key strings.
 		 */
 		public function get_all_day_keys(): array {
 			return $this->all_day_keys;
@@ -79,7 +79,7 @@ if ( ! class_exists( 'Telex_Hours_Day_Helpers' ) ) {
 		 *
 		 * @since 0.1.0
 		 *
-		 * @return array Array of weekend day key strings.
+		 * @return array<int, string> Array of weekend day key strings.
 		 */
 		public function get_weekend_keys(): array {
 			return $this->weekend_keys;
@@ -90,10 +90,11 @@ if ( ! class_exists( 'Telex_Hours_Day_Helpers' ) ) {
 		 *
 		 * @since 0.1.0
 		 *
-		 * @return array Ordered array of day key strings.
+		 * @return array<int, string> Ordered array of day key strings.
 		 */
 		public function get_ordered_day_keys(): array {
-			$start_index = (int) get_option( 'start_of_week', 0 );
+			$start_of_week = get_option( 'start_of_week', 0 );
+			$start_index   = is_numeric( $start_of_week ) ? (int) $start_of_week : 0;
 
 			return array_merge(
 				array_slice( $this->all_day_keys, $start_index ),
@@ -106,7 +107,7 @@ if ( ! class_exists( 'Telex_Hours_Day_Helpers' ) ) {
 		 *
 		 * @since 0.1.0
 		 *
-		 * @return array Associative array of day keys to localized day names.
+		 * @return array<string, string> Associative array of day keys to localized day names.
 		 */
 		public function get_day_labels(): array {
 			return array(
@@ -141,7 +142,7 @@ if ( ! class_exists( 'Telex_Hours_Day_Helpers' ) ) {
 		 * @since 0.1.0
 		 *
 		 * @param mixed $day_data Raw day data from season hours.
-		 * @return array Array of slot arrays with 'open' and 'close' keys.
+		 * @return array<int, array{open: string, close: string}> Array of slot arrays with 'open' and 'close' keys.
 		 */
 		public function normalize_slots( $day_data ): array {
 			if ( ! is_array( $day_data ) ) {
@@ -150,10 +151,12 @@ if ( ! class_exists( 'Telex_Hours_Day_Helpers' ) ) {
 
 			// Legacy format: { open: '...', close: '...' }.
 			if ( isset( $day_data['open'] ) || isset( $day_data['close'] ) ) {
+				$open_val  = isset( $day_data['open'] ) ? $day_data['open'] : '';
+				$close_val = isset( $day_data['close'] ) ? $day_data['close'] : '';
 				return array(
 					array(
-						'open'  => isset( $day_data['open'] ) ? $day_data['open'] : '',
-						'close' => isset( $day_data['close'] ) ? $day_data['close'] : '',
+						'open'  => is_string( $open_val ) ? $open_val : '',
+						'close' => is_string( $close_val ) ? $close_val : '',
 					),
 				);
 			}
@@ -162,9 +165,11 @@ if ( ! class_exists( 'Telex_Hours_Day_Helpers' ) ) {
 			$slots = array();
 			foreach ( $day_data as $slot ) {
 				if ( is_array( $slot ) && ( isset( $slot['open'] ) || isset( $slot['close'] ) ) ) {
-					$slots[] = array(
-						'open'  => isset( $slot['open'] ) ? $slot['open'] : '',
-						'close' => isset( $slot['close'] ) ? $slot['close'] : '',
+					$slot_open  = isset( $slot['open'] ) ? $slot['open'] : '';
+					$slot_close = isset( $slot['close'] ) ? $slot['close'] : '';
+					$slots[]    = array(
+						'open'  => is_string( $slot_open ) ? $slot_open : '',
+						'close' => is_string( $slot_close ) ? $slot_close : '',
 					);
 				}
 			}
@@ -179,17 +184,19 @@ if ( ! class_exists( 'Telex_Hours_Day_Helpers' ) ) {
 		 *
 		 * @since 0.1.0
 		 *
-		 * @param array $holiday Holiday data array.
-		 * @return array Array of slot arrays with 'open' and 'close' keys.
+		 * @param array<string, mixed> $holiday Holiday data array.
+		 * @return array<int, array{open: string, close: string}> Array of slot arrays with 'open' and 'close' keys.
 		 */
 		public function normalize_holiday_slots( array $holiday ): array {
 			if ( isset( $holiday['slots'] ) && is_array( $holiday['slots'] ) ) {
 				$slots = array();
 				foreach ( $holiday['slots'] as $slot ) {
 					if ( is_array( $slot ) ) {
-						$slots[] = array(
-							'open'  => isset( $slot['open'] ) ? $slot['open'] : '',
-							'close' => isset( $slot['close'] ) ? $slot['close'] : '',
+						$slot_open  = isset( $slot['open'] ) ? $slot['open'] : '';
+						$slot_close = isset( $slot['close'] ) ? $slot['close'] : '';
+						$slots[]    = array(
+							'open'  => is_string( $slot_open ) ? $slot_open : '',
+							'close' => is_string( $slot_close ) ? $slot_close : '',
 						);
 					}
 				}
@@ -197,9 +204,11 @@ if ( ! class_exists( 'Telex_Hours_Day_Helpers' ) ) {
 			}
 
 			// Legacy format.
-			$open  = isset( $holiday['openTime'] ) ? $holiday['openTime'] : '';
-			$close = isset( $holiday['closeTime'] ) ? $holiday['closeTime'] : '';
-			if ( ! empty( $open ) ) {
+			$open_raw  = isset( $holiday['openTime'] ) ? $holiday['openTime'] : '';
+			$close_raw = isset( $holiday['closeTime'] ) ? $holiday['closeTime'] : '';
+			$open      = is_string( $open_raw ) ? $open_raw : '';
+			$close     = is_string( $close_raw ) ? $close_raw : '';
+			if ( '' !== $open ) {
 				return array(
 					array(
 						'open'  => $open,
@@ -216,7 +225,7 @@ if ( ! class_exists( 'Telex_Hours_Day_Helpers' ) ) {
 		 *
 		 * @since 0.1.0
 		 *
-		 * @param array $slots Array of time slot arrays.
+		 * @param array<int, array{open: string, close: string}> $slots Array of time slot arrays.
 		 * @return bool True if at least one slot has a non-empty 'open' value.
 		 */
 		public function slots_have_open( array $slots ): bool {

@@ -32,7 +32,7 @@ if ( ! class_exists( 'Telex_Hours_Schema_Generator' ) ) {
 		 * Schema.org full DayOfWeek IRIs.
 		 *
 		 * @since 0.1.0
-		 * @var array
+		 * @var array<string, string>
 		 */
 		private array $schema_day_of_week = array(
 			'sun' => 'https://schema.org/Sunday',
@@ -74,13 +74,13 @@ if ( ! class_exists( 'Telex_Hours_Schema_Generator' ) ) {
 		 *
 		 * @since 0.1.0
 		 *
-		 * @param array|null                 $season        Active season data or null.
-		 * @param array                      $holidays      All holidays.
-		 * @param DateTime                   $today         Today's date object.
-		 * @param bool                       $hide_weekends Whether weekend days are hidden.
-		 * @param Telex_Hours_Day_Helpers    $day_helpers   Day helpers instance.
-		 * @param Telex_Hours_Time_Formatter $time_fmt     Time formatter instance.
-		 * @return array Array of OpeningHoursSpecification associative arrays.
+		 * @param array{name?: string, beginDate?: string, endDate?: string, hours?: array<string, array<int, array{open: string, close: string}>>}|null $season Active season data or null.
+		 * @param array<int, array{name?: string, beginDate?: string, endDate?: string, slots?: array<int, array{open: string, close: string}>}>         $holidays All holidays.
+		 * @param DateTime                                                                                                                               $today         Today's date object.
+		 * @param bool                                                                                                                                   $hide_weekends Whether weekend days are hidden.
+		 * @param Telex_Hours_Day_Helpers                                                                                                                $day_helpers   Day helpers instance.
+		 * @param Telex_Hours_Time_Formatter                                                                                                             $time_fmt     Time formatter instance.
+		 * @return array<int, array<string, string>> Array of OpeningHoursSpecification associative arrays.
 		 */
 		public function build_opening_hours_specs(
 			?array $season,
@@ -97,21 +97,23 @@ if ( ! class_exists( 'Telex_Hours_Schema_Generator' ) ) {
 			if ( null !== $season ) {
 				$season_begin = isset( $season['beginDate'] ) ? $season['beginDate'] : '';
 				$season_end   = isset( $season['endDate'] ) ? $season['endDate'] : '';
+				// @phpstan-ignore-next-line - hours may be missing or not an array, but the method handles that.
+				$season_hours = isset( $season['hours'] ) && is_array( $season['hours'] ) ? $season['hours'] : array();
 
 				foreach ( $all_day_keys as $dk ) {
 					if ( $hide_weekends && $day_helpers->is_weekend( $dk ) ) {
 						continue;
 					}
 
-					if ( ! isset( $season['hours'][ $dk ] ) ) {
+					if ( ! isset( $season_hours[ $dk ] ) ) {
 						continue;
 					}
 
-					$slots = $day_helpers->normalize_slots( $season['hours'][ $dk ] );
+					$slots = $day_helpers->normalize_slots( $season_hours[ $dk ] );
 
 					foreach ( $slots as $slot ) {
-						$open  = isset( $slot['open'] ) ? $slot['open'] : '';
-						$close = isset( $slot['close'] ) ? $slot['close'] : '';
+						$open  = $slot['open'];
+						$close = $slot['close'];
 						if ( empty( $open ) ) {
 							continue;
 						}
@@ -145,8 +147,8 @@ if ( ! class_exists( 'Telex_Hours_Schema_Generator' ) ) {
 			$current_year = $today->format( 'Y' );
 
 			foreach ( $holidays as $holiday ) {
-				$begin = isset( $holiday['beginDate'] ) ? trim( $holiday['beginDate'] ) : '';
-				$end   = isset( $holiday['endDate'] ) ? trim( $holiday['endDate'] ) : '';
+				$begin = isset( $holiday['beginDate'] ) ? trim( (string) $holiday['beginDate'] ) : '';
+				$end   = isset( $holiday['endDate'] ) ? trim( (string) $holiday['endDate'] ) : '';
 				if ( empty( $begin ) || empty( $end ) ) {
 					continue;
 				}
@@ -174,8 +176,8 @@ if ( ! class_exists( 'Telex_Hours_Schema_Generator' ) ) {
 				} else {
 					// Holiday with specific hours.
 					foreach ( $holiday_slots as $slot ) {
-						$open  = isset( $slot['open'] ) ? $slot['open'] : '';
-						$close = isset( $slot['close'] ) ? $slot['close'] : '';
+						$open  = $slot['open'];
+						$close = $slot['close'];
 						if ( empty( $open ) ) {
 							continue;
 						}
@@ -205,12 +207,12 @@ if ( ! class_exists( 'Telex_Hours_Schema_Generator' ) ) {
 		 *
 		 * @since 0.1.0
 		 *
-		 * @param array|null                 $season        Active season data or null.
-		 * @param array                      $holidays      All holidays.
-		 * @param DateTime                   $today         Today's date object.
-		 * @param bool                       $hide_weekends Whether weekend days are hidden.
-		 * @param Telex_Hours_Day_Helpers    $day_helpers   Day helpers instance.
-		 * @param Telex_Hours_Time_Formatter $time_fmt     Time formatter instance.
+		 * @param array{name?: string, beginDate?: string, endDate?: string, hours?: array<string, array<int, array{open: string, close: string}>>}|null $season Active season data or null.
+		 * @param array<int, array{name?: string, beginDate?: string, endDate?: string, slots?: array<int, array{open: string, close: string}>}>         $holidays All holidays.
+		 * @param DateTime                                                                                                                               $today         Today's date object.
+		 * @param bool                                                                                                                                   $hide_weekends Whether weekend days are hidden.
+		 * @param Telex_Hours_Day_Helpers                                                                                                                $day_helpers   Day helpers instance.
+		 * @param Telex_Hours_Time_Formatter                                                                                                             $time_fmt     Time formatter instance.
 		 * @return string JSON-LD script tag HTML, or empty string.
 		 */
 		public function render_json_ld(

@@ -41,7 +41,7 @@ if ( ! class_exists( 'Telex_Hours_Settings' ) ) {
 		 * Default season data used when no seasons have been configured.
 		 *
 		 * @since 0.1.0
-		 * @var array
+		 * @var array<int, array{name: string, beginDate: string, endDate: string, hours: array<string, array<int, array{open: string, close: string}>>}>
 		 */
 		private array $default_seasons;
 
@@ -128,7 +128,7 @@ if ( ! class_exists( 'Telex_Hours_Settings' ) ) {
 		 *
 		 * @since 0.1.0
 		 *
-		 * @return array Default seasons array.
+		 * @return array<int, array{name: string, beginDate: string, endDate: string, hours: array<string, array<int, array{open: string, close: string}>>}> Default seasons array.
 		 */
 		public function get_default_seasons(): array {
 			return $this->default_seasons;

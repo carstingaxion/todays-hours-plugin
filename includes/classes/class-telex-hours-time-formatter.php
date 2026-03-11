@@ -63,7 +63,8 @@ if ( ! class_exists( 'Telex_Hours_Time_Formatter' ) ) {
 			if ( ! $friendly_twelves || empty( $time ) ) {
 				return $time;
 			}
-			$normalized = strtolower( preg_replace( '/\s+/', '', $time ) );
+			$stripped   = preg_replace( '/\s+/', '', $time );
+			$normalized = strtolower( is_string( $stripped ) ? $stripped : $time );
 			if ( '12:00am' === $normalized ) {
 				return __( 'Midnight', 'telex-hours-block' );
 			}
@@ -92,6 +93,10 @@ if ( ! class_exists( 'Telex_Hours_Time_Formatter' ) ) {
 			}
 
 			$time_format = get_option( 'time_format', 'g:i a' );
+			if ( ! is_string( $time_format ) ) {
+				$time_format = 'g:i a';
+			}
+
 			return date_i18n( $time_format, $timestamp );
 		}
 
@@ -123,15 +128,19 @@ if ( ! class_exists( 'Telex_Hours_Time_Formatter' ) ) {
 		 *
 		 * @since 0.1.0
 		 *
-		 * @param array $slots             Array of slot arrays with 'open' and 'close' keys.
-		 * @param bool  $friendly_twelves  Whether to apply friendly labels.
+		 * @param array<int, mixed> $slots Array of slot arrays with 'open' and 'close' keys.
+		 * @param bool              $friendly_twelves Whether to apply friendly labels.
 		 * @return string Rendered HTML for all open slots.
 		 */
 		public function render_slots_html( array $slots, bool $friendly_twelves ): string {
 			$parts = array();
 			foreach ( $slots as $slot ) {
-				$open  = isset( $slot['open'] ) ? $slot['open'] : '';
-				$close = isset( $slot['close'] ) ? $slot['close'] : '';
+				if ( ! is_array( $slot ) ) {
+					continue;
+				}
+
+				$open  = isset( $slot['open'] ) && is_string( $slot['open'] ) ? $slot['open'] : '';
+				$close = isset( $slot['close'] ) && is_string( $slot['close'] ) ? $slot['close'] : '';
 
 				if ( empty( $open ) ) {
 					continue;
