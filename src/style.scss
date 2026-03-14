@@ -87,8 +87,6 @@
 		}
 
 		&--closed {
-			color: rgba(0, 0, 0, 0.75); /* fallback */
-			color: color-mix(in srgb, currentcolor 75%, transparent);
 			font-style: italic;
 		}
 	}
@@ -136,7 +134,6 @@
 		 */
 		&--closed {
 			font-style: italic;
-			opacity: 0.7;
 		}
 	}
 }

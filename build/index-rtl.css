@@ -1,1 +1,152 @@
-.telex-hours-block-inspector{container-name:telex-inspector;container-type:inline-size}.telex-hours-block-inspector__holiday,.telex-hours-block-inspector__season{border-bottom:1px solid #e0e0e0;padding:8px 0}.telex-hours-block-inspector__holiday:last-of-type,.telex-hours-block-inspector__season:last-of-type{border-bottom:none}.telex-hours-block-inspector__holiday-toggle,.telex-hours-block-inspector__season-toggle{font-weight:500;gap:6px;justify-content:flex-start;text-decoration:none;width:100%}.telex-hours-block-inspector__holiday-toggle span,.telex-hours-block-inspector__season-toggle span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.telex-hours-block-inspector__holiday-details,.telex-hours-block-inspector__season-details{display:flex;flex-direction:column;gap:12px;padding:12px 0 4px}.telex-hours-block-inspector__day-grid{display:flex;flex-direction:column;gap:6px}.telex-hours-block-inspector__day-grid-hint{margin-bottom:4px}.telex-hours-block-inspector__day-label{font-size:12px;font-weight:500;padding-bottom:2px;text-align:center}.telex-hours-block-inspector__day-row{border-bottom:1px solid #f0f0f0;margin-bottom:4px;padding:6px 0}.telex-hours-block-inspector__day-row:last-child{border-bottom:none;margin-bottom:0}.telex-hours-block-inspector__add-slot{font-size:11px!important;margin-top:2px}.telex-hours-block-inspector input[type=date],.telex-hours-block-inspector input[type=time]{border:1px solid #949494;border-radius:2px;box-sizing:border-box;font-size:13px;line-height:1.4;min-height:36px;padding:6px 8px;width:100%}.telex-hours-block-inspector input[type=date]:focus,.telex-hours-block-inspector input[type=time]:focus{border-color:var(--wp-admin-theme-color,#007cba);box-shadow:0 0 0 1px var(--wp-admin-theme-color,#007cba);outline:2px solid transparent}@container telex-inspector (max-width: 16em){.telex-hours-block-inspector__holiday-details,.telex-hours-block-inspector__season-details{gap:8px}.telex-hours-block-inspector__day-row{padding:4px 0}.telex-hours-block-inspector__day-row .components-flex{flex-wrap:wrap;gap:4px}.telex-hours-block-inspector__day-label{font-size:11px}}
+/*!****************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./src/editor.scss ***!
+  \****************************************************************************************************************************************************************************************************************************************/
+@charset "UTF-8";
+/**
+ * Business Hours Block — Editor-Only Styles
+ *
+ * Styles for the inspector panel season and holiday editors.
+ * Follows BEM naming conventions with proper nesting.
+ * Uses CSS container queries for intrinsic responsive layout.
+ *
+ * @package TelexHoursBlock
+ */
+.telex-hours-block-inspector {
+  container-type: inline-size;
+  container-name: telex-inspector;
+  /**
+   * Season panel section.
+   */
+}
+.telex-hours-block-inspector__season, .telex-hours-block-inspector__holiday {
+  padding: 8px 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+.telex-hours-block-inspector__season:last-of-type, .telex-hours-block-inspector__holiday:last-of-type {
+  border-bottom: none;
+}
+.telex-hours-block-inspector {
+  /**
+   * Season/Holiday toggle button.
+   */
+}
+.telex-hours-block-inspector__season-toggle, .telex-hours-block-inspector__holiday-toggle {
+  width: 100%;
+  justify-content: flex-start;
+  gap: 6px;
+  text-decoration: none;
+  font-weight: 500;
+}
+.telex-hours-block-inspector__season-toggle span, .telex-hours-block-inspector__holiday-toggle span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.telex-hours-block-inspector {
+  /**
+   * Season/Holiday detail sections.
+   */
+}
+.telex-hours-block-inspector__season-details, .telex-hours-block-inspector__holiday-details {
+  padding: 12px 0 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.telex-hours-block-inspector {
+  /**
+   * Day grid within season editor.
+   */
+}
+.telex-hours-block-inspector__day-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.telex-hours-block-inspector {
+  /**
+   * Hint text above the day grid.
+   */
+}
+.telex-hours-block-inspector__day-grid-hint {
+  margin-bottom: 4px;
+}
+.telex-hours-block-inspector {
+  /**
+   * Day label in the grid — centered above open/close inputs.
+   */
+}
+.telex-hours-block-inspector__day-label {
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  padding-bottom: 2px;
+}
+.telex-hours-block-inspector {
+  /**
+   * Day row wrapper in the day grid — stacked layout.
+   */
+}
+.telex-hours-block-inspector__day-row {
+  padding: 6px 0;
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 4px;
+}
+.telex-hours-block-inspector__day-row:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+.telex-hours-block-inspector {
+  /**
+   * Add time slot link button.
+   */
+}
+.telex-hours-block-inspector__add-slot {
+  font-size: 11px !important;
+  margin-top: 2px;
+}
+.telex-hours-block-inspector {
+  /**
+   * Native time and date inputs within the inspector panel.
+   * Ensures consistent sizing and alignment with WordPress components.
+   */
+}
+.telex-hours-block-inspector input[type=time],
+.telex-hours-block-inspector input[type=date] {
+  width: 100%;
+  min-height: 36px;
+  padding: 6px 8px;
+  font-size: 13px;
+  line-height: 1.4;
+  border: 1px solid #949494;
+  border-radius: 2px;
+  box-sizing: border-box;
+}
+.telex-hours-block-inspector input[type=time]:focus,
+.telex-hours-block-inspector input[type=date]:focus {
+  border-color: var(--wp-admin-theme-color, #007cba);
+  box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #007cba);
+  outline: 2px solid transparent;
+}
+/**
+ * Intrinsic responsive: narrow inspector panels (< 16em / ~256px).
+ *
+ * Uses container queries so the inspector adapts to the panel's own
+ * width rather than the viewport.
+ */
+@container telex-inspector (max-width: 16em) {
+  .telex-hours-block-inspector__season-details,
+  .telex-hours-block-inspector__holiday-details {
+    gap: 8px;
+  }
+  .telex-hours-block-inspector__day-row {
+    padding: 4px 0;
+  }
+  .telex-hours-block-inspector__day-row .components-flex {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .telex-hours-block-inspector__day-label {
+    font-size: 11px;
+  }
+}
