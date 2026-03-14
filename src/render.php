@@ -140,7 +140,7 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 			$has_open = $this->day_helpers->slots_have_open( $slots );
 
 			if ( ! $has_open ) {
-				$closed_text = __( 'Closed Today', 'telex-hours-block' );
+				$closed_text = __( 'Closed', 'telex-hours-block' );
 				if ( $show_reason && null !== $holiday && ! empty( $holiday['name'] ) ) {
 					$holiday_name = (string) $holiday['name'];
 					/* translators: %s: holiday/exception name */
