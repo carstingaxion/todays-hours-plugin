@@ -860,8 +860,11 @@ function WeekView({
       children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('No active season for today.', 'telex-hours-block')
     });
   }
+  const ORDERED_DAY_KEYS = orderedDays.map(({
+    key
+  }) => key);
   const todayDate = preview.today;
-  const todayDayIndex = _utils_days__WEBPACK_IMPORTED_MODULE_3__.ALL_DAY_KEYS.indexOf(preview.dayKey);
+  const todayDayIndex = ORDERED_DAY_KEYS.indexOf(preview.dayKey);
   const holidays = preview.holidays || [];
 
   /**
@@ -871,7 +874,7 @@ function WeekView({
    * @return {Date} Date object for that day of the current week.
    */
   function getDateForDay(dk) {
-    const targetIndex = _utils_days__WEBPACK_IMPORTED_MODULE_3__.ALL_DAY_KEYS.indexOf(dk);
+    const targetIndex = ORDERED_DAY_KEYS.indexOf(dk);
     const diff = targetIndex - todayDayIndex;
     const d = new Date(todayDate);
     d.setDate(d.getDate() + diff);

@@ -136,7 +136,7 @@ if ( ! class_exists( 'Telex_Hours_Time_Formatter' ) ) {
 			if ( false === $timestamp ) {
 				return '';
 			}
-			return gmdate( 'H:i', $timestamp );
+			return (string) wp_date( 'H:i', $timestamp );
 		}
 
 		/**

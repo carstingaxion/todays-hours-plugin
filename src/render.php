@@ -186,12 +186,8 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 					. '</p>';
 			}
 
-			$all_day_keys = $this->day_helpers->get_all_day_keys();
 			$day_keys     = $this->day_helpers->get_ordered_day_keys();
-			$day_labels   = $this->day_helpers->get_day_labels();
-
-			$today_index = array_search( $today_key, $all_day_keys, true );
-
+			$today_index  = array_search( $today_key, $day_keys, true );
 			$season_hours = $season['hours'] ?? array();
 
 			$html = '<dl class="telex-hours-block__list">';
@@ -201,75 +197,117 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 					continue;
 				}
 
-				$dk_index = array_search( $dk, $all_day_keys, true );
+				$dk_index = array_search( $dk, $day_keys, true );
 				$diff     = (int) $dk_index - (int) $today_index;
 				$day_date = clone $today;
 				$day_date->modify( sprintf( '%+d days', $diff ) );
 
-				$day_holiday = $this->season_finder->find_holiday( $holidays, $day_date );
-
-				$slots = array();
-				if ( null !== $day_holiday ) {
-					$slots = $this->day_helpers->normalize_holiday_slots( $day_holiday );
-				} elseif ( isset( $season_hours[ $dk ] ) ) {
-					$slots = $this->day_helpers->normalize_slots( $season_hours[ $dk ] );
-				}
-
-				$has_open  = $this->day_helpers->slots_have_open( $slots );
-				$is_closed = ! $has_open;
-
-				$is_today = ( $dk === $today_key );
-
-				// Base classes without --today modifier (Interactivity API adds it client-side).
-				$dt_base_classes = 'telex-hours-block__day';
-				$dd_base_classes = 'telex-hours-block__hours';
-				if ( $is_closed ) {
-					$dd_base_classes .= ' telex-hours-block__hours--closed';
-				}
-
-				// Server renders --today classes as initial state; Interactivity API
-				// directives override them client-side to handle cached pages.
-				$dt_classes = $dt_base_classes;
-				$dd_classes = $dd_base_classes;
-				if ( $is_today ) {
-					$dt_classes .= ' telex-hours-block__day--today';
-					$dd_classes .= ' telex-hours-block__hours--today';
-				}
-
-				$day_context = wp_json_encode( array( 'dayKey' => $dk ), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP );
-
-				$html .= '<dt'
-					. ' class="' . esc_attr( $dt_classes ) . '"'
-					. ' data-day="' . esc_attr( $dk ) . '"'
-					. ' data-wp-context=\'' . $day_context . '\''
-					. ' data-wp-class--telex-hours-block__day--today="state.isDayToday"'
-					. '>';
-				$html .= esc_html( $day_labels[ $dk ] );
-				$html .= '</dt>';
-
-				$html .= '<dd'
-					. ' class="' . esc_attr( $dd_classes ) . '"'
-					. ' data-day="' . esc_attr( $dk ) . '"'
-					. ' data-wp-context=\'' . $day_context . '\''
-					. ' data-wp-class--telex-hours-block__hours--today="state.isHoursToday"'
-					. '>';
-				if ( $is_closed ) {
-					$closed_label = esc_html__( 'Closed', 'telex-hours-block' );
-					if ( $show_reason && null !== $day_holiday && ! empty( $day_holiday['name'] ) ) {
-						$holiday_name = is_string( $day_holiday['name'] ) ? $day_holiday['name'] : '';
-						/* translators: %s: holiday/exception name */
-						$closed_label = esc_html( sprintf( __( 'Closed for %s', 'telex-hours-block' ), $holiday_name ) );
-					}
-					$html .= $closed_label;
-				} else {
-					$html .= $this->time_formatter->render_slots_html( $slots, $friendly_twelves );
-				}
-				$html .= '</dd>';
+				$html .= $this->render_week_row(
+					$dk,
+					$day_date,
+					$holidays,
+					$season_hours,
+					$today_key,
+					$friendly_twelves,
+					$show_reason
+				);
 			}
 
 			$html .= '</dl>';
 
 			return $html;
+		}
+
+		/**
+		 * Renders a single day row (<dt> + <dd>) within the week schedule.
+		 *
+		 * @since 0.1.0
+		 *
+		 * @param string                                                                                                                         $dk               Day key (e.g. 'mon').
+		 * @param DateTime                                                                                                                       $day_date         Date object for this day.
+		 * @param array<int, array{name?: string, beginDate?: string, endDate?: string, slots?: array<int, array{open: string, close: string}>}> $holidays         All holidays.
+		 * @param array<string, array<int, array{open: string, close: string}>>                                                                  $season_hours     Season hours keyed by day key.
+		 * @param string                                                                                                                         $today_key        Today's day key.
+		 * @param bool                                                                                                                           $friendly_twelves Whether to use friendly twelve labels.
+		 * @param bool                                                                                                                           $show_reason      Whether to show the closed reason.
+		 * @return string Rendered HTML for one <dt>/<dd> pair.
+		 */
+		private function render_week_row( string $dk, DateTime $day_date, array $holidays, array $season_hours, string $today_key, bool $friendly_twelves, bool $show_reason ): string {
+			$day_holiday = $this->season_finder->find_holiday( $holidays, $day_date );
+			$slots       = $this->resolve_day_slots( $dk, $day_holiday, $season_hours );
+			$is_closed   = ! $this->day_helpers->slots_have_open( $slots );
+			$is_today    = ( $dk === $today_key );
+			$day_labels  = $this->day_helpers->get_day_labels();
+			$day_context = wp_json_encode( array( 'dayKey' => $dk ), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP );
+
+			$dt_classes = 'telex-hours-block__day' . ( $is_today ? ' telex-hours-block__day--today' : '' );
+			$dd_classes = 'telex-hours-block__hours'
+				. ( $is_closed ? ' telex-hours-block__hours--closed' : '' )
+				. ( $is_today ? ' telex-hours-block__hours--today' : '' );
+
+			$html  = '<dt'
+				. ' class="' . esc_attr( $dt_classes ) . '"'
+				. ' data-day="' . esc_attr( $dk ) . '"'
+				. ' data-wp-context=\'' . $day_context . '\''
+				. ' data-wp-class--telex-hours-block__day--today="state.isDayToday"'
+				. '>';
+			$html .= esc_html( $day_labels[ $dk ] );
+			$html .= '</dt>';
+
+			$html .= '<dd'
+				. ' class="' . esc_attr( $dd_classes ) . '"'
+				. ' data-day="' . esc_attr( $dk ) . '"'
+				. ' data-wp-context=\'' . $day_context . '\''
+				. ' data-wp-class--telex-hours-block__hours--today="state.isHoursToday"'
+				. '>';
+			$html .= $is_closed
+				? $this->render_closed_label( $day_holiday, $show_reason )
+				: $this->time_formatter->render_slots_html( $slots, $friendly_twelves );
+			$html .= '</dd>';
+
+			return $html;
+		}
+
+		/**
+		 * Resolves the time slots for a given day, preferring holiday slots over season hours.
+		 *
+		 * @since 0.1.0
+		 *
+		 * @param string                                                                                                                  $dk            Day key (e.g. 'mon').
+		 * @param array{name?: string, beginDate?: string, endDate?: string, slots?: array<int, array{open: string, close: string}>}|null $day_holiday Active holiday for this day, or null.
+		 * @param array<string, array<int, array{open: string, close: string}>>                                                           $season_hours  Season hours keyed by day key.
+		 * @return array<int, array{open: string, close: string}> Resolved time slots.
+		 */
+		private function resolve_day_slots( string $dk, ?array $day_holiday, array $season_hours ): array {
+			if ( null !== $day_holiday ) {
+				return $this->day_helpers->normalize_holiday_slots( $day_holiday );
+			}
+
+			if ( isset( $season_hours[ $dk ] ) ) {
+				return $this->day_helpers->normalize_slots( $season_hours[ $dk ] );
+			}
+
+			return array();
+		}
+
+		/**
+		 * Renders the "Closed" or "Closed for <holiday>" label.
+		 *
+		 * @since 0.1.0
+		 *
+		 * @param array{name?: string, beginDate?: string, endDate?: string, slots?: array<int, array{open: string, close: string}>}|null $day_holiday  Active holiday or null.
+		 * @param bool                                                                                                                    $show_reason  Whether to show the closed reason.
+		 * @return string Escaped HTML for the closed label.
+		 */
+		private function render_closed_label( ?array $day_holiday, bool $show_reason ): string {
+			if ( $show_reason && null !== $day_holiday && ! empty( $day_holiday['name'] ) ) {
+				// @phpstan-ignore-next-line
+				$holiday_name = is_string( $day_holiday['name'] ) ? $day_holiday['name'] : '';
+				/* translators: %s: holiday/exception name */
+				return esc_html( sprintf( __( 'Closed for %s', 'telex-hours-block' ), $holiday_name ) );
+			}
+
+			return esc_html__( 'Closed', 'telex-hours-block' );
 		}
 
 		/**
@@ -298,68 +336,76 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 			/** @var array<int, array{name?: string, beginDate?: string, endDate?: string, slots?: array<int, array{open: string, close: string}>}> $holidays */
 			$holidays = is_array( $raw_holidays ) ? $raw_holidays : array();
 
-			$timezone_string = wp_timezone_string();
-			$timezone        = new DateTimeZone( $timezone_string );
-			$now             = new DateTime( 'now', $timezone );
-			$today           = new DateTime( $now->format( 'Y-m-d' ), $timezone );
-
-			$all_day_keys = $this->day_helpers->get_all_day_keys();
-			$day_key      = $all_day_keys[ (int) $today->format( 'w' ) ];
-
-			$current_holiday = $this->season_finder->find_holiday( $holidays, $today );
-			$current_season  = $this->season_finder->find_season( $seasons, $today );
-
 			// If no seasons are configured at all, render nothing.
 			if ( empty( $seasons ) ) {
 				return '';
 			}
 
-			$output = '';
+			$timezone = new DateTimeZone( wp_timezone_string() );
+			$now      = new DateTime( 'now', $timezone );
+			$today    = new DateTime( $now->format( 'Y-m-d' ), $timezone );
 
-			if ( $show_todays_date ) {
-				$date_format_raw = get_option( 'date_format', 'F j, Y' );
-				$date_format     = is_string( $date_format_raw ) ? $date_format_raw : 'F j, Y';
-				$formatted_date  = wp_date( $date_format, $today->getTimestamp(), $timezone );
+			$all_day_keys    = $this->day_helpers->get_all_day_keys();
+			$day_key         = $all_day_keys[ (int) $today->format( 'w' ) ];
+			$current_holiday = $this->season_finder->find_holiday( $holidays, $today );
+			$current_season  = $this->season_finder->find_season( $seasons, $today );
 
-				$output .= '<p class="telex-hours-block__date">';
-				$output .= esc_html( is_string( $formatted_date ) ? $formatted_date : '' );
-				$output .= '</p>';
-			}
-
-			if ( 'day' === $display_mode ) {
-				if ( $hide_weekends && $this->day_helpers->is_weekend( $day_key ) ) {
-					$output .= '';
-				} else {
-					$output .= $this->render_day(
-						$current_season,
-						$current_holiday,
-						$day_key,
-						$show_reason,
-						$friendly_twelves
-					);
-				}
-			} else {
-				$output .= $this->render_week(
-					$current_season,
-					$holidays,
-					$day_key,
-					$friendly_twelves,
-					$today,
-					$show_reason,
-					$hide_weekends
-				);
-			}
-
-			$output .= $this->schema_generator->render_json_ld(
-				$current_season,
-				$holidays,
-				$today,
-				$hide_weekends,
-				$this->day_helpers,
-				$this->time_formatter
-			);
+			$output  = $this->render_date_heading( $show_todays_date, $today, $timezone );
+			$output .= $this->render_schedule( $display_mode, $current_season, $current_holiday, $holidays, $day_key, $today, $show_reason, $friendly_twelves, $hide_weekends );
+			$output .= $this->schema_generator->render_json_ld( $current_season, $holidays, $today, $hide_weekends, $this->day_helpers, $this->time_formatter );
 
 			return $output;
+		}
+
+		/**
+		 * Renders the date heading paragraph if enabled.
+		 *
+		 * @since 0.1.0
+		 *
+		 * @param bool         $show     Whether to show the date heading.
+		 * @param DateTime     $today    Today's date object.
+		 * @param DateTimeZone $timezone The site timezone.
+		 * @return string HTML for the date heading, or empty string.
+		 */
+		private function render_date_heading( bool $show, DateTime $today, DateTimeZone $timezone ): string {
+			if ( ! $show ) {
+				return '';
+			}
+
+			$date_format_raw = get_option( 'date_format', 'F j, Y' );
+			$date_format     = is_string( $date_format_raw ) ? $date_format_raw : 'F j, Y';
+			$formatted_date  = wp_date( $date_format, $today->getTimestamp(), $timezone );
+
+			return '<p class="telex-hours-block__date">'
+				. esc_html( is_string( $formatted_date ) ? $formatted_date : '' )
+				. '</p>';
+		}
+
+		/**
+		 * Dispatches rendering to the appropriate display mode method.
+		 *
+		 * @since 0.1.0
+		 *
+		 * @param string                                                                                                                                 $display_mode     Display mode ('day' or 'week').
+		 * @param array{name?: string, beginDate?: string, endDate?: string, hours?: array<string, array<int, array{open: string, close: string}>>}|null $current_season   Active season or null.
+		 * @param array{name?: string, beginDate?: string, endDate?: string, slots?: array<int, array{open: string, close: string}>}|null                $current_holiday  Active holiday or null.
+		 * @param array<int, array{name?: string, beginDate?: string, endDate?: string, slots?: array<int, array{open: string, close: string}>}>         $holidays         All holidays.
+		 * @param string                                                                                                                                 $day_key          Today's day key.
+		 * @param DateTime                                                                                                                               $today            Today's date object.
+		 * @param bool                                                                                                                                   $show_reason      Whether to show the closed reason.
+		 * @param bool                                                                                                                                   $friendly_twelves Whether to use friendly twelve labels.
+		 * @param bool                                                                                                                                   $hide_weekends    Whether to hide weekend days.
+		 * @return string Rendered HTML for the schedule.
+		 */
+		private function render_schedule( string $display_mode, ?array $current_season, ?array $current_holiday, array $holidays, string $day_key, DateTime $today, bool $show_reason, bool $friendly_twelves, bool $hide_weekends ): string {
+			if ( 'day' === $display_mode ) {
+				if ( $hide_weekends && $this->day_helpers->is_weekend( $day_key ) ) {
+					return '';
+				}
+				return $this->render_day( $current_season, $current_holiday, $day_key, $show_reason, $friendly_twelves );
+			}
+
+			return $this->render_week( $current_season, $holidays, $day_key, $friendly_twelves, $today, $show_reason, $hide_weekends );
 		}
 	}
 }

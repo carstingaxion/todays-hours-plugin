@@ -147,7 +147,7 @@ if ( ! function_exists( 'date_i18n' ) ) {
 		if ( 0 === $timestamp ) {
 			$timestamp = time();
 		}
-		return date( $format, $timestamp );
+		return gmdate( $format, $timestamp );
 	}
 }
 

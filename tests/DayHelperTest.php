@@ -1,10 +1,13 @@
 <?php
 /**
- * Tests for Telex_Hours_Day_Helpers.
+ * Tests day ordering, labels, and slot normalization helpers.
  *
  * @package TelexHoursBlock\Tests
  */
 
+/**
+ * Tests for Telex_Hours_Day_Helpers.
+ */
 class DayHelpersTest extends PHPUnit\Framework\TestCase {
 
 	/**

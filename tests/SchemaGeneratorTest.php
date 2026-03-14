@@ -1,10 +1,13 @@
 <?php
 /**
- * Tests for Telex_Hours_Schema_Generator.
+ * Tests OpeningHoursSpecification entries for seasons and holidays.
  *
  * @package TelexHoursBlock\Tests
  */
 
+/**
+ * Tests for Telex_Hours_Schema_Generator.
+ */
 class SchemaGeneratorTest extends PHPUnit\Framework\TestCase {
 
 	/**

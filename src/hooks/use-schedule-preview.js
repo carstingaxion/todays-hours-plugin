@@ -7,10 +7,7 @@
 import { useMemo } from '@wordpress/element';
 import { ALL_DAY_KEYS } from '../utils/days';
 import { parseDate, isDateInRange } from '../utils/dates';
-import {
-	normalizeSlots,
-	normalizeHolidaySlots
-} from '../utils/slots';
+import { normalizeSlots, normalizeHolidaySlots } from '../utils/slots';
 
 /**
  * Finds a matching holiday for a given Date object.

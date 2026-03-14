@@ -46,8 +46,9 @@ export default function WeekView( {
 		);
 	}
 
+	const ORDERED_DAY_KEYS = orderedDays.map( ( { key } ) => key );
 	const todayDate = preview.today;
-	const todayDayIndex = ALL_DAY_KEYS.indexOf( preview.dayKey );
+	const todayDayIndex = ORDERED_DAY_KEYS.indexOf( preview.dayKey );
 	const holidays = preview.holidays || [];
 
 	/**
@@ -57,7 +58,7 @@ export default function WeekView( {
 	 * @return {Date} Date object for that day of the current week.
 	 */
 	function getDateForDay( dk ) {
-		const targetIndex = ALL_DAY_KEYS.indexOf( dk );
+		const targetIndex = ORDERED_DAY_KEYS.indexOf( dk );
 		const diff = targetIndex - todayDayIndex;
 		const d = new Date( todayDate );
 		d.setDate( d.getDate() + diff );
