@@ -11,7 +11,7 @@ import {
 	normalizeHolidaySlots,
 	slotsHaveOpen,
 } from '../utils/slots';
-import { WEEKEND_KEYS, ALL_DAY_KEYS } from '../utils/days';
+import { WEEKEND_KEYS } from '../utils/days';
 import { findHolidayForDate } from '../hooks/use-schedule-preview';
 
 /**

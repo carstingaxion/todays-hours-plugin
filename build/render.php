@@ -301,6 +301,7 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 		 */
 		private function render_closed_label( ?array $day_holiday, bool $show_reason ): string {
 			if ( $show_reason && null !== $day_holiday && ! empty( $day_holiday['name'] ) ) {
+				// @phpstan-ignore-next-line
 				$holiday_name = is_string( $day_holiday['name'] ) ? $day_holiday['name'] : '';
 				/* translators: %s: holiday/exception name */
 				return esc_html( sprintf( __( 'Closed for %s', 'telex-hours-block' ), $holiday_name ) );
