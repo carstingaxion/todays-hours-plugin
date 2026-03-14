@@ -1,20 +1,26 @@
 /**
  * TimeSlotRow component — Editable row for a single time slot.
  *
- * @package
+ * Uses native HTML5 time inputs that render according to the browser's
+ * locale and the operating system's time format preferences.
+ *
+ * @package TelexHoursBlock
  */
 
 import { __ } from '@wordpress/i18n';
 import {
-	TextControl,
 	Button,
 	Flex,
 	FlexBlock,
 	FlexItem,
+	BaseControl,
 } from '@wordpress/components';
 
 /**
  * Renders an editable row for a single time slot (open/close pair).
+ *
+ * Uses native <input type="time"> elements which store values in HH:MM
+ * (24-hour) format and render in the user's locale on the browser side.
  *
  * @param {Object}   props           Component props.
  * @param {Object}   props.slot      The slot object with open and close strings.
@@ -24,38 +30,41 @@ import {
  * @param {boolean}  props.canRemove Whether the remove button should be shown.
  * @return {import('@wordpress/element').WPElement} Rendered component.
  */
-export default function TimeSlotRow( {
-	slot,
-	slotIndex,
-	onUpdate,
-	onRemove,
-	canRemove,
-} ) {
+export default function TimeSlotRow( { slot, slotIndex, onUpdate, onRemove, canRemove } ) {
+	const openId = `time-slot-open-${ slotIndex }`;
+	const closeId = `time-slot-close-${ slotIndex }`;
+
 	return (
 		<Flex align="flex-end" gap={ 2 }>
 			<FlexBlock>
-				<TextControl
-					label={
-						slotIndex === 0 ? __( 'Open', 'telex-hours-block' ) : ''
-					}
-					placeholder="8:00 AM"
-					value={ slot.open || '' }
-					onChange={ ( val ) => onUpdate( slotIndex, 'open', val ) }
+				<BaseControl
+					id={ openId }
+					label={ slotIndex === 0 ? __( 'Open', 'telex-hours-block' ) : '' }
 					__nextHasNoMarginBottom
-				/>
+				>
+					<input
+						id={ openId }
+						type="time"
+						className="components-text-control__input"
+						value={ slot.open || '' }
+						onChange={ ( e ) => onUpdate( slotIndex, 'open', e.target.value ) }
+					/>
+				</BaseControl>
 			</FlexBlock>
 			<FlexBlock>
-				<TextControl
-					label={
-						slotIndex === 0
-							? __( 'Close', 'telex-hours-block' )
-							: ''
-					}
-					placeholder="5:00 PM"
-					value={ slot.close || '' }
-					onChange={ ( val ) => onUpdate( slotIndex, 'close', val ) }
+				<BaseControl
+					id={ closeId }
+					label={ slotIndex === 0 ? __( 'Close', 'telex-hours-block' ) : '' }
 					__nextHasNoMarginBottom
-				/>
+				>
+					<input
+						id={ closeId }
+						type="time"
+						className="components-text-control__input"
+						value={ slot.close || '' }
+						onChange={ ( e ) => onUpdate( slotIndex, 'close', e.target.value ) }
+					/>
+				</BaseControl>
 			</FlexBlock>
 			{ canRemove && (
 				<FlexItem>

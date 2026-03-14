@@ -723,7 +723,10 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * TimeSlotRow component — Editable row for a single time slot.
  *
- * @package
+ * Uses native HTML5 time inputs that render according to the browser's
+ * locale and the operating system's time format preferences.
+ *
+ * @package TelexHoursBlock
  */
 
 
@@ -731,6 +734,9 @@ __webpack_require__.r(__webpack_exports__);
 
 /**
  * Renders an editable row for a single time slot (open/close pair).
+ *
+ * Uses native <input type="time"> elements which store values in HH:MM
+ * (24-hour) format and render in the user's locale on the browser side.
  *
  * @param {Object}   props           Component props.
  * @param {Object}   props.slot      The slot object with open and close strings.
@@ -748,24 +754,36 @@ function TimeSlotRow({
   onRemove,
   canRemove
 }) {
+  const openId = `time-slot-open-${slotIndex}`;
+  const closeId = `time-slot-close-${slotIndex}`;
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Flex, {
     align: "flex-end",
     gap: 2,
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.FlexBlock, {
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TextControl, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.BaseControl, {
+        id: openId,
         label: slotIndex === 0 ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Open', 'telex-hours-block') : '',
-        placeholder: "8:00 AM",
-        value: slot.open || '',
-        onChange: val => onUpdate(slotIndex, 'open', val),
-        __nextHasNoMarginBottom: true
+        __nextHasNoMarginBottom: true,
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+          id: openId,
+          type: "time",
+          className: "components-text-control__input",
+          value: slot.open || '',
+          onChange: e => onUpdate(slotIndex, 'open', e.target.value)
+        })
       })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.FlexBlock, {
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TextControl, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.BaseControl, {
+        id: closeId,
         label: slotIndex === 0 ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Close', 'telex-hours-block') : '',
-        placeholder: "5:00 PM",
-        value: slot.close || '',
-        onChange: val => onUpdate(slotIndex, 'close', val),
-        __nextHasNoMarginBottom: true
+        __nextHasNoMarginBottom: true,
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+          id: closeId,
+          type: "time",
+          className: "components-text-control__input",
+          value: slot.close || '',
+          onChange: e => onUpdate(slotIndex, 'close', e.target.value)
+        })
       })
     }), canRemove && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.FlexItem, {
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
