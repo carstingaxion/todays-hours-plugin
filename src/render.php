@@ -301,7 +301,6 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 		 */
 		private function render_closed_label( ?array $day_holiday, bool $show_reason ): string {
 			if ( $show_reason && null !== $day_holiday && ! empty( $day_holiday['name'] ) ) {
-				// @phpstan-ignore-next-line
 				$holiday_name = is_string( $day_holiday['name'] ) ? $day_holiday['name'] : '';
 				/* translators: %s: holiday/exception name */
 				return esc_html( sprintf( __( 'Closed for %s', 'telex-hours-block' ), $holiday_name ) );
@@ -311,14 +310,15 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 		}
 
 		/**
-		 * Renders the complete Business Hours Block output.
+		 * Renders the complete Business Hours Block output (inner content only).
 		 *
-		 * This is the main entry point called by the block rendering system.
+		 * Returns the schedule HTML, date heading, and JSON-LD structured data
+		 * without the outer wrapper <div>.
 		 *
 		 * @since 0.1.0
 		 *
 		 * @param array<string, mixed> $attributes Block attributes containing display options.
-		 * @return string The rendered HTML output.
+		 * @return string The rendered inner HTML output.
 		 */
 		public function render( array $attributes ): string {
 			$display_mode     = isset( $attributes['displayMode'] ) && is_string( $attributes['displayMode'] ) ? $attributes['displayMode'] : 'week';
@@ -330,10 +330,18 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 			$raw_seasons  = get_option( 'telex_hours_seasons', array() );
 			$raw_holidays = get_option( 'telex_hours_holidays', array() );
 
-			/** @var array<int, array{name?: string, beginDate?: string, endDate?: string, hours?: array<string, array<int, array{open: string, close: string}>>}> $seasons */
+			/**
+			 * Type safety, the shape is defined by the registered setting schema.
+			 *
+			 * @var array<int, array{name?: string, beginDate?: string, endDate?: string, hours?: array<string, array<int, array{open: string, close: string}>>}> $seasons
+			 */
 			$seasons = is_array( $raw_seasons ) ? $raw_seasons : array();
 
-			/** @var array<int, array{name?: string, beginDate?: string, endDate?: string, slots?: array<int, array{open: string, close: string}>}> $holidays */
+			/**
+			 * Type safety, the shape is defined by the registered setting schema.
+			 *
+			 * @var array<int, array{name?: string, beginDate?: string, endDate?: string, slots?: array<int, array{open: string, close: string}>}> $holidays
+			 */
 			$holidays = is_array( $raw_holidays ) ? $raw_holidays : array();
 
 			// If no seasons are configured at all, render nothing.
@@ -355,6 +363,45 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 			$output .= $this->schema_generator->render_json_ld( $current_season, $holidays, $today, $hide_weekends, $this->day_helpers, $this->time_formatter );
 
 			return $output;
+		}
+
+		/**
+		 * Renders the full block output including the interactive wrapper.
+		 *
+		 * Wraps the inner content in a <div> with block wrapper attributes,
+		 * Interactivity API namespace, and server-computed context for the
+		 * current day key. The client re-computes the day key from the
+		 * browser's clock so the today highlight stays correct even on
+		 * cached pages.
+		 *
+		 * @since 0.1.0
+		 *
+		 * @param array<string, mixed> $attributes Block attributes containing display options.
+		 * @return string The complete block HTML output with interactive wrapper.
+		 */
+		public function render_block( array $attributes ): string {
+			$inner_html = $this->render( $attributes );
+
+			// If render() returned nothing (no seasons configured), output nothing.
+			if ( '' === $inner_html ) {
+				return '';
+			}
+
+			$all_day_keys   = $this->day_helpers->get_all_day_keys();
+			$timezone       = new DateTimeZone( wp_timezone_string() );
+			$now            = new DateTime( 'now', $timezone );
+			$server_day_key = $all_day_keys[ (int) $now->format( 'w' ) ];
+
+			$context = array(
+				'serverDayKey' => $server_day_key,
+			);
+
+			return sprintf(
+				'<div %s data-wp-interactive="telex/hours-block" data-wp-context=\'%s\'>%s</div>',
+				get_block_wrapper_attributes( array( 'class' => 'telex-hours-block' ) ),
+				wp_json_encode( $context, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP ),
+				$inner_html
+			);
 		}
 
 		/**
@@ -410,25 +457,5 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 	}
 }
 
-$renderer        = Telex_Hours_Block_Renderer::get_instance();
-$rendered_output = $renderer->render( $attributes );
-
-// Provide initial server state to the Interactivity API store.
-// The client re-computes the current day key from the browser's clock,
-// so the today highlight stays correct even on cached pages.
-$all_day_keys_list = array( 'sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat' );
-$tz_string         = wp_timezone_string();
-$tz_obj            = new DateTimeZone( $tz_string );
-$now_obj           = new DateTime( 'now', $tz_obj );
-$server_day_key    = $all_day_keys_list[ (int) $now_obj->format( 'w' ) ];
-
-$context = array(
-	'serverDayKey' => $server_day_key,
-);
-
-printf(
-	'<div %s data-wp-interactive="telex/hours-block" data-wp-context=\'%s\'>%s</div>',
-	get_block_wrapper_attributes( array( 'class' => 'telex-hours-block' ) ),
-	wp_json_encode( $context, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP ),
-	$rendered_output // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-);
+$todays_hours_block_renderer = Telex_Hours_Block_Renderer::get_instance();
+echo $todays_hours_block_renderer->render_block( $attributes ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
