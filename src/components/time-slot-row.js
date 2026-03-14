@@ -1,20 +1,26 @@
 /**
  * TimeSlotRow component — Editable row for a single time slot.
  *
+ * Uses native HTML5 time inputs that render according to the browser's
+ * locale and the operating system's time format preferences.
+ *
  * @package
  */
 
 import { __ } from '@wordpress/i18n';
 import {
-	TextControl,
 	Button,
 	Flex,
 	FlexBlock,
 	FlexItem,
+	BaseControl,
 } from '@wordpress/components';
 
 /**
  * Renders an editable row for a single time slot (open/close pair).
+ *
+ * Uses native <input type="time"> elements which store values in HH:MM
+ * (24-hour) format and render in the user's locale on the browser side.
  *
  * @param {Object}   props           Component props.
  * @param {Object}   props.slot      The slot object with open and close strings.
@@ -31,31 +37,50 @@ export default function TimeSlotRow( {
 	onRemove,
 	canRemove,
 } ) {
+	const openId = `time-slot-open-${ slotIndex }`;
+	const closeId = `time-slot-close-${ slotIndex }`;
+
 	return (
 		<Flex align="flex-end" gap={ 2 }>
 			<FlexBlock>
-				<TextControl
+				<BaseControl
+					id={ openId }
 					label={
 						slotIndex === 0 ? __( 'Open', 'telex-hours-block' ) : ''
 					}
-					placeholder="8:00 AM"
-					value={ slot.open || '' }
-					onChange={ ( val ) => onUpdate( slotIndex, 'open', val ) }
 					__nextHasNoMarginBottom
-				/>
+				>
+					<input
+						id={ openId }
+						type="time"
+						className="components-text-control__input"
+						value={ slot.open || '' }
+						onChange={ ( e ) =>
+							onUpdate( slotIndex, 'open', e.target.value )
+						}
+					/>
+				</BaseControl>
 			</FlexBlock>
 			<FlexBlock>
-				<TextControl
+				<BaseControl
+					id={ closeId }
 					label={
 						slotIndex === 0
 							? __( 'Close', 'telex-hours-block' )
 							: ''
 					}
-					placeholder="5:00 PM"
-					value={ slot.close || '' }
-					onChange={ ( val ) => onUpdate( slotIndex, 'close', val ) }
 					__nextHasNoMarginBottom
-				/>
+				>
+					<input
+						id={ closeId }
+						type="time"
+						className="components-text-control__input"
+						value={ slot.close || '' }
+						onChange={ ( e ) =>
+							onUpdate( slotIndex, 'close', e.target.value )
+						}
+					/>
+				</BaseControl>
 			</FlexBlock>
 			{ canRemove && (
 				<FlexItem>

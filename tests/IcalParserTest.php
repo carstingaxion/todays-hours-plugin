@@ -1,14 +1,17 @@
 <?php
 /**
- * Tests for Telex_Hours_Ical_Parser.
+ * Tests iCal parser and REST route for Business Hours Block.
  *
  * @package TelexHoursBlock\Tests
  */
 
+/**
+ * Tests for Telex_Hours_Ical_Parser.
+ */
 class IcalParserTest extends PHPUnit\Framework\TestCase {
 
 	/**
-	 * iCal parser instance.
+	 * The iCal parser instance.
 	 *
 	 * @var Telex_Hours_Ical_Parser
 	 */

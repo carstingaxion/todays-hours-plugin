@@ -27,7 +27,11 @@ import { getSortableBeginDate } from './utils/sorting';
  * Internal dependencies — utils
  */
 import { getOrderedDays, getDefaultHours } from './utils/days';
-import { applyFriendlyTwelves, formatTimeWithSiteFormat } from './utils/time';
+import {
+	applyFriendlyTwelves,
+	formatTimeWithSiteFormat,
+	to24h,
+} from './utils/time';
 
 /**
  * Internal dependencies — hooks
@@ -225,25 +229,6 @@ export default function Edit( { attributes, setAttributes } ) {
 	);
 
 	/**
-	 * Converts a time string to 24-hour HH:MM format for datetime attributes.
-	 *
-	 * @param {string} timeStr The input time string.
-	 * @return {string} Time in HH:MM format, or empty string.
-	 */
-	const to24h = useCallback( ( timeStr ) => {
-		if ( ! timeStr ) {
-			return '';
-		}
-		const parsed = new Date( '2000-01-01 ' + timeStr );
-		if ( isNaN( parsed.getTime() ) ) {
-			return '';
-		}
-		const hh = String( parsed.getHours() ).padStart( 2, '0' );
-		const mm = String( parsed.getMinutes() ).padStart( 2, '0' );
-		return hh + ':' + mm;
-	}, [] );
-
-	/**
 	 * Renders an array of time slots as JSX with <time> elements.
 	 *
 	 * @param {Array} slotsArr Array of slot objects.
@@ -274,7 +259,7 @@ export default function Edit( { attributes, setAttributes } ) {
 				</span>
 			) );
 		},
-		[ formatDisplayTime, to24h ]
+		[ formatDisplayTime ]
 	);
 
 	const formatDate = ( date ) => {

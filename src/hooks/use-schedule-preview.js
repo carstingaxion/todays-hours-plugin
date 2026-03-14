@@ -86,8 +86,11 @@ export function useSchedulePreview( seasons, holidays ) {
 		if ( currentHoliday ) {
 			slots = normalizeHolidaySlots( currentHoliday );
 			holidayName = currentHoliday.name || '';
-		} else if ( currentSeason && currentSeason.hours?.[ dayKey ] ) {
-			slots = normalizeSlots( currentSeason.hours[ dayKey ] );
+		} else if ( currentSeason ) {
+			const dayData = currentSeason.hours?.[ dayKey ];
+			if ( dayData ) {
+				slots = normalizeSlots( dayData );
+			}
 		}
 
 		return {

@@ -1,10 +1,13 @@
 <?php
 /**
- * Tests for Telex_Hours_Time_Formatter.
+ * Tests formatting utilities.
  *
  * @package TelexHoursBlock\Tests
  */
 
+/**
+ * Tests for Telex_Hours_Time_Formatter.
+ */
 class TimeFormatterTest extends PHPUnit\Framework\TestCase {
 
 	/**

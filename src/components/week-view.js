@@ -11,7 +11,7 @@ import {
 	normalizeHolidaySlots,
 	slotsHaveOpen,
 } from '../utils/slots';
-import { WEEKEND_KEYS, ALL_DAY_KEYS } from '../utils/days';
+import { WEEKEND_KEYS } from '../utils/days';
 import { findHolidayForDate } from '../hooks/use-schedule-preview';
 
 /**
@@ -46,8 +46,9 @@ export default function WeekView( {
 		);
 	}
 
+	const ORDERED_DAY_KEYS = orderedDays.map( ( { key } ) => key );
 	const todayDate = preview.today;
-	const todayDayIndex = ALL_DAY_KEYS.indexOf( preview.dayKey );
+	const todayDayIndex = ORDERED_DAY_KEYS.indexOf( preview.dayKey );
 	const holidays = preview.holidays || [];
 
 	/**
@@ -57,7 +58,7 @@ export default function WeekView( {
 	 * @return {Date} Date object for that day of the current week.
 	 */
 	function getDateForDay( dk ) {
-		const targetIndex = ALL_DAY_KEYS.indexOf( dk );
+		const targetIndex = ORDERED_DAY_KEYS.indexOf( dk );
 		const diff = targetIndex - todayDayIndex;
 		const d = new Date( todayDate );
 		d.setDate( d.getDate() + diff );
@@ -79,10 +80,14 @@ export default function WeekView( {
 					let daySlots = [];
 					if ( dayHoliday ) {
 						daySlots = normalizeHolidaySlots( dayHoliday );
-					} else if ( preview.currentSeason.hours?.[ dk ] ) {
-						daySlots = normalizeSlots(
-							preview.currentSeason.hours[ dk ]
-						);
+					} else if (
+						preview.currentSeason &&
+						preview.currentSeason.hours
+					) {
+						const dayData = preview.currentSeason.hours[ dk ];
+						if ( dayData ) {
+							daySlots = normalizeSlots( dayData );
+						}
 					}
 
 					const hasOpen = slotsHaveOpen( daySlots );
@@ -112,6 +117,7 @@ export default function WeekView( {
 					) {
 						closedLabel =
 							__( 'Closed for', 'telex-hours-block' ) +
+							' ' +
 							dayHoliday.name;
 					}
 

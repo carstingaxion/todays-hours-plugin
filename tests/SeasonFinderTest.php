@@ -1,10 +1,13 @@
 <?php
 /**
- * Tests for Telex_Hours_Season_Finder.
+ * Tests the logic for matching a date against seasons and holidays.
  *
  * @package TelexHoursBlock\Tests
  */
 
+/**
+ * Tests for Telex_Hours_Season_Finder.
+ */
 class SeasonFinderTest extends PHPUnit\Framework\TestCase {
 
 	/**

@@ -62,7 +62,7 @@ class Telex_Hours_Block {
 	private Telex_Hours_Settings $settings;
 
 	/**
-	 * iCal parser instance.
+	 * The iCal parser instance.
 	 *
 	 * @since 0.1.0
 	 * @var Telex_Hours_Ical_Parser

@@ -4,6 +4,8 @@ parameters:
     level: max
     inferPrivatePropertyTypeFromConstructor: true
     paths:
+        - includes/
+        - src/
         - plugin.php
     excludePaths:
         analyse:
@@ -12,5 +14,6 @@ parameters:
             # when package is tested
             - wp-content/ (?)
             - tests/ (?)
+            - build/
         analyseAndScan:
             - node_modules/ (?)

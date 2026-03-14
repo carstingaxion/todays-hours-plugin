@@ -63,11 +63,15 @@ if ( ! class_exists( 'Telex_Hours_Time_Formatter' ) ) {
 			if ( ! $friendly_twelves || empty( $time ) ) {
 				return $time;
 			}
-			$normalized = strtolower( preg_replace( '/\s+/', '', $time ) );
-			if ( '12:00am' === $normalized ) {
+			$stripped   = preg_replace( '/\s+/', '', $time );
+			$normalized = strtolower( is_string( $stripped ) ? $stripped : $time );
+
+			// Match both 12-hour ("12:00am") and 24-hour ("00:00") midnight.
+			if ( '12:00am' === $normalized || '00:00' === $normalized ) {
 				return __( 'Midnight', 'telex-hours-block' );
 			}
-			if ( '12:00pm' === $normalized ) {
+			// Match both 12-hour ("12:00pm") and 24-hour ("12:00") noon.
+			if ( '12:00pm' === $normalized || '12:00' === $normalized ) {
 				return __( 'Noon', 'telex-hours-block' );
 			}
 			return $time;
@@ -86,12 +90,22 @@ if ( ! class_exists( 'Telex_Hours_Time_Formatter' ) ) {
 				return $time_str;
 			}
 
+			// Normalize bare HH:MM (24h) to "HH:MM" which strtotime handles,
+			// and also accept legacy "g:i A" (12h) strings.
 			$timestamp = strtotime( $time_str );
+			if ( false === $timestamp ) {
+				// Try prepending "T" for ISO-style parsing.
+				$timestamp = strtotime( 'T' . $time_str );
+			}
 			if ( false === $timestamp ) {
 				return $time_str;
 			}
 
 			$time_format = get_option( 'time_format', 'g:i a' );
+			if ( ! is_string( $time_format ) ) {
+				$time_format = 'g:i a';
+			}
+
 			return date_i18n( $time_format, $timestamp );
 		}
 
@@ -107,11 +121,22 @@ if ( ! class_exists( 'Telex_Hours_Time_Formatter' ) ) {
 			if ( empty( $time_str ) ) {
 				return '';
 			}
+
+			// If already in HH:MM 24h format, validate and return.
+			if ( 1 === preg_match( '/^\d{1,2}:\d{2}$/', $time_str ) ) {
+				$parts = explode( ':', $time_str );
+				$h     = (int) $parts[0];
+				$m     = (int) $parts[1];
+				if ( $h >= 0 && $h <= 23 && $m >= 0 && $m <= 59 ) {
+					return str_pad( (string) $h, 2, '0', STR_PAD_LEFT ) . ':' . str_pad( (string) $m, 2, '0', STR_PAD_LEFT );
+				}
+			}
+
 			$timestamp = strtotime( $time_str );
 			if ( false === $timestamp ) {
 				return '';
 			}
-			return gmdate( 'H:i', $timestamp );
+			return (string) wp_date( 'H:i', $timestamp );
 		}
 
 		/**
@@ -123,15 +148,19 @@ if ( ! class_exists( 'Telex_Hours_Time_Formatter' ) ) {
 		 *
 		 * @since 0.1.0
 		 *
-		 * @param array $slots             Array of slot arrays with 'open' and 'close' keys.
-		 * @param bool  $friendly_twelves  Whether to apply friendly labels.
+		 * @param array<int, mixed> $slots Array of slot arrays with 'open' and 'close' keys.
+		 * @param bool              $friendly_twelves Whether to apply friendly labels.
 		 * @return string Rendered HTML for all open slots.
 		 */
 		public function render_slots_html( array $slots, bool $friendly_twelves ): string {
 			$parts = array();
 			foreach ( $slots as $slot ) {
-				$open  = isset( $slot['open'] ) ? $slot['open'] : '';
-				$close = isset( $slot['close'] ) ? $slot['close'] : '';
+				if ( ! is_array( $slot ) ) {
+					continue;
+				}
+
+				$open  = isset( $slot['open'] ) && is_string( $slot['open'] ) ? $slot['open'] : '';
+				$close = isset( $slot['close'] ) && is_string( $slot['close'] ) ? $slot['close'] : '';
 
 				if ( empty( $open ) ) {
 					continue;

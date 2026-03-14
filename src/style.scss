@@ -4,11 +4,14 @@
  *
  * Applied both in the editor and on the front end.
  * Follows BEM naming conventions with proper nesting.
+ * Uses CSS container queries for intrinsic responsive layout.
  *
  * @package TelexHoursBlock
  */
 
 .telex-hours-block {
+	container-type: inline-size;
+	container-name: telex-hours;
 
 	/**
 	 * Date display paragraph.
@@ -53,13 +56,15 @@
 	 */
 	&__day {
 		padding: 0.5em 0.75em;
-		border-bottom: 1px solid color(from currentcolor display-p3 r g b / 0.1);
+		border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* fallback */
+		border-bottom: 1px solid color-mix(in srgb, currentcolor 10%, transparent);
 		font-weight: 400;
 		white-space: nowrap;
 
 		&--today {
 			font-weight: 600;
-			background-color: color(from currentcolor display-p3 r g b / 0.05);
+			background-color: rgba(0, 0, 0, 0.1); /* fallback */
+			background-color: color-mix(in srgb, currentcolor 10%, transparent);
 			border-radius: 4px 0 0 4px;
 		}
 	}
@@ -69,18 +74,19 @@
 	 */
 	&__hours {
 		padding: 0.5em 0.75em;
-		border-bottom: 1px solid color(from currentcolor display-p3 r g b / 0.1);
+		border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* fallback */
+		border-bottom: 1px solid color-mix(in srgb, currentcolor 10%, transparent);
 		text-align: right;
 		margin: 0;
 
 		&--today {
 			font-weight: 600;
-			background-color: color(from currentcolor display-p3 r g b / 0.05);
+			background-color: rgba(0, 0, 0, 0.1); /* fallback */
+			background-color: color-mix(in srgb, currentcolor 10%, transparent);
 			border-radius: 0 4px 4px 0;
 		}
 
 		&--closed {
-			color: color(from currentcolor display-p3 r g b / 0.5);
 			font-style: italic;
 		}
 	}
@@ -128,37 +134,40 @@
 		 */
 		&--closed {
 			font-style: italic;
-			opacity: 0.7;
 		}
 	}
+}
 
-	/**
-	 * Responsive: small screens (< 480px).
-	 */
-	@media (max-width: 479px) {
+/**
+ * Intrinsic responsive: narrow containers (< 20em / ~320px).
+ *
+ * Uses container queries so the layout adapts to the block's own
+ * width rather than the viewport — works correctly in sidebars,
+ * columns, and other constrained contexts.
+ */
+@container telex-hours (max-width: 20em) {
 
-		&__date {
-			font-size: 0.8125em;
-		}
+	.telex-hours-block__date {
+		font-size: 0.8125em;
+	}
 
-		&__list {
-			grid-template-columns: 1fr;
-		}
+	.telex-hours-block__list {
+		grid-template-columns: 1fr;
+	}
 
-		&__day {
-			padding: 0.375em 0.5em 0;
-			border-bottom: none;
-			font-size: 0.875em;
-		}
+	.telex-hours-block__day {
+		padding: 0.375em 0.5em 0;
+		border-bottom: none;
+		font-size: 0.875em;
+	}
 
-		&__hours {
-			padding: 0 0.5em 0.375em;
-			text-align: left;
-			font-size: 0.875em;
-		}
+	.telex-hours-block__hours {
+		padding: 0 0.5em 0.375em;
+		text-align: left;
+		font-size: 0.875em;
+	}
 
-		&__today-hours {
-			font-size: 1em;
-		}
+	.telex-hours-block__today-hours {
+		font-size: 1em;
 	}
 }

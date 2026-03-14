@@ -40,9 +40,10 @@ export default function DayView( {
 	const hasOpen = slotsHaveOpen( slots );
 
 	if ( ! hasOpen ) {
-		let closedText = __( 'Closed Today', 'telex-hours-block' );
+		let closedText = __( 'Closed', 'telex-hours-block' );
 		if ( showReasonClosed && holidayName ) {
-			closedText = __( 'Closed for', 'telex-hours-block' ) + holidayName;
+			closedText =
+				__( 'Closed for', 'telex-hours-block' ) + ' ' + holidayName;
 		}
 		return (
 			<p className="telex-hours-block__today-hours telex-hours-block__today-hours--closed">

@@ -1,6 +1,6 @@
 <?php
 /**
- * iCal parser and REST route for Business Hours Block.
+ * The iCal parser and REST route for Business Hours Block.
  *
  * Parses VEVENT components from iCal text and provides a REST endpoint
  * for importing holidays from .ics files.
@@ -87,8 +87,9 @@ if ( ! class_exists( 'Telex_Hours_Ical_Parser' ) ) {
 		 * @return WP_REST_Response The parsed holidays.
 		 */
 		public function handle_import( $request ) {
-			$ical_text = $request->get_param( 'ical_text' );
-			$holidays  = $this->parse( $ical_text );
+			$ical_text_raw = $request->get_param( 'ical_text' );
+			$ical_text     = is_string( $ical_text_raw ) ? $ical_text_raw : '';
+			$holidays      = $this->parse( $ical_text );
 
 			return rest_ensure_response(
 				array(
@@ -108,17 +109,28 @@ if ( ! class_exists( 'Telex_Hours_Ical_Parser' ) ) {
 		 * @since 0.1.0
 		 *
 		 * @param string $ical_text Raw iCal file content.
-		 * @return array Array of holiday data arrays.
+		 * @return array<int, array{name: string, beginDate: string, endDate: string, slots: array<int, array{open: string, close: string}>}> Array of holiday data arrays.
 		 */
 		public function parse( string $ical_text ): array {
 			$holidays = array();
 
 			// Unfold lines per RFC 5545 (continuation lines start with space or tab).
-			$ical_text = preg_replace( '/\r\n[ \t]/', '', $ical_text );
-			$ical_text = preg_replace( '/\r/', "\n", $ical_text );
-			$lines     = explode( "\n", $ical_text );
+			$unfolded = preg_replace( '/\r\n[ \t]/', '', $ical_text );
+			if ( ! is_string( $unfolded ) ) {
+				$unfolded = $ical_text;
+			}
+			$normalized = preg_replace( '/\r/', "\n", $unfolded );
+			if ( ! is_string( $normalized ) ) {
+				$normalized = $unfolded;
+			}
+			$lines = explode( "\n", $normalized );
 
-			$in_event   = false;
+			$in_event = false;
+			/**
+			 * Temporary storage for VEVENT properties while parsing.
+			 *
+			 * @var array<string, string> $event_data
+			 */
 			$event_data = array();
 
 			foreach ( $lines as $line ) {
@@ -157,87 +169,157 @@ if ( ! class_exists( 'Telex_Hours_Ical_Parser' ) ) {
 		 *
 		 * @since 0.1.0
 		 *
-		 * @param array $event_data Associative array of VEVENT properties.
-		 * @return array|null Holiday data array or null if insufficient data.
+		 * @param array<string, string> $event_data Associative array of VEVENT properties.
+		 * @return array{name: string, beginDate: string, endDate: string, slots: array<int, array{open: string, close: string}>}|null Holiday data array or null if insufficient data.
 		 */
 		private function vevent_to_holiday( array $event_data ): ?array {
-			$summary = '';
-			foreach ( $event_data as $key => $value ) {
-				if ( 'SUMMARY' === $key || 0 === strpos( $key, 'SUMMARY;' ) ) {
-					$summary = $value;
-					break;
-				}
-			}
+			$summary     = $this->extract_summary( $event_data );
+			$dtstart_raw = $this->extract_property_value( $event_data, 'DTSTART' );
+			$dtend_raw   = $this->extract_property_value( $event_data, 'DTEND' );
 
-			$dtstart_raw = '';
-			$dtend_raw   = '';
-			foreach ( $event_data as $key => $value ) {
-				$key_upper = strtoupper( $key );
-				if ( 'DTSTART' === $key_upper || 0 === strpos( $key_upper, 'DTSTART;' ) ) {
-					$dtstart_raw = $value;
-				}
-				if ( 'DTEND' === $key_upper || 0 === strpos( $key_upper, 'DTEND;' ) ) {
-					$dtend_raw = $value;
-				}
-			}
-
-			if ( empty( $dtstart_raw ) ) {
+			if ( '' === $dtstart_raw ) {
 				return null;
-			}
-
-			$is_all_day  = false;
-			$dtstart_key = '';
-			foreach ( $event_data as $key => $value ) {
-				if ( 0 === strpos( strtoupper( $key ), 'DTSTART' ) ) {
-					$dtstart_key = $key;
-					break;
-				}
-			}
-			if ( false !== strpos( strtoupper( $dtstart_key ), 'VALUE=DATE' ) ) {
-				$is_all_day = true;
-			}
-			// Also check if the value is exactly 8 digits (YYYYMMDD format = all-day).
-			if ( preg_match( '/^\d{8}$/', $dtstart_raw ) ) {
-				$is_all_day = true;
 			}
 
 			$begin_date = $this->parse_datetime( $dtstart_raw );
-			$end_date   = ! empty( $dtend_raw ) ? $this->parse_datetime( $dtend_raw ) : $begin_date;
-
-			if ( empty( $begin_date ) ) {
+			if ( '' === $begin_date ) {
 				return null;
 			}
 
-			$slots = array();
+			$end_date   = '' !== $dtend_raw ? $this->parse_datetime( $dtend_raw ) : $begin_date;
+			$is_all_day = $this->is_all_day_event( $event_data, $dtstart_raw );
 
-			if ( $is_all_day ) {
-				// For all-day events, DTEND is the day after the last day.
-				// Adjust end date back by one day.
-				if ( ! empty( $end_date ) && $end_date !== $begin_date ) {
-					$end_dt = new DateTime( $end_date );
-					$end_dt->modify( '-1 day' );
-					$end_date = $end_dt->format( 'Y-m-d' );
-				}
-				// All-day: no slots means closed.
-			} else {
-				// Timed event: extract times.
-				$start_time = $this->parse_time( $dtstart_raw );
-				$end_time   = $this->parse_time( $dtend_raw );
-				if ( ! empty( $start_time ) ) {
-					$slots = array(
-						array(
-							'open'  => $start_time,
-							'close' => ! empty( $end_time ) ? $end_time : '',
-						),
-					);
-				}
-			}
+			$end_date = $this->adjust_end_date( $begin_date, $end_date, $is_all_day );
+			$slots    = $this->build_slots( $is_all_day, $dtstart_raw, $dtend_raw );
 
 			return array(
 				'name'      => sanitize_text_field( $summary ),
 				'beginDate' => $begin_date,
 				'endDate'   => $end_date,
 				'slots'     => $slots,
+			);
+		}
+
+		/**
+		 * Extracts the SUMMARY value from VEVENT data.
+		 *
+		 * Handles both plain "SUMMARY" keys and parameterized "SUMMARY;..." keys.
+		 *
+		 * @since 0.1.0
+		 *
+		 * @param array<string, string> $event_data VEVENT properties.
+		 * @return string The summary value, or empty string if not found.
+		 */
+		private function extract_summary( array $event_data ): string {
+			foreach ( $event_data as $key => $value ) {
+				if ( 'SUMMARY' === $key || 0 === strpos( $key, 'SUMMARY;' ) ) {
+					return $value;
+				}
+			}
+			return '';
+		}
+
+		/**
+		 * Extracts the value of a named iCal property from VEVENT data.
+		 *
+		 * Handles both plain keys (e.g. "DTSTART") and parameterized keys
+		 * (e.g. "DTSTART;VALUE=DATE").
+		 *
+		 * @since 0.1.0
+		 *
+		 * @param array<string, string> $event_data   VEVENT properties.
+		 * @param string                $property_name The property name to search for (e.g. "DTSTART").
+		 * @return string The property value, or empty string if not found.
+		 */
+		private function extract_property_value( array $event_data, string $property_name ): string {
+			$prefix = strtoupper( $property_name );
+			foreach ( $event_data as $key => $value ) {
+				$key_upper = strtoupper( $key );
+				if ( $prefix === $key_upper || 0 === strpos( $key_upper, $prefix . ';' ) ) {
+					return $value;
+				}
+			}
+			return '';
+		}
+
+		/**
+		 * Determines whether a VEVENT represents an all-day event.
+		 *
+		 * Checks for VALUE=DATE in the DTSTART property key and for
+		 * an 8-digit date-only value (YYYYMMDD format).
+		 *
+		 * @since 0.1.0
+		 *
+		 * @param array<string, string> $event_data  VEVENT properties.
+		 * @param string                $dtstart_raw The raw DTSTART value.
+		 * @return bool True if the event is all-day.
+		 */
+		private function is_all_day_event( array $event_data, string $dtstart_raw ): bool {
+			if ( 1 === preg_match( '/^\d{8}$/', $dtstart_raw ) ) {
+				return true;
+			}
+
+			foreach ( $event_data as $key => $value ) {
+				if ( 0 === strpos( strtoupper( $key ), 'DTSTART' ) ) {
+					return ( false !== strpos( strtoupper( $key ), 'VALUE=DATE' ) );
+				}
+			}
+
+			return false;
+		}
+
+		/**
+		 * Adjusts the end date for all-day events.
+		 *
+		 * In iCal, DTEND for all-day events is the day after the last day
+		 * of the event, so this subtracts one day when applicable.
+		 *
+		 * @since 0.1.0
+		 *
+		 * @param string $begin_date  The begin date in Y-m-d format.
+		 * @param string $end_date    The end date in Y-m-d format.
+		 * @param bool   $is_all_day  Whether the event is all-day.
+		 * @return string The adjusted end date in Y-m-d format.
+		 */
+		private function adjust_end_date( string $begin_date, string $end_date, bool $is_all_day ): string {
+			if ( ! $is_all_day || '' === $end_date || $end_date === $begin_date ) {
+				return $end_date;
+			}
+
+			$end_dt = new DateTime( $end_date );
+			$end_dt->modify( '-1 day' );
+			return $end_dt->format( 'Y-m-d' );
+		}
+
+		/**
+		 * Builds the time slots array for a holiday from VEVENT data.
+		 *
+		 * All-day events produce an empty array (closed). Timed events
+		 * produce a single slot with the parsed start and end times.
+		 *
+		 * @since 0.1.0
+		 *
+		 * @param bool   $is_all_day  Whether the event is all-day.
+		 * @param string $dtstart_raw The raw DTSTART value.
+		 * @param string $dtend_raw   The raw DTEND value.
+		 * @return array<int, array{open: string, close: string}> Array of time slots.
+		 */
+		private function build_slots( bool $is_all_day, string $dtstart_raw, string $dtend_raw ): array {
+			if ( $is_all_day ) {
+				return array();
+			}
+
+			$start_time = $this->parse_time( $dtstart_raw );
+			if ( '' === $start_time ) {
+				return array();
+			}
+
+			$end_time = $this->parse_time( $dtend_raw );
+			return array(
+				array(
+					'open'  => $start_time,
+					'close' => $end_time,
+				),
 			);
 		}
 
@@ -257,7 +339,7 @@ if ( ! class_exists( 'Telex_Hours_Ical_Parser' ) ) {
 			$value = rtrim( $value, 'Z' );
 			// Take only the date part (first 8 chars).
 			$date_part = substr( $value, 0, 8 );
-			if ( ! preg_match( '/^\d{8}$/', $date_part ) ) {
+			if ( 1 !== preg_match( '/^\d{8}$/', $date_part ) ) {
 				return '';
 			}
 			$year  = substr( $date_part, 0, 4 );
@@ -295,7 +377,10 @@ if ( ! class_exists( 'Telex_Hours_Ical_Parser' ) ) {
 			$minutes = (int) substr( $time_part, 2, 2 );
 
 			$timestamp = mktime( $hours, $minutes, 0, 1, 1, 2000 );
-			return date( 'g:i A', $timestamp );
+			if ( false === $timestamp ) {
+				return '';
+			}
+			return (string) wp_date( 'g:i A', $timestamp );
 		}
 	}
 }

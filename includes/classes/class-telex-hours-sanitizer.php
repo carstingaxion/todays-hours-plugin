@@ -51,12 +51,30 @@ if ( ! class_exists( 'Telex_Hours_Sanitizer' ) ) {
 		private function __construct() {}
 
 		/**
+		 * Safely casts a value to string for sanitization.
+		 *
+		 * @since 0.1.0
+		 *
+		 * @param mixed $value The value to cast.
+		 * @return string The value as a string, or empty string if not scalar.
+		 */
+		private function to_string( $value ): string {
+			if ( is_string( $value ) ) {
+				return $value;
+			}
+			if ( is_scalar( $value ) ) {
+				return (string) $value;
+			}
+			return '';
+		}
+
+		/**
 		 * Sanitizes the seasons option value.
 		 *
 		 * @since 0.1.0
 		 *
 		 * @param mixed $value The raw option value.
-		 * @return array Sanitized seasons array.
+		 * @return array<int, array{name: string, beginDate: string, endDate: string, hours: array<string, array<int, array{open: string, close: string}>>}> Sanitized seasons array.
 		 */
 		public function sanitize_seasons( $value ): array {
 			if ( ! is_array( $value ) ) {
@@ -72,9 +90,9 @@ if ( ! class_exists( 'Telex_Hours_Sanitizer' ) ) {
 				}
 
 				$clean = array(
-					'name'      => isset( $season['name'] ) ? sanitize_text_field( $season['name'] ) : '',
-					'beginDate' => isset( $season['beginDate'] ) ? sanitize_text_field( $season['beginDate'] ) : '',
-					'endDate'   => isset( $season['endDate'] ) ? sanitize_text_field( $season['endDate'] ) : '',
+					'name'      => sanitize_text_field( $this->to_string( $season['name'] ?? '' ) ),
+					'beginDate' => sanitize_text_field( $this->to_string( $season['beginDate'] ?? '' ) ),
+					'endDate'   => sanitize_text_field( $this->to_string( $season['endDate'] ?? '' ) ),
 					'hours'     => array(),
 				);
 
@@ -100,7 +118,7 @@ if ( ! class_exists( 'Telex_Hours_Sanitizer' ) ) {
 		 * @since 0.1.0
 		 *
 		 * @param mixed $slots Raw slots data.
-		 * @return array Sanitized array of slot objects.
+		 * @return array<int, array{open: string, close: string}> Sanitized array of slot objects.
 		 */
 		public function sanitize_slots( $slots ): array {
 			if ( ! is_array( $slots ) ) {
@@ -116,8 +134,8 @@ if ( ! class_exists( 'Telex_Hours_Sanitizer' ) ) {
 			if ( isset( $slots['open'] ) || isset( $slots['close'] ) ) {
 				return array(
 					array(
-						'open'  => isset( $slots['open'] ) ? sanitize_text_field( $slots['open'] ) : '',
-						'close' => isset( $slots['close'] ) ? sanitize_text_field( $slots['close'] ) : '',
+						'open'  => sanitize_text_field( $this->to_string( $slots['open'] ?? '' ) ),
+						'close' => sanitize_text_field( $this->to_string( $slots['close'] ?? '' ) ),
 					),
 				);
 			}
@@ -128,8 +146,8 @@ if ( ! class_exists( 'Telex_Hours_Sanitizer' ) ) {
 					continue;
 				}
 				$sanitized[] = array(
-					'open'  => isset( $slot['open'] ) ? sanitize_text_field( $slot['open'] ) : '',
-					'close' => isset( $slot['close'] ) ? sanitize_text_field( $slot['close'] ) : '',
+					'open'  => sanitize_text_field( $this->to_string( $slot['open'] ?? '' ) ),
+					'close' => sanitize_text_field( $this->to_string( $slot['close'] ?? '' ) ),
 				);
 			}
 
@@ -151,7 +169,7 @@ if ( ! class_exists( 'Telex_Hours_Sanitizer' ) ) {
 		 * @since 0.1.0
 		 *
 		 * @param mixed $value The raw option value.
-		 * @return array Sanitized holidays array.
+		 * @return array<int, array{name: string, beginDate: string, endDate: string, slots: array<int, array{open: string, close: string}>}> Sanitized holidays array.
 		 */
 		public function sanitize_holidays( $value ): array {
 			if ( ! is_array( $value ) ) {
@@ -171,8 +189,8 @@ if ( ! class_exists( 'Telex_Hours_Sanitizer' ) ) {
 					// Legacy format migration.
 					$slots_raw = array(
 						array(
-							'open'  => isset( $holiday['openTime'] ) ? $holiday['openTime'] : '',
-							'close' => isset( $holiday['closeTime'] ) ? $holiday['closeTime'] : '',
+							'open'  => $this->to_string( $holiday['openTime'] ?? '' ),
+							'close' => $this->to_string( $holiday['closeTime'] ?? '' ),
 						),
 					);
 				}
@@ -183,15 +201,15 @@ if ( ! class_exists( 'Telex_Hours_Sanitizer' ) ) {
 						continue;
 					}
 					$clean_slots[] = array(
-						'open'  => isset( $slot['open'] ) ? sanitize_text_field( $slot['open'] ) : '',
-						'close' => isset( $slot['close'] ) ? sanitize_text_field( $slot['close'] ) : '',
+						'open'  => sanitize_text_field( $this->to_string( $slot['open'] ?? '' ) ),
+						'close' => sanitize_text_field( $this->to_string( $slot['close'] ?? '' ) ),
 					);
 				}
 
 				$sanitized[] = array(
-					'name'      => isset( $holiday['name'] ) ? sanitize_text_field( $holiday['name'] ) : '',
-					'beginDate' => isset( $holiday['beginDate'] ) ? sanitize_text_field( $holiday['beginDate'] ) : '',
-					'endDate'   => isset( $holiday['endDate'] ) ? sanitize_text_field( $holiday['endDate'] ) : '',
+					'name'      => sanitize_text_field( $this->to_string( $holiday['name'] ?? '' ) ),
+					'beginDate' => sanitize_text_field( $this->to_string( $holiday['beginDate'] ?? '' ) ),
+					'endDate'   => sanitize_text_field( $this->to_string( $holiday['endDate'] ?? '' ) ),
 					'slots'     => $clean_slots,
 				);
 			}

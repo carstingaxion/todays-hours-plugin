@@ -16,6 +16,8 @@
 		<properties>
 			<property name="text_domain" type="array">
 				<element value="todays-hours-plugin"/>
+				<element value="telex-hours-block"/>
+				<element value="default"/>
 			</property>
 		</properties>
 	</rule>
@@ -23,6 +25,8 @@
 		<properties>
 			<property name="prefixes" type="array">
 				<element value="__NAMESPACE__"/>
+				<element value="Telex_Hours_"/>
+				<element value="TODAYS_HOURS_"/>
 			</property>
 
 		</properties>

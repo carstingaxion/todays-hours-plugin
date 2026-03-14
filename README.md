@@ -1,7 +1,7 @@
 # Business Hours Block
 
 **Contributors:**      carstenbach & WordPress Telex  
-**Tags:**              business hours, schedule, opening times, block
+**Tags:**              business hours, schedule, opening times, block  
 **Tested up to:**      7.0  
 **Stable tag:**        1.1  
 **License:**           GPLv2 or later  

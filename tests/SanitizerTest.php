@@ -1,10 +1,13 @@
 <?php
 /**
- * Tests for Telex_Hours_Sanitizer.
+ * Tests sanitization callbacks for Business Hours Block settings.
  *
  * @package TelexHoursBlock\Tests
  */
 
+/**
+ * Tests for Telex_Hours_Sanitizer.
+ */
 class SanitizerTest extends PHPUnit\Framework\TestCase {
 
 	/**
