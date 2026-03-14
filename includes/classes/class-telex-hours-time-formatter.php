@@ -65,10 +65,13 @@ if ( ! class_exists( 'Telex_Hours_Time_Formatter' ) ) {
 			}
 			$stripped   = preg_replace( '/\s+/', '', $time );
 			$normalized = strtolower( is_string( $stripped ) ? $stripped : $time );
-			if ( '12:00am' === $normalized ) {
+
+			// Match both 12-hour ("12:00am") and 24-hour ("00:00") midnight.
+			if ( '12:00am' === $normalized || '00:00' === $normalized ) {
 				return __( 'Midnight', 'telex-hours-block' );
 			}
-			if ( '12:00pm' === $normalized ) {
+			// Match both 12-hour ("12:00pm") and 24-hour ("12:00") noon.
+			if ( '12:00pm' === $normalized || '12:00' === $normalized ) {
 				return __( 'Noon', 'telex-hours-block' );
 			}
 			return $time;
@@ -87,7 +90,13 @@ if ( ! class_exists( 'Telex_Hours_Time_Formatter' ) ) {
 				return $time_str;
 			}
 
+			// Normalize bare HH:MM (24h) to "HH:MM" which strtotime handles,
+			// and also accept legacy "g:i A" (12h) strings.
 			$timestamp = strtotime( $time_str );
+			if ( false === $timestamp ) {
+				// Try prepending "T" for ISO-style parsing.
+				$timestamp = strtotime( 'T' . $time_str );
+			}
 			if ( false === $timestamp ) {
 				return $time_str;
 			}
@@ -112,6 +121,17 @@ if ( ! class_exists( 'Telex_Hours_Time_Formatter' ) ) {
 			if ( empty( $time_str ) ) {
 				return '';
 			}
+
+			// If already in HH:MM 24h format, validate and return.
+			if ( 1 === preg_match( '/^\d{1,2}:\d{2}$/', $time_str ) ) {
+				$parts = explode( ':', $time_str );
+				$h     = (int) $parts[0];
+				$m     = (int) $parts[1];
+				if ( $h >= 0 && $h <= 23 && $m >= 0 && $m <= 59 ) {
+					return str_pad( (string) $h, 2, '0', STR_PAD_LEFT ) . ':' . str_pad( (string) $m, 2, '0', STR_PAD_LEFT );
+				}
+			}
+
 			$timestamp = strtotime( $time_str );
 			if ( false === $timestamp ) {
 				return '';

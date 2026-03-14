@@ -102,6 +102,28 @@
 		font-size: 11px !important;
 		margin-top: 2px;
 	}
+
+	/**
+	 * Native time and date inputs within the inspector panel.
+	 * Ensures consistent sizing and alignment with WordPress components.
+	 */
+	input[type="time"],
+	input[type="date"] {
+		width: 100%;
+		min-height: 36px;
+		padding: 6px 8px;
+		font-size: 13px;
+		line-height: 1.4;
+		border: 1px solid #949494;
+		border-radius: 2px;
+		box-sizing: border-box;
+
+		&:focus {
+			border-color: var(--wp-admin-theme-color, #007cba);
+			box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #007cba);
+			outline: 2px solid transparent;
+		}
+	}
 }
 
 /**

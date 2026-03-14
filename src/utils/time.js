@@ -1,13 +1,71 @@
 /**
  * Time formatting utilities.
  *
+ * Handles time strings in both 24-hour (HH:MM) format from native
+ * <input type="time"> elements and legacy 12-hour (g:i A) format.
+ *
  * @package
  */
 
 import { __ } from '@wordpress/i18n';
 
 /**
+ * Parses a time string into hours and minutes.
+ *
+ * Accepts:
+ * - 24-hour format: "08:00", "17:30", "00:00"
+ * - 12-hour format: "8:00 AM", "5:30 PM", "12:00 AM"
+ *
+ * @param {string} timeStr The input time string.
+ * @return {{ hours: number, minutes: number }|null} Parsed time or null if invalid.
+ */
+export function parseTime( timeStr ) {
+	if ( ! timeStr || typeof timeStr !== 'string' ) {
+		return null;
+	}
+
+	const trimmed = timeStr.trim();
+
+	// Try 24-hour format first: HH:MM or H:MM.
+	const match24 = trimmed.match( /^(\d{1,2}):(\d{2})$/ );
+	if ( match24 ) {
+		const h = parseInt( match24[ 1 ], 10 );
+		const m = parseInt( match24[ 2 ], 10 );
+		if ( h >= 0 && h <= 23 && m >= 0 && m <= 59 ) {
+			return { hours: h, minutes: m };
+		}
+	}
+
+	// Try 12-hour format: H:MM AM/PM or HH:MM AM/PM.
+	const match12 = trimmed.match( /^(\d{1,2}):(\d{2})\s*(am|pm)$/i );
+	if ( match12 ) {
+		let h = parseInt( match12[ 1 ], 10 );
+		const m = parseInt( match12[ 2 ], 10 );
+		const period = match12[ 3 ].toLowerCase();
+
+		if ( h < 1 || h > 12 || m < 0 || m > 59 ) {
+			return null;
+		}
+
+		if ( period === 'am' ) {
+			if ( h === 12 ) {
+				h = 0;
+			}
+		} else if ( h !== 12 ) {
+			h += 12;
+		}
+
+		return { hours: h, minutes: m };
+	}
+
+	return null;
+}
+
+/**
  * Applies friendly twelve labels to a time string.
+ *
+ * Handles both 24-hour format ("00:00", "12:00") and
+ * 12-hour format ("12:00 AM", "12:00 PM").
  *
  * @param {string}  time            The time string.
  * @param {boolean} friendlyTwelves Whether to apply friendly labels.
@@ -17,20 +75,28 @@ export function applyFriendlyTwelves( time, friendlyTwelves ) {
 	if ( ! friendlyTwelves || ! time ) {
 		return time;
 	}
-	const lower = time.toLowerCase().replace( /\s/g, '' );
-	if ( lower === '12:00am' ) {
+
+	const parsed = parseTime( time );
+	if ( ! parsed ) {
+		return time;
+	}
+
+	if ( parsed.hours === 0 && parsed.minutes === 0 ) {
 		return __( 'Midnight', 'telex-hours-block' );
 	}
-	if ( lower === '12:00pm' ) {
+	if ( parsed.hours === 12 && parsed.minutes === 0 ) {
 		return __( 'Noon', 'telex-hours-block' );
 	}
+
 	return time;
 }
 
 /**
  * Formats a time string using the WordPress time_format setting.
  *
- * @param {string} timeStr    The input time string (e.g. "8:00 AM").
+ * Accepts both 24-hour (HH:MM) and 12-hour (g:i A) input formats.
+ *
+ * @param {string} timeStr    The input time string (e.g. "08:00" or "8:00 AM").
  * @param {string} timeFormat The PHP-style time format string.
  * @return {string} The formatted time string.
  */
@@ -39,14 +105,13 @@ export function formatTimeWithSiteFormat( timeStr, timeFormat ) {
 		return timeStr;
 	}
 
-	const parsed = new Date( '2000-01-01 ' + timeStr );
-	if ( isNaN( parsed.getTime() ) ) {
+	const parsed = parseTime( timeStr );
+	if ( ! parsed ) {
 		return timeStr;
 	}
 
-	const hours = parsed.getHours();
-	const minutes = parsed.getMinutes();
-	const seconds = parsed.getSeconds();
+	const { hours, minutes } = parsed;
+	const seconds = 0;
 
 	let result = '';
 	let i = 0;
@@ -92,4 +157,30 @@ export function formatTimeWithSiteFormat( timeStr, timeFormat ) {
 	}
 
 	return result;
+}
+
+/**
+ * Converts a time string to 24-hour HH:MM format.
+ *
+ * Accepts both 24-hour and 12-hour input. If the input is already
+ * in HH:MM format, validates and returns it normalized.
+ *
+ * @param {string} timeStr The input time string.
+ * @return {string} Time in HH:MM format, or empty string if invalid.
+ */
+export function to24h( timeStr ) {
+	if ( ! timeStr ) {
+		return '';
+	}
+
+	const parsed = parseTime( timeStr );
+	if ( ! parsed ) {
+		return '';
+	}
+
+	return (
+		String( parsed.hours ).padStart( 2, '0' ) +
+		':' +
+		String( parsed.minutes ).padStart( 2, '0' )
+	);
 }

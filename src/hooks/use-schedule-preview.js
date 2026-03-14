@@ -7,7 +7,10 @@
 import { useMemo } from '@wordpress/element';
 import { ALL_DAY_KEYS } from '../utils/days';
 import { parseDate, isDateInRange } from '../utils/dates';
-import { normalizeSlots, normalizeHolidaySlots } from '../utils/slots';
+import {
+	normalizeSlots,
+	normalizeHolidaySlots
+} from '../utils/slots';
 
 /**
  * Finds a matching holiday for a given Date object.
@@ -86,8 +89,11 @@ export function useSchedulePreview( seasons, holidays ) {
 		if ( currentHoliday ) {
 			slots = normalizeHolidaySlots( currentHoliday );
 			holidayName = currentHoliday.name || '';
-		} else if ( currentSeason && currentSeason.hours?.[ dayKey ] ) {
-			slots = normalizeSlots( currentSeason.hours[ dayKey ] );
+		} else if ( currentSeason ) {
+			const dayData = currentSeason.hours?.[ dayKey ];
+			if ( dayData ) {
+				slots = normalizeSlots( dayData );
+			}
 		}
 
 		return {

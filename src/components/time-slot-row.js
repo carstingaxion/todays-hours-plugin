@@ -4,7 +4,7 @@
  * Uses native HTML5 time inputs that render according to the browser's
  * locale and the operating system's time format preferences.
  *
- * @package TelexHoursBlock
+ * @package
  */
 
 import { __ } from '@wordpress/i18n';
@@ -30,7 +30,13 @@ import {
  * @param {boolean}  props.canRemove Whether the remove button should be shown.
  * @return {import('@wordpress/element').WPElement} Rendered component.
  */
-export default function TimeSlotRow( { slot, slotIndex, onUpdate, onRemove, canRemove } ) {
+export default function TimeSlotRow( {
+	slot,
+	slotIndex,
+	onUpdate,
+	onRemove,
+	canRemove,
+} ) {
 	const openId = `time-slot-open-${ slotIndex }`;
 	const closeId = `time-slot-close-${ slotIndex }`;
 
@@ -39,7 +45,9 @@ export default function TimeSlotRow( { slot, slotIndex, onUpdate, onRemove, canR
 			<FlexBlock>
 				<BaseControl
 					id={ openId }
-					label={ slotIndex === 0 ? __( 'Open', 'telex-hours-block' ) : '' }
+					label={
+						slotIndex === 0 ? __( 'Open', 'telex-hours-block' ) : ''
+					}
 					__nextHasNoMarginBottom
 				>
 					<input
@@ -47,14 +55,20 @@ export default function TimeSlotRow( { slot, slotIndex, onUpdate, onRemove, canR
 						type="time"
 						className="components-text-control__input"
 						value={ slot.open || '' }
-						onChange={ ( e ) => onUpdate( slotIndex, 'open', e.target.value ) }
+						onChange={ ( e ) =>
+							onUpdate( slotIndex, 'open', e.target.value )
+						}
 					/>
 				</BaseControl>
 			</FlexBlock>
 			<FlexBlock>
 				<BaseControl
 					id={ closeId }
-					label={ slotIndex === 0 ? __( 'Close', 'telex-hours-block' ) : '' }
+					label={
+						slotIndex === 0
+							? __( 'Close', 'telex-hours-block' )
+							: ''
+					}
 					__nextHasNoMarginBottom
 				>
 					<input
@@ -62,7 +76,9 @@ export default function TimeSlotRow( { slot, slotIndex, onUpdate, onRemove, canR
 						type="time"
 						className="components-text-control__input"
 						value={ slot.close || '' }
-						onChange={ ( e ) => onUpdate( slotIndex, 'close', e.target.value ) }
+						onChange={ ( e ) =>
+							onUpdate( slotIndex, 'close', e.target.value )
+						}
 					/>
 				</BaseControl>
 			</FlexBlock>

@@ -79,10 +79,14 @@ export default function WeekView( {
 					let daySlots = [];
 					if ( dayHoliday ) {
 						daySlots = normalizeHolidaySlots( dayHoliday );
-					} else if ( preview.currentSeason.hours?.[ dk ] ) {
-						daySlots = normalizeSlots(
-							preview.currentSeason.hours[ dk ]
-						);
+					} else if (
+						preview.currentSeason &&
+						preview.currentSeason.hours
+					) {
+						const dayData = preview.currentSeason.hours[ dk ];
+						if ( dayData ) {
+							daySlots = normalizeSlots( dayData );
+						}
 					}
 
 					const hasOpen = slotsHaveOpen( daySlots );
