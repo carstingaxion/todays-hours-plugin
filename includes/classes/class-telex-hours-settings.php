@@ -38,14 +38,6 @@ if ( ! class_exists( 'Telex_Hours_Settings' ) ) {
 		private Telex_Hours_Sanitizer $sanitizer;
 
 		/**
-		 * Default season data used when no seasons have been configured.
-		 *
-		 * @since 0.1.0
-		 * @var array<int, array{name: string, beginDate: string, endDate: string, hours: array<string, array<int, array{open: string, close: string}>>}>
-		 */
-		private array $default_seasons;
-
-		/**
 		 * Retrieves the single instance of this class.
 		 *
 		 * @since 0.1.0
@@ -69,69 +61,6 @@ if ( ! class_exists( 'Telex_Hours_Settings' ) ) {
 		 */
 		private function __construct( Telex_Hours_Sanitizer $sanitizer ) {
 			$this->sanitizer = $sanitizer;
-
-			$this->default_seasons = array(
-				array(
-					'name'      => 'Normal Schedule',
-					'beginDate' => '2024-01-01',
-					'endDate'   => '2026-12-31',
-					'hours'     => array(
-						'sun' => array(
-							array(
-								'open'  => '',
-								'close' => '',
-							),
-						),
-						'mon' => array(
-							array(
-								'open'  => '8:00 AM',
-								'close' => '11:00 PM',
-							),
-						),
-						'tue' => array(
-							array(
-								'open'  => '8:00 AM',
-								'close' => '11:00 PM',
-							),
-						),
-						'wed' => array(
-							array(
-								'open'  => '8:00 AM',
-								'close' => '11:00 PM',
-							),
-						),
-						'thu' => array(
-							array(
-								'open'  => '8:00 AM',
-								'close' => '11:00 PM',
-							),
-						),
-						'fri' => array(
-							array(
-								'open'  => '8:00 AM',
-								'close' => '9:00 PM',
-							),
-						),
-						'sat' => array(
-							array(
-								'open'  => '',
-								'close' => '',
-							),
-						),
-					),
-				),
-			);
-		}
-
-		/**
-		 * Returns the default seasons data.
-		 *
-		 * @since 0.1.0
-		 *
-		 * @return array<int, array{name: string, beginDate: string, endDate: string, hours: array<string, array<int, array{open: string, close: string}>>}> Default seasons array.
-		 */
-		public function get_default_seasons(): array {
-			return $this->default_seasons;
 		}
 
 		/**
@@ -162,7 +91,7 @@ if ( ! class_exists( 'Telex_Hours_Settings' ) ) {
 				array(
 					'type'              => 'array',
 					'description'       => __( 'Business hours seasons/semesters schedule data.', 'telex-hours-block' ),
-					'default'           => $this->default_seasons,
+					'default'           => array(),
 					'show_in_rest'      => array(
 						'schema' => array(
 							'type'  => 'array',

@@ -73,14 +73,6 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 		private Telex_Hours_Schema_Generator $schema_generator;
 
 		/**
-		 * Default season data used when no seasons have been configured.
-		 *
-		 * @since 0.1.0
-		 * @var array<int, array{name: string, beginDate: string, endDate: string, hours: array<string, array<int, array{open: string, close: string}>>}>
-		 */
-		private array $default_seasons;
-
-		/**
 		 * Retrieves the single instance of this class.
 		 *
 		 * @since 0.1.0
@@ -95,7 +87,7 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 		}
 
 		/**
-		 * Constructor. Initializes helper instances and default seasons.
+		 * Constructor. Initializes helper instances.
 		 *
 		 * @since 0.1.0
 		 */
@@ -104,58 +96,6 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 			$this->time_formatter   = Telex_Hours_Time_Formatter::get_instance();
 			$this->day_helpers      = Telex_Hours_Day_Helpers::get_instance();
 			$this->schema_generator = Telex_Hours_Schema_Generator::get_instance();
-
-			$this->default_seasons = array(
-				array(
-					'name'      => 'Normal Schedule',
-					'beginDate' => '2024-01-01',
-					'endDate'   => '2026-12-31',
-					'hours'     => array(
-						'sun' => array(
-							array(
-								'open'  => '',
-								'close' => '',
-							),
-						),
-						'mon' => array(
-							array(
-								'open'  => '8:00 AM',
-								'close' => '11:00 PM',
-							),
-						),
-						'tue' => array(
-							array(
-								'open'  => '8:00 AM',
-								'close' => '11:00 PM',
-							),
-						),
-						'wed' => array(
-							array(
-								'open'  => '8:00 AM',
-								'close' => '11:00 PM',
-							),
-						),
-						'thu' => array(
-							array(
-								'open'  => '8:00 AM',
-								'close' => '11:00 PM',
-							),
-						),
-						'fri' => array(
-							array(
-								'open'  => '8:00 AM',
-								'close' => '9:00 PM',
-							),
-						),
-						'sat' => array(
-							array(
-								'open'  => '',
-								'close' => '',
-							),
-						),
-					),
-				),
-			);
 		}
 
 		/**
@@ -349,14 +289,14 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 			$friendly_twelves = ! empty( $attributes['friendlyTwelves'] );
 			$hide_weekends    = ! empty( $attributes['hideWeekends'] );
 
-			$raw_seasons  = get_option( 'telex_hours_seasons', $this->default_seasons );
+			$raw_seasons  = get_option( 'telex_hours_seasons', array() );
 			$raw_holidays = get_option( 'telex_hours_holidays', array() );
 
 			/** @var array<int, array{name?: string, beginDate?: string, endDate?: string, hours?: array<string, array<int, array{open: string, close: string}>>}> $seasons */
-			$seasons = is_array( $raw_seasons ) ? $raw_seasons : $this->default_seasons;
+			$seasons = is_array( $raw_seasons ) ? $raw_seasons : array();
 
 			/** @var array<int, array{name?: string, beginDate?: string, endDate?: string, slots?: array<int, array{open: string, close: string}>}> $holidays */
-			$holidays = $raw_holidays;
+			$holidays = is_array( $raw_holidays ) ? $raw_holidays : array();
 
 			$timezone_string = wp_timezone_string();
 			$timezone        = new DateTimeZone( $timezone_string );
@@ -368,6 +308,11 @@ if ( ! class_exists( 'Telex_Hours_Block_Renderer' ) ) {
 
 			$current_holiday = $this->season_finder->find_holiday( $holidays, $today );
 			$current_season  = $this->season_finder->find_season( $seasons, $today );
+
+			// If no seasons are configured at all, render nothing.
+			if ( empty( $seasons ) ) {
+				return '';
+			}
 
 			$output = '';
 
