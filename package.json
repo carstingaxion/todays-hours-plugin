@@ -23,7 +23,7 @@
 		"@wordpress/interactivity": "^6.41.0"
 	},
 	"devDependencies": {
-		"@wordpress/scripts": "^30.15.0"
+		"@wordpress/scripts": "^31.6.0"
 	},
 	"scripts": {
 		"build": "wp-scripts build --webpack-copy-php --experimental-modules",
