@@ -19,6 +19,7 @@
 .stylelintrc.js
 .travis.yml
 .typos.toml
+babel.config.js
 CLAUDE.md
 CODE_OF_CONDUCT.md
 composer.json
@@ -66,6 +67,7 @@ bin
 multisite.xml
 multisite.xml.dist
 test
+tests
 *.mp4
 *.sql
 *.tar.gz
