@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Today's Hours
  * Description:       Displays the current day's business hours or a full weekly schedule. Seasons and holidays can be customized. Ideal for institutions with variable yearly schedules.
- * Version:           2.0.1
+ * Version:           2.0.2
  * Requires at least: 6.4
  * Requires PHP:      7.4
  * Author:            Carsten Bach
