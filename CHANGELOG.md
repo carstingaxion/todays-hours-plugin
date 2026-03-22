@@ -2,7 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased](https://github.com/carstingaxion/todays-hours-plugin/compare/2.0.1...HEAD)
+## [Unreleased](https://github.com/carstingaxion/todays-hours-plugin/compare/2.0.2...HEAD)
+
+## [2.0.2](https://github.com/carstingaxion/todays-hours-plugin/compare/2.0.1...2.0.2) - 2026-03-22
+
+- Ignore tests from distribution ([#9](https://github.com/carstingaxion/todays-hours-plugin/pull/9))
 
 ## [2.0.1](https://github.com/carstingaxion/todays-hours-plugin/compare/2.0.0...2.0.1) - 2026-03-22
 
