@@ -8,24 +8,16 @@ All notable changes to this project will be documented in this file.
 
 ### 🚀 Initial release as a Gutenberg block
 
-- Seasons with per-day multiple time slots.
-  
-- Holidays with recurring (yearless) and year-specific date support.
-  
-- iCal (.ics) file import for holidays via server-side REST endpoint.
-  
-- Week and day display modes.
-  
-- Site-wide schedule settings shared across all block instances.
-  
-- Localized day and month names, respects WordPress date/time/week settings.
-  
-- schema.org JSON-LD structured data with OpeningHoursSpecification.
-  
+- Seasons with per-day multiple time slots.  
+- Holidays with recurring (yearless) and year-specific date support.  
+- iCal (.ics) file import for holidays via server-side REST endpoint.  
+- Week and day display modes.  
+- Site-wide schedule settings shared across all block instances.  
+- Localized day and month names, respects WordPress date/time/week settings.  
+- schema.org JSON-LD structured data with OpeningHoursSpecification.  
 - Responsive front-end and editor styles.
   
-- Type safety first ;) ([#4](https://github.com/carstingaxion/todays-hours-plugin/pull/4))
-  
+- Type safety first ;) ([#4](https://github.com/carstingaxion/todays-hours-plugin/pull/4))  
 - Add german translation (and a lot of linting) ([#3](https://github.com/carstingaxion/todays-hours-plugin/pull/3))
   
 
