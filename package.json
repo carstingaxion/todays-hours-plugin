@@ -20,10 +20,10 @@
 	},
 	"main": "build/index.js",
 	"dependencies": {
-		"@wordpress/interactivity": "^6.41.0"
+		"@wordpress/interactivity": "^6.42.0"
 	},
 	"devDependencies": {
-		"@wordpress/scripts": "^30.15.0"
+		"@wordpress/scripts": "^31.7.0"
 	},
 	"scripts": {
 		"build": "wp-scripts build --webpack-copy-php --experimental-modules",
